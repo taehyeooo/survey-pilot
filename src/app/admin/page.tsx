@@ -18,7 +18,9 @@ function SurveyCard({ survey, tab }: { survey: SurveyListItem; tab: Tab }) {
   return (
     <li className="flex items-start justify-between gap-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
       <div className="min-w-0">
-        <p className="line-clamp-2 font-medium break-keep">{survey.problem}</p>
+        <Link href={`/admin/surveys/${survey.id}`} className="line-clamp-2 font-medium break-keep hover:underline">
+          {survey.problem}
+        </Link>
         <p className="mt-1 text-sm text-zinc-500">
           {STATUS[survey.status]} · 응답 {survey.responseCount}
           {survey.target_responses ? ` / ${survey.target_responses}` : ""} · {dateFormat.format(new Date(survey.created_at))}
@@ -57,7 +59,14 @@ async function SurveyList({ searchParams }: { searchParams: PageProps<"/admin">[
         ))}
       </nav>
       {groups[tab].length === 0 ? (
-        <p className="py-16 text-center text-zinc-500">{EMPTY[tab]}</p>
+        <div className="flex flex-col items-center gap-4 py-16">
+          <p className="text-zinc-500">{EMPTY[tab]}</p>
+          {tab === "designing" && (
+            <Link href="/admin/new" className="rounded-lg bg-zinc-900 px-4 py-2.5 font-medium text-white dark:bg-zinc-100 dark:text-zinc-900">
+              새 설문
+            </Link>
+          )}
+        </div>
       ) : (
         <ul className="flex flex-col gap-3 py-4">
           {groups[tab].map((s) => (
@@ -74,14 +83,19 @@ export default function AdminPage({ searchParams }: PageProps<"/admin">) {
     <main className="mx-auto w-full max-w-2xl px-4 py-8">
       <header className="mb-6 flex items-center justify-between">
         <h1 className="text-xl font-semibold">내 설문</h1>
-        <form action={logout}>
-          <button
-            type="submit"
-            className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
-          >
-            로그아웃
-          </button>
-        </form>
+        <div className="flex items-center gap-2">
+          <Link href="/admin/new" className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white dark:bg-zinc-100 dark:text-zinc-900">
+            새 설문
+          </Link>
+          <form action={logout}>
+            <button
+              type="submit"
+              className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
+            >
+              로그아웃
+            </button>
+          </form>
+        </div>
       </header>
       <Suspense fallback={<p className="py-16 text-center text-zinc-500">불러오는 중…</p>}>
         <SurveyList searchParams={searchParams} />
