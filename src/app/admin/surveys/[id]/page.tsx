@@ -10,6 +10,7 @@ import { AI_STEPS } from "../../ai-steps";
 import { SubmitButton } from "../../submit-button";
 import { answerAndDesign, regenerateDesign, saveAndConfirm } from "../actions";
 import { OtherOption } from "./other-option";
+import { QuestionsSection, type Question } from "./questions";
 
 // 조사 설계(디자인 결정 27 C 단계형): 위에 단계 진행, 설계 폼은 묶음별 카드.
 interface Survey {
@@ -25,6 +26,7 @@ interface Survey {
   intro: string | null;
   share_message: string | null;
   hypotheses: { position: number; statement: string }[];
+  questions: Question[];
 }
 
 const KST_MS = 9 * 60 * 60 * 1000;
@@ -138,7 +140,7 @@ function ConfirmedSummary({ survey }: { survey: Survey }) {
   return (
     <section className="flex flex-col gap-4">
       <p role="status" className="rounded-box bg-surface p-4">
-        설계를 확인했어요. 다음 단계에서 이 가설로 문항을 만들어요.
+        설계를 확인했어요.
       </p>
       <dl className="grid gap-3 text-sm">
         <div>
@@ -167,6 +169,19 @@ function ConfirmedSummary({ survey }: { survey: Survey }) {
 }
 
 function Body({ survey }: { survey: Survey }) {
+  if (survey.status === "reviewing") {
+    return (
+      <div className="flex flex-col gap-8">
+        <details className="rounded-box border border-line p-4">
+          <summary className="flex min-h-11 cursor-pointer items-center font-medium">확인한 설계 보기</summary>
+          <div className="mt-3">
+            <ConfirmedSummary survey={survey} />
+          </div>
+        </details>
+        <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={survey.target_minutes ?? 3} />
+      </div>
+    );
+  }
   if (survey.status !== "designing") return <ConfirmedSummary survey={survey} />;
   if (survey.purpose) return <DesignForm survey={survey} />;
   if (survey.clarifications.some((c) => !c.answer)) return <ClarifyForm survey={survey} />;
@@ -184,9 +199,10 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
   const { error, moved } = await searchParams;
   const { data } = await db
     .from("surveys")
-    .select("*, hypotheses(position, statement)")
+    .select("*, hypotheses(position, statement), questions(id, position, type, prompt, options, required, review_note)")
     .eq("id", id)
     .order("position", { referencedTable: "hypotheses" })
+    .order("position", { referencedTable: "questions" })
     .maybeSingle();
   if (!data) notFound();
   const survey = data as Survey;
