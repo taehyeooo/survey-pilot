@@ -7,6 +7,7 @@ import { requireAdmin } from "@/lib/auth";
 import type { Clarification } from "@/lib/design";
 import { buildShareText, canEditQuestions } from "@/lib/publish";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { latestReport, type ReportRow } from "@/lib/report";
 import { loadResults, type QuestionStat } from "@/lib/results";
 import { closeOverdue } from "@/lib/submit";
 import { DemoNotice } from "../../demo-notice";
@@ -16,6 +17,7 @@ import { SubmitButton } from "../../submit-button";
 import { answerAndDesign, closeNow, publish, regenerateDesign, saveAndConfirm, saveSettings } from "../actions";
 import { OtherOption } from "./other-option";
 import { QuestionsSection, type Question } from "./questions";
+import { ReportSection } from "./report";
 import { ResultsSection } from "./results";
 import { ShareBox } from "./share-box";
 
@@ -225,13 +227,38 @@ function DesignDetails({ survey }: { survey: Survey }) {
   );
 }
 
-function Body({ survey, origin, canEdit, responses, stats }: { survey: Survey; origin: string; canEdit: boolean; responses: number; stats: QuestionStat[] }) {
+function Body({
+  survey,
+  origin,
+  canEdit,
+  responses,
+  stats,
+  report,
+}: {
+  survey: Survey;
+  origin: string;
+  canEdit: boolean;
+  responses: number;
+  stats: QuestionStat[];
+  report: ReportRow | null;
+}) {
+  const reportSection = (
+    <ReportSection
+      surveyId={survey.id}
+      report={report}
+      hypotheses={survey.hypotheses.map((h) => h.statement)}
+      responseCount={responses}
+      target={survey.target_responses}
+      closed={survey.status === "closed"}
+    />
+  );
   const minutes = survey.target_minutes ?? 3;
   if (survey.status === "published" && survey.slug) {
     const link = `${origin}/s/${survey.slug}`;
     return (
       <div className="flex flex-col gap-8">
         <ShareBox link={link} shareText={buildShareText(survey.share_message ?? "", link, minutes)} />
+        {reportSection}
         <ResultsSection surveyId={survey.id} stats={stats} responseCount={responses} target={survey.target_responses} closesAt={survey.closes_at} live />
         <SettingsForm survey={survey} />
         <form action={closeNow.bind(null, survey.id)} className="flex flex-col gap-2">
@@ -271,8 +298,9 @@ function Body({ survey, origin, canEdit, responses, stats }: { survey: Survey; o
     return (
       <div className="flex flex-col gap-8">
         <p role="status" className="rounded-box bg-surface p-4">
-          {reason} 마감했어요. 응답 {responses}개. 문제에 답하는 AI 리포트는 다음 업데이트에서 볼 수 있어요.
+          {reason} 마감했어요. 응답 {responses}개.
         </p>
+        {reportSection}
         <ResultsSection surveyId={survey.id} stats={stats} responseCount={responses} target={survey.target_responses} closesAt={survey.closes_at} live={false} />
         <DesignDetails survey={survey} />
         <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={minutes} editable={false} />
@@ -308,6 +336,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
   const canEdit = await canEditQuestions(service, survey);
   const results = survey.status === "published" || survey.status === "closed" ? await loadResults(db, survey.id) : null;
   const responses = results?.responseCount ?? 0;
+  const report = results ? await latestReport(service, survey.id) : null;
   const h = await headers();
   const origin = `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;
 
@@ -321,7 +350,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
           {error}
         </p>
       )}
-      <Body survey={survey} origin={origin} canEdit={canEdit} responses={responses} stats={results?.stats ?? []} />
+      <Body survey={survey} origin={origin} canEdit={canEdit} responses={responses} stats={results?.stats ?? []} report={report} />
     </>
   );
 }

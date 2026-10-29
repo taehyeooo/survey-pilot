@@ -1,6 +1,8 @@
 "use server";
 
 import { headers } from "next/headers";
+import { after } from "next/server";
+import { finalReportQuietly } from "@/lib/report-runtime";
 import { findPublicSurvey } from "@/lib/publish";
 import { hashSecret, getMailer } from "@/lib/mailer-runtime";
 import { RespondError, requestCode, verifyCode } from "@/lib/respond";
@@ -59,7 +61,13 @@ export async function submitAnswers(slug: string, token: string, _prev: SubmitSt
   const raw: Record<string, string[]> = {};
   for (const [key, value] of formData.entries()) (raw[key] ??= []).push(String(value));
   try {
-    await submitResponse(createAdminClient(), hashSecret(), { survey: await openSurvey(slug), token, raw, ip: await clientIp() });
+    const survey = await openSurvey(slug);
+    await submitResponse(createAdminClient(), hashSecret(), { survey, token, raw, ip: await clientIp() });
+    // 이 제출로 목표에 닿아 마감됐으면 최종 리포트를 응답 뒤에 만든다(R-24)
+    after(async () => {
+      const { data } = await createAdminClient().from("surveys").select("status").eq("id", survey.id).single();
+      if (data?.status === "closed") await finalReportQuietly(survey.id);
+    });
     return { done: true };
   } catch (error) {
     if (error instanceof SubmitError && error.code === "done") return { done: true, error: error.message };

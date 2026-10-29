@@ -1,6 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
+import { finalReportQuietly } from "@/lib/report-runtime";
 import { notFound, redirect } from "next/navigation";
 import { getAi } from "@/lib/ai-runtime";
 import { requireAdmin } from "@/lib/auth";
@@ -27,6 +29,7 @@ import {
 } from "@/lib/questions";
 import { canEditQuestions, publishSurvey, updateSettings } from "@/lib/publish";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { generateReport } from "@/lib/report";
 import { closeSurvey } from "@/lib/submit";
 
 // 소유 확인은 관리자 세션(RLS)으로, 쓰기는 서버 클라이언트로(ADR 0019).
@@ -226,8 +229,23 @@ export async function closeNow(id: string) {
   let error: string | undefined;
   try {
     await closeSurvey(createAdminClient(), survey);
+    after(() => finalReportQuietly(id)); // 마감 뒤 최종 리포트는 응답을 돌려준 뒤 만든다
   } catch (e) {
     error = messageOf(e);
   }
   back(id, error);
+}
+
+// 리포트(R-24): 진행 중이면 중간, 마감 뒤면 최종. 같은 응답 수면 저장된 것을 쓴다.
+export async function makeReport(id: string) {
+  const survey = await loadOwned(id);
+  let error: string | undefined;
+  try {
+    if (survey.status !== "published" && survey.status !== "closed") throw new ConflictError("게시한 설문에서만 리포트를 만들 수 있어요.");
+    await generateReport(createAdminClient(), getAi("report"), id, survey.status === "closed" ? "final" : "interim");
+  } catch (e) {
+    error = messageOf(e);
+  }
+  if (error) redirect(`/admin/surveys/${id}?error=${encodeURIComponent(error)}`);
+  revalidatePath(`/admin/surveys/${id}`);
 }

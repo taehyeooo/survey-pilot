@@ -27,6 +27,22 @@ export function createDemoAi(): AiClient {
           share_message: "[데모] 3분짜리 설문이에요. 솔직한 의견 부탁해요!",
         };
       }
+      if (prompt.startsWith("[작업:리포트]")) {
+        const block = (name: string) => {
+          const start = prompt.indexOf(`<${name}>\n`);
+          const end = prompt.indexOf(`\n</${name}>`);
+          const body = start >= 0 && end > start ? prompt.slice(start + name.length + 3, end) : "";
+          return body.split("\n").filter((l) => l.startsWith("- ") || /^\d+\./.test(l));
+        };
+        const hypotheses = block("hypotheses");
+        const texts = block("texts").map((l) => l.slice(2));
+        return {
+          hypotheses: hypotheses.map((_, i) => ({ index: i + 1, verdict: i === 0 ? "supported" : "unclear", evidence: "[데모] 관련 문항 결과를 보면 이렇다" })),
+          answer: "[데모] 결과로 보면 첫 번째 가설이 가장 큰 원인이다. 응답이 더 모이면 다시 확인한다.",
+          next_actions: ["[데모] 첫 번째 가설부터 바꿔 본다", "[데모] 2주 뒤 다시 설문한다"],
+          themes: texts.length ? [{ title: "[데모] 자주 나온 이야기", summary: "[데모] 주관식에서 반복된 내용", quotes: texts.slice(0, 2) }] : [],
+        };
+      }
       if (prompt.startsWith("[작업:문항 다시]")) {
         return { questions: [{ hypothesis: 1, type: "scale", prompt: "[데모] 다시 만든 문항이에요. 얼마나 그렇다고 느끼나요?", options: [], required: true, review_note: null }] };
       }
