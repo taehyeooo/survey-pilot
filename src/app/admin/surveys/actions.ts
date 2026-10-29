@@ -16,6 +16,7 @@ import {
   type SurveyRow,
 } from "@/lib/design";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { uxOf, withUx } from "../ux";
 
 // 소유 확인은 관리자 세션(RLS)으로, 쓰기는 서버 클라이언트로(ADR 0019).
 async function loadOwned(id: string) {
@@ -35,8 +36,10 @@ function messageOf(error: unknown) {
   return aiErrorMessage(error);
 }
 
-function back(id: string, error?: string): never {
-  redirect(`/admin/surveys/${id}${error ? `?error=${encodeURIComponent(error)}` : ""}`);
+// 시안(ux)은 폼의 숨은 칸으로 받아 돌아갈 주소에 붙인다(개발 서버에서만).
+function back(id: string, error: string | undefined, formData?: FormData): never {
+  const href = `/admin/surveys/${id}${error ? `?error=${encodeURIComponent(error)}` : ""}`;
+  redirect(withUx(href, uxOf(formData?.get("ux"))));
 }
 
 export type StartState = { error?: string; problem?: string };
@@ -62,7 +65,7 @@ export async function startSurvey(_prev: StartState, formData: FormData): Promis
   } catch (e) {
     error = messageOf(e); // 설문은 남는다 — 그 화면에서 다시 시도(R-28)
   }
-  back(id, error);
+  back(id, error, formData);
 }
 
 export async function answerAndDesign(id: string, formData: FormData) {
@@ -79,10 +82,10 @@ export async function answerAndDesign(id: string, formData: FormData) {
   } catch (e) {
     error = messageOf(e);
   }
-  back(id, error);
+  back(id, error, formData);
 }
 
-export async function regenerateDesign(id: string) {
+export async function regenerateDesign(id: string, formData?: FormData) {
   const survey = await loadOwned(id);
   let error: string | undefined;
   try {
@@ -90,7 +93,7 @@ export async function regenerateDesign(id: string) {
   } catch (e) {
     error = messageOf(e);
   }
-  back(id, error);
+  back(id, error, formData);
 }
 
 // 확인 ①(R-9): 고친 내용을 저장하고 검토 단계로
@@ -118,5 +121,5 @@ export async function saveAndConfirm(id: string, formData: FormData) {
   } catch (e) {
     error = e instanceof Error && e.name === "ZodError" ? "빈 칸이 없는지, 가설이 2~4개인지 확인해 주세요." : messageOf(e);
   }
-  back(id, error);
+  back(id, error, formData);
 }
