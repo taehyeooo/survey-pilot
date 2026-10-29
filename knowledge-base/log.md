@@ -29,3 +29,9 @@
 - 확인한 것: 테스트 21개 통과, DB 변형 4/4(anon 읽기·관리자 확인·문항 잠금·설계 잠금) 잡고 복원, 테스트 사용자 잔여 0.
 - 확인하지 않은 것: CI에서 DB 테스트(키 없음 — 건너뜀), 동시 수정 경합.
 - 남긴 지식: [Supabase 키와 DB 접속](concepts/supabase-api-keys.md) 갱신
+
+## 2026-10-29 무료 한도 가드 — plan 3단계 (#7)
+- 한 것: `withLimit`(usage_events 1분·24시간 창, blocked 기록), 한도 걸린 AI·메일 래퍼, 스키마 실패 1회 재시도, 한도 환경변수 읽기, Supabase 저장소.
+- 확인한 것: 테스트 35개 통과, 변형 6/6 잡음(처음 5/6 — 호출 오류 재시도를 못 잡아 테스트 추가), lint·tsc·build·번들 검사 통과, DB 잔여 0.
+- 확인하지 않은 것: 동시 호출 때 1건 초과 가능(세기와 부르기가 원자적이지 않음), 실제 Gemini·Gmail 호출.
+- 남긴 지식: [Vitest @ 별칭](troubleshooting/2026-10-29-vitest-at-alias.md)

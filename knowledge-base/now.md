@@ -9,8 +9,8 @@
 ## 승인 대기
 
 ## 다음 할 일
-1. plan 3단계: 한도 가드(`usage_events` 카운터로 Gemini·메일 감싸기, R-27·R-28·R-29) — [plan](../docs/plans/2026-10-29-survey-pilot.md). 2단계(스키마)까지 머지됨
-2. plan 4단계 전에 샘플 문제 정의 30개 준비(사용자 10 + Claude 초안 20, 사용자 검토), Gemini 키
+1. plan 4단계: 샘플 검증(ADR 0003) — 실제 Gemini 클라이언트 + 되묻기·설계·생성·점검·리포트 프롬프트를 샘플 30개로. 3단계(한도 가드)까지 머지됨. **막힘: Gemini 키, 사용자 샘플 문제 10개** — Claude 초안 20개는 먼저 만들 수 있음
+2. 4단계를 기다리는 동안 5단계(관리자 로그인·목록)를 먼저 할 수 있음 — `ADMIN_EMAIL` 필요
 
 ## 정해 둔 것
 - 결정 사항 1~26: [spec](../docs/specs/2026-10-29-survey-pilot.md) "결정 사항", [PRD](../docs/specs/2026-10-29-survey-pilot-prd.md), ADR 0017~0019
