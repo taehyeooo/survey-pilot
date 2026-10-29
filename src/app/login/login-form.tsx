@@ -29,7 +29,7 @@ export function LoginForm({ notice }: { notice?: string }) {
         defaultValue={state.email}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? "login-error" : undefined}
-        className="h-11 rounded-box border border-line bg-transparent px-3 outline-none focus:border-accent"
+        className="field"
       />
       {error && (
         <p id="login-error" role="alert" className="text-sm text-danger">
