@@ -9,14 +9,14 @@
 ## 승인 대기
 
 ## 다음 할 일
-1. 사용자: http://localhost:3000 에서 써 보고 디자인 4단계 의견. 8단계(게시)까지 머지됨
-2. plan 9단계: 응답 화면(Tally 스타일)·동의·honeypot·IP 제한·마감/404 안내(R-17, R-3, R-4, R-20) — `/s/[slug]`가 지금은 "준비 중"
+1. 사용자: 3000에서 게시한 설문 링크를 열어 본인 이메일로 인증번호가 Gmail로 오는지 확인. 9·10단계까지 머지됨
+2. plan 11단계: 제출(서버 검사·한 트랜잭션·목표 도달 마감·IP 제출 10회) — 지금 응답 화면의 제출 버튼은 꺼져 있음
 3. plan 4단계(샘플 검증): **막힘 — 사용자 샘플 문제 10개**
-4. 결정 필요: 공개 링크 HTTP 404(지금은 200+noindex+404 화면) — Proxy에서 DB 확인할지
+4. 결정 필요: `CONTACT_EMAIL`(응답자 삭제 요청 연락처, 공개됨) — 비우면 "설문을 보낸 사람에게 요청" 문구
 
 ## 정해 둔 것
 - 결정 사항 1~26: [spec](../docs/specs/2026-10-29-survey-pilot.md) "결정 사항", [PRD](../docs/specs/2026-10-29-survey-pilot-prd.md), ADR 0017~0019
 - Supabase 프로젝트 생성·키 3개를 레포 루트 `.env.local`에 넣음, 두 키 동작 확인(2026-10-29). 지역 서울(ap-northeast-2) 확인, 마이그레이션용 `SUPABASE_DB_URL`도 `.env.local`에
 
 ## 답이 필요한 것 (사람 손)
-- Gemini 키·AI Studio 실제 한도(4단계 전), 샘플 문제 10개(4단계 전), `CONTACT_EMAIL`(9단계 전), 배포 때 Supabase Auth Site URL·Redirect URL에 배포 주소 추가(16단계), , Vercel 연결(16단계 전)
+- Gemini 키·AI Studio 실제 한도(4단계 전), 샘플 문제 10개(4단계 전), `CONTACT_EMAIL`(9단계 전), 배포 때 Supabase Auth Site URL·Redirect URL에 배포 주소 추가(16단계), , Vercel 연결과 환경변수(16단계 전, `HASH_SECRET`은 로컬과 **같은 값**이어야 함 — 바꾸면 기존 해시와 안 맞음)
