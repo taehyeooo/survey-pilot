@@ -1,16 +1,20 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { isDemoAi } from "@/lib/ai-runtime";
 import { requireAdmin } from "@/lib/auth";
 import type { Clarification } from "@/lib/design";
+import { buildShareText, canEditQuestions, responseCount } from "@/lib/publish";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { DemoNotice } from "../../demo-notice";
 import { StageBar, stageOf } from "../../stage-bar";
 import { AI_STEPS } from "../../ai-steps";
 import { SubmitButton } from "../../submit-button";
-import { answerAndDesign, regenerateDesign, saveAndConfirm } from "../actions";
+import { answerAndDesign, publish, regenerateDesign, saveAndConfirm, saveSettings } from "../actions";
 import { OtherOption } from "./other-option";
 import { QuestionsSection, type Question } from "./questions";
+import { ShareBox } from "./share-box";
 
 // 조사 설계(디자인 결정 27 C 단계형): 위에 단계 진행, 설계 폼은 묶음별 카드.
 interface Survey {
@@ -25,6 +29,7 @@ interface Survey {
   closes_at: string | null;
   intro: string | null;
   share_message: string | null;
+  slug: string | null;
   hypotheses: { position: number; statement: string }[];
   questions: Question[];
 }
@@ -168,17 +173,89 @@ function ConfirmedSummary({ survey }: { survey: Survey }) {
   );
 }
 
-function Body({ survey }: { survey: Survey }) {
-  if (survey.status === "reviewing") {
+// 게시 뒤에도 고칠 수 있는 칸(R-14, R-15)
+function SettingsForm({ survey }: { survey: Survey }) {
+  return (
+    <details className="rounded-box border border-line p-4">
+      <summary className="flex min-h-11 cursor-pointer items-center font-medium">소개글·공유 메시지·마감·목표 바꾸기</summary>
+      <form action={saveSettings.bind(null, survey.id)} className="mt-3 flex flex-col gap-4">
+        <label className="flex flex-col gap-2">
+          <span className="font-medium">소개글</span>
+          <textarea name="intro" rows={3} required defaultValue={survey.intro ?? ""} className="field py-2" />
+        </label>
+        <label className="flex flex-col gap-2">
+          <span className="font-medium">공유 메시지</span>
+          <textarea name="share_message" rows={2} defaultValue={survey.share_message ?? ""} className="field py-2" />
+        </label>
+        <div className="grid grid-cols-2 gap-3">
+          <label className="flex flex-col gap-2">
+            <span className="font-medium">목표 응답 수</span>
+            <input name="target_responses" type="number" min={1} required defaultValue={survey.target_responses ?? ""} className="field" />
+          </label>
+          <label className="flex flex-col gap-2">
+            <span className="font-medium">마감 (한국 시간)</span>
+            <input
+              name="closes_at"
+              type="datetime-local"
+              required
+              min={toKstInput(new Date().toISOString())}
+              defaultValue={survey.closes_at ? toKstInput(survey.closes_at) : ""}
+              className="field"
+            />
+          </label>
+        </div>
+        <SubmitButton pendingSteps={AI_STEPS.save}>저장</SubmitButton>
+      </form>
+    </details>
+  );
+}
+
+function DesignDetails({ survey }: { survey: Survey }) {
+  return (
+    <details className="rounded-box border border-line p-4">
+      <summary className="flex min-h-11 cursor-pointer items-center font-medium">확인한 설계 보기</summary>
+      <div className="mt-3">
+        <ConfirmedSummary survey={survey} />
+      </div>
+    </details>
+  );
+}
+
+function Body({ survey, origin, canEdit, responses }: { survey: Survey; origin: string; canEdit: boolean; responses: number }) {
+  const minutes = survey.target_minutes ?? 3;
+  if (survey.status === "published" && survey.slug) {
+    const link = `${origin}/s/${survey.slug}`;
     return (
       <div className="flex flex-col gap-8">
-        <details className="rounded-box border border-line p-4">
-          <summary className="flex min-h-11 cursor-pointer items-center font-medium">확인한 설계 보기</summary>
-          <div className="mt-3">
-            <ConfirmedSummary survey={survey} />
-          </div>
-        </details>
-        <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={survey.target_minutes ?? 3} />
+        <ShareBox link={link} shareText={buildShareText(survey.share_message ?? "", link, minutes)} />
+        <p className="text-sm text-muted">
+          응답 {responses}
+          {survey.target_responses ? ` / ${survey.target_responses}` : ""}
+        </p>
+        <SettingsForm survey={survey} />
+        <DesignDetails survey={survey} />
+        <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={minutes} editable={canEdit} />
+      </div>
+    );
+  }
+  if (survey.status === "reviewing") {
+    const ready = survey.questions.length > 0;
+    return (
+      <div className="flex flex-col gap-8">
+        <DesignDetails survey={survey} />
+        <QuestionsSection
+          surveyId={survey.id}
+          questions={survey.questions}
+          targetMinutes={minutes}
+          footer={
+            ready && (
+              <form action={publish.bind(null, survey.id)} className="flex flex-col gap-2 border-t border-line pt-6">
+                <p className="text-sm text-muted">게시하면 공개 링크가 열리고 응답을 받기 시작해요. 응답이 들어오면 문항은 바꿀 수 없어요.</p>
+                <SubmitButton pendingSteps={["게시하는 중…"]}>게시하기</SubmitButton>
+              </form>
+            )
+          }
+        />
       </div>
     );
   }
@@ -206,6 +283,11 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
     .maybeSingle();
   if (!data) notFound();
   const survey = data as Survey;
+  const service = createAdminClient();
+  const canEdit = await canEditQuestions(service, survey);
+  const responses = survey.status === "published" ? await responseCount(service, survey.id) : 0;
+  const h = await headers();
+  const origin = `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;
 
   return (
     <>
@@ -217,7 +299,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
           {error}
         </p>
       )}
-      <Body survey={survey} />
+      <Body survey={survey} origin={origin} canEdit={canEdit} responses={responses} />
     </>
   );
 }
