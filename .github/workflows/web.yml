@@ -1,0 +1,40 @@
+# 앱 검사 — 린트·테스트·빌드·클라이언트 번들 비밀값(spec R-31, ADR 0019).
+# 앱 경로를 고친 PR에서만 돈다(무거운 잡은 고친 경로에서만 — ADR 0008).
+name: web
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "test/**"
+      - "public/**"
+      - "scripts/check_bundle_secrets.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - "next.config.ts"
+      - "tsconfig.json"
+      - "eslint.config.mjs"
+      - ".env.example"
+      - ".github/workflows/web.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - name: 클라이언트 번들 비밀값 검사 (CI에는 값이 없어 모양으로만)
+        run: npm run check:bundle
