@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { requireAdmin } from "@/lib/auth";
+import { closeOverdue } from "@/lib/submit";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { groupByTab, listSurveys, type SurveyListItem, type Tab } from "@/lib/surveys";
 import { archive, logout, restore } from "./actions";
 import { ProblemForm } from "./new/problem-form";
@@ -46,6 +48,7 @@ function CardGrid({ items }: { items: SurveyListItem[] }) {
 
 async function SurveyList() {
   const { db } = await requireAdmin();
+  await closeOverdue(createAdminClient()); // 마감일 지난 설문은 들어올 때 마감(R-16)
   const groups = groupByTab(await listSurveys(db));
   const empty = SECTIONS.every(({ key }) => groups[key].length === 0);
 

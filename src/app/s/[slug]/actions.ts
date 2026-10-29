@@ -4,13 +4,15 @@ import { headers } from "next/headers";
 import { findPublicSurvey } from "@/lib/publish";
 import { hashSecret, getMailer } from "@/lib/mailer-runtime";
 import { RespondError, requestCode, verifyCode } from "@/lib/respond";
+import { SubmitError, submitResponse } from "@/lib/submit";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export type CodeState = { step: "email" | "code"; email?: string; error?: string };
 export type VerifyState = { token?: string; error?: string };
+export type SubmitState = { done?: boolean; error?: string };
 
 function messageOf(error: unknown) {
-  if (error instanceof RespondError) return error.message;
+  if (error instanceof RespondError || error instanceof SubmitError) return error.message;
   if (error instanceof Error && error.name === "LimitExceededError") return "오늘은 응답을 더 받을 수 없어요. 내일 다시 시도해 주세요.";
   console.error(error);
   return "메일을 보내지 못했어요. 잠시 후 다시 시도해 주세요.";
@@ -48,6 +50,19 @@ export async function checkCode(slug: string, email: string, _prev: VerifyState,
     const token = await verifyCode(createAdminClient(), hashSecret(), { survey: await openSurvey(slug), email, code: String(formData.get("code") ?? "") });
     return { token };
   } catch (error) {
+    return { error: messageOf(error) };
+  }
+}
+
+// 제출(R-19) — 폼 값을 문항 id별로 모은다. 검사·저장·목표 도달 마감은 submitResponse가.
+export async function submitAnswers(slug: string, token: string, _prev: SubmitState, formData: FormData): Promise<SubmitState> {
+  const raw: Record<string, string[]> = {};
+  for (const [key, value] of formData.entries()) (raw[key] ??= []).push(String(value));
+  try {
+    await submitResponse(createAdminClient(), hashSecret(), { survey: await openSurvey(slug), token, raw, ip: await clientIp() });
+    return { done: true };
+  } catch (error) {
+    if (error instanceof SubmitError && error.code === "done") return { done: true, error: error.message };
     return { error: messageOf(error) };
   }
 }

@@ -27,6 +27,7 @@ import {
 } from "@/lib/questions";
 import { canEditQuestions, publishSurvey, updateSettings } from "@/lib/publish";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { closeSurvey } from "@/lib/submit";
 
 // 소유 확인은 관리자 세션(RLS)으로, 쓰기는 서버 클라이언트로(ADR 0019).
 async function loadOwned(id: string) {
@@ -217,4 +218,16 @@ export async function saveSettings(id: string, formData: FormData) {
   }
   if (error) redirect(`/admin/surveys/${id}?error=${encodeURIComponent(error)}`);
   revalidatePath(`/admin/surveys/${id}`);
+}
+
+// 수동 마감(R-16)
+export async function closeNow(id: string) {
+  const survey = await loadOwned(id);
+  let error: string | undefined;
+  try {
+    await closeSurvey(createAdminClient(), survey);
+  } catch (e) {
+    error = messageOf(e);
+  }
+  back(id, error);
 }
