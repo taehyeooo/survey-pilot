@@ -25,6 +25,7 @@ import {
   updateQuestion,
   type QuestionSurvey,
 } from "@/lib/questions";
+import { canEditQuestions, publishSurvey, updateSettings } from "@/lib/publish";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // 소유 확인은 관리자 세션(RLS)으로, 쓰기는 서버 클라이언트로(ADR 0019).
@@ -41,6 +42,8 @@ async function loadOwned(id: string) {
 
 function messageOf(error: unknown) {
   if (error instanceof RangeError || error instanceof ConflictError) return error.message;
+  // DB 트리거(R-14)가 막은 경우 — 화면 확인과 쓰기 사이에 응답이 들어왔을 때
+  if (error instanceof Error && /응답이 있는 설문/.test(error.message)) return "응답이 들어온 설문은 문항을 바꿀 수 없어요.";
   console.error(error);
   return aiErrorMessage(error);
 }
@@ -132,17 +135,19 @@ export async function saveAndConfirm(id: string, formData: FormData) {
   back(id, error);
 }
 
-// ── 문항(R-10~R-13) — 설계를 확인한(reviewing) 설문에서만 ─────────────────
-async function loadReviewing(id: string) {
+// ── 문항(R-10~R-13) — 게시 전, 또는 게시 후 응답 0건일 때만(R-14) ─────────────
+async function loadEditable(id: string) {
   const survey = await loadOwned(id);
-  if (survey.status !== "reviewing") throw new ConflictError("설계를 확인한 설문에서만 문항을 바꿀 수 있어요.");
+  if (!(await canEditQuestions(createAdminClient(), survey))) {
+    throw new ConflictError(survey.status === "published" ? "응답이 들어온 설문은 문항을 바꿀 수 없어요." : "설계를 확인한 설문에서만 문항을 바꿀 수 있어요.");
+  }
   return survey;
 }
 
 async function questionStep(id: string, step: (survey: QuestionSurvey) => Promise<void>) {
   let error: string | undefined;
   try {
-    await step(await loadReviewing(id));
+    await step(await loadEditable(id));
   } catch (e) {
     error = messageOf(e);
   }
@@ -183,4 +188,33 @@ export async function removeQuestion(id: string, questionId: string) {
 
 export async function remakeQuestion(id: string, questionId: string) {
   await questionStep(id, (s) => regenerateQuestion(createAdminClient(), getAi("question"), s, questionId));
+}
+
+// ── 게시(R-13)·설정(R-14, R-15) ─────────────────────────────────────────
+export async function publish(id: string) {
+  const survey = await loadOwned(id);
+  let error: string | undefined;
+  try {
+    await publishSurvey(createAdminClient(), survey);
+  } catch (e) {
+    error = messageOf(e);
+  }
+  back(id, error);
+}
+
+export async function saveSettings(id: string, formData: FormData) {
+  const text = (name: string) => String(formData.get(name) ?? "").trim();
+  let error: string | undefined;
+  try {
+    await updateSettings(createAdminClient(), await loadOwned(id), {
+      intro: text("intro"),
+      share_message: text("share_message"),
+      closesAt: new Date(`${text("closes_at")}:00+09:00`), // 입력은 KST
+      targetResponses: Number(text("target_responses")),
+    });
+  } catch (e) {
+    error = messageOf(e);
+  }
+  if (error) redirect(`/admin/surveys/${id}?error=${encodeURIComponent(error)}`);
+  revalidatePath(`/admin/surveys/${id}`);
 }
