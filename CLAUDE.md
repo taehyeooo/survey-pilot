@@ -43,6 +43,11 @@
 - 이유는 사용자의 말이나 실측 근거로 적는다. 확인하지 않은 것은 확인하지 않았다고 적는다.
 - 작업이 끝나면 `log.md`에 한 항목, `now.md`를 고쳐 쓴다. 칸마다 짧게, 긴 확인은 PR 본문에(ADR 0010).
 
+## 앱 명령
+
+Next.js 16 — 코드를 쓰기 전에 [AGENTS.md](AGENTS.md)대로 `node_modules/next/dist/docs/`의 해당 문서를 본다.
+`npm run lint` · `npm test`(Vitest, `test/`) · `npm run build` · `npm run check:bundle`(빌드 뒤 클라이언트 번들 비밀값 검사). 비밀값은 레포 루트 `.env.local`(양식 `.env.example`), 워크트리에는 복사해 쓴다. Gemini·메일은 테스트에서 `test/fakes.ts`의 가짜를 쓴다.
+
 ## 워크트리 흐름
 
 작업 하나 = 이슈 하나 = 브랜치 하나 = 워크트리 하나.
