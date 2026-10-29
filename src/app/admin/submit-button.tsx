@@ -17,15 +17,15 @@ export function SubmitButton({
   const { pending } = useFormStatus();
   const style =
     variant === "primary"
-      ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-      : "border border-zinc-300 dark:border-zinc-700";
+      ? "bg-accent text-on-accent"
+      : "border border-line";
   return (
     <button
       type="submit"
       formAction={formAction}
       disabled={pending}
       aria-busy={pending}
-      className={`h-11 rounded-lg px-4 font-medium disabled:opacity-50 ${style}`}
+      className={`h-11 rounded-box px-4 font-medium disabled:opacity-50 ${style}`}
     >
       {pending ? pendingText : children}
     </button>

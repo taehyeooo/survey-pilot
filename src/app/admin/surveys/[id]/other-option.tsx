@@ -9,7 +9,7 @@ export function OtherOption({ index, question }: { index: number; question: stri
     if (radio.current) radio.current.checked = true;
   };
   return (
-    <label className="flex min-h-11 items-center gap-3 rounded-lg border border-zinc-200 px-3 dark:border-zinc-800">
+    <label className="flex min-h-11 items-center gap-3 rounded-box border border-line px-3">
       <input ref={radio} type="radio" name={`answer-${index}`} value="__other" required />
       <span className="shrink-0">직접 입력</span>
       <input

@@ -16,7 +16,7 @@ async function NewSurvey({ searchParams }: PageProps<"/admin/new">) {
   await requireAdmin();
   const ux = uxOf((await searchParams).ux);
   const back = (
-    <Link href={withUx("/admin", ux)} className="text-sm text-zinc-500 hover:underline">
+    <Link href={withUx("/admin", ux)} className="text-sm text-muted hover:underline">
       ← 내 설문
     </Link>
   );
@@ -30,13 +30,13 @@ async function NewSurvey({ searchParams }: PageProps<"/admin/new">) {
         {isDemoAi() && <DemoNotice />}
         <div className="grid gap-8 md:grid-cols-[1fr_260px]">
           <ProblemForm ux={ux} />
-          <aside aria-label="좋은 문제 정의" className="rounded-xl bg-zinc-50 p-4 text-sm dark:bg-zinc-900">
+          <aside aria-label="좋은 문제 정의" className="rounded-box bg-surface p-4 text-sm">
             <h2 className="mb-3 font-medium">이 세 가지가 있으면 바로 설계해요</h2>
             <dl className="flex flex-col gap-3">
               {TIPS.map((tip) => (
                 <div key={tip.title}>
                   <dt className="font-medium">{tip.title}</dt>
-                  <dd className="text-zinc-600 break-keep dark:text-zinc-400">{tip.text}</dd>
+                  <dd className="text-muted break-keep">{tip.text}</dd>
                 </div>
               ))}
             </dl>
@@ -51,7 +51,7 @@ async function NewSurvey({ searchParams }: PageProps<"/admin/new">) {
     return (
       <div className="mx-auto flex min-h-[70vh] max-w-2xl flex-col justify-center gap-6">
         {back}
-        <p className="text-sm text-zinc-500">1 / 5 · 문제</p>
+        <p className="text-sm text-muted">1 / 5 · 문제</p>
         {isDemoAi() && <DemoNotice />}
         <ProblemForm ux={ux} hero />
       </div>
@@ -72,7 +72,7 @@ async function NewSurvey({ searchParams }: PageProps<"/admin/new">) {
 export default function NewSurveyPage(props: PageProps<"/admin/new">) {
   return (
     <main className="w-full px-4 py-8">
-      <Suspense fallback={<p className="text-zinc-500">불러오는 중…</p>}>
+      <Suspense fallback={<p className="text-muted">불러오는 중…</p>}>
         <NewSurvey {...props} />
       </Suspense>
     </main>

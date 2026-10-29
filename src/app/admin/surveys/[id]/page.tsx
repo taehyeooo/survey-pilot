@@ -25,7 +25,7 @@ interface Survey {
   hypotheses: { position: number; statement: string }[];
 }
 
-const field = "rounded-lg border border-zinc-300 bg-transparent px-3 py-2 outline-none focus:border-zinc-900 dark:border-zinc-700 dark:focus:border-zinc-100";
+const field = "rounded-box border border-line bg-transparent px-3 py-2 outline-none focus:border-accent";
 const KST_MS = 9 * 60 * 60 * 1000;
 const toKstInput = (iso: string) => new Date(new Date(iso).getTime() + KST_MS).toISOString().slice(0, 16);
 const kstFormat = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", dateStyle: "medium", timeStyle: "short" });
@@ -36,12 +36,12 @@ function ClarifyForm({ survey, ux }: { survey: Survey; ux: Ux }) {
   return (
     <form action={answerAndDesign.bind(null, survey.id)} className="flex flex-col gap-6">
       <UxField ux={ux} />
-      <p className="text-zinc-600 dark:text-zinc-400">설계 전에 몇 가지만 알려 주세요.</p>
+      <p className="text-muted">설계 전에 몇 가지만 알려 주세요.</p>
       {survey.clarifications.map((c, i) => (
         <fieldset key={i} className="flex flex-col gap-2">
           <legend className="mb-2 font-medium break-keep">{c.question}</legend>
           {c.options.map((option) => (
-            <label key={option} className="flex min-h-11 items-center gap-3 rounded-lg border border-zinc-200 px-3 dark:border-zinc-800">
+            <label key={option} className="flex min-h-11 items-center gap-3 rounded-box border border-line px-3">
               <input type="radio" name={`answer-${i}`} value={option} required />
               {option}
             </label>
@@ -137,8 +137,8 @@ function DesignForm({ survey, ux, cards = false }: { survey: Survey; ux: Ux; car
       <UxField ux={ux} />
       {cards
         ? groups.map((g, i) => (
-            <section key={g.title} aria-labelledby={`group-${i}`} className="flex flex-col gap-4 rounded-2xl border border-zinc-200 p-5 dark:border-zinc-800">
-              <h2 id={`group-${i}`} className="text-sm font-medium text-zinc-500">
+            <section key={g.title} aria-labelledby={`group-${i}`} className="flex flex-col gap-4 rounded-box border border-line p-5">
+              <h2 id={`group-${i}`} className="text-sm font-medium text-muted">
                 {i + 1}. {g.title}
               </h2>
               {g.body}
@@ -158,16 +158,16 @@ function DesignForm({ survey, ux, cards = false }: { survey: Survey; ux: Ux; car
 function ConfirmedSummary({ survey }: { survey: Survey }) {
   return (
     <section className="flex flex-col gap-4">
-      <p role="status" className="rounded-lg bg-zinc-100 p-4 dark:bg-zinc-900">
+      <p role="status" className="rounded-box bg-surface p-4">
         설계를 확인했어요. 다음 단계에서 이 가설로 문항을 만들어요.
       </p>
       <dl className="grid gap-3 text-sm">
         <div>
-          <dt className="text-zinc-500">조사 목적</dt>
+          <dt className="text-muted">조사 목적</dt>
           <dd className="break-keep">{survey.purpose}</dd>
         </div>
         <div>
-          <dt className="text-zinc-500">가설</dt>
+          <dt className="text-muted">가설</dt>
           <dd>
             <ol className="list-decimal pl-5">
               {survey.hypotheses.map((h) => (
@@ -179,7 +179,7 @@ function ConfirmedSummary({ survey }: { survey: Survey }) {
           </dd>
         </div>
         <div>
-          <dt className="text-zinc-500">대상 · 목표 · 시간 · 마감</dt>
+          <dt className="text-muted">대상 · 목표 · 시간 · 마감</dt>
           <dd>
             {survey.audience} · {survey.target_responses}명 · {survey.target_minutes}분 · {survey.closes_at && kstFormat.format(new Date(survey.closes_at))}
           </dd>
@@ -196,7 +196,7 @@ function Body({ survey, ux, cards }: { survey: Survey; ux: Ux; cards?: boolean }
   return (
     <form action={regenerateDesign.bind(null, survey.id)} className="flex flex-col gap-3">
       <UxField ux={ux} />
-      <p className="text-zinc-600 dark:text-zinc-400">아직 설계가 없어요.</p>
+      <p className="text-muted">아직 설계가 없어요.</p>
       <SubmitButton pendingText="AI가 설계하는 중…">설계 만들기</SubmitButton>
     </form>
   );
@@ -225,17 +225,17 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
   const survey = data as Survey;
 
   const back = (
-    <Link href={withUx("/admin", ux)} className="text-sm text-zinc-500 hover:underline">
+    <Link href={withUx("/admin", ux)} className="text-sm text-muted hover:underline">
       ← 내 설문
     </Link>
   );
   const alert =
     typeof error === "string" ? (
-      <p role="alert" className="mb-6 rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+      <p role="alert" className="mb-6 rounded-box bg-danger-bg p-3 text-sm text-danger">
         {error}
       </p>
     ) : null;
-  const problem = <p className="rounded-lg border border-zinc-200 p-4 leading-7 break-keep dark:border-zinc-800">{survey.problem}</p>;
+  const problem = <p className="rounded-box border border-line p-4 leading-7 break-keep">{survey.problem}</p>;
 
   // B 작업대형: 왼쪽에 문제·되묻기 답(맥락), 오른쪽에 폼
   if (process.env.NODE_ENV !== "production" && ux === "b") {
@@ -247,13 +247,13 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
         {isDemoAi() && <DemoNotice />}
         <div className="grid gap-8 md:grid-cols-[260px_1fr]">
           <aside className="flex flex-col gap-4 md:sticky md:top-8 md:self-start">
-            <h2 className="text-sm font-medium text-zinc-500">문제</h2>
+            <h2 className="text-sm font-medium text-muted">문제</h2>
             {problem}
             {answered.length > 0 && (
               <dl className="flex flex-col gap-2 text-sm">
                 {answered.map((c) => (
                   <div key={c.question}>
-                    <dt className="text-zinc-500 break-keep">{c.question}</dt>
+                    <dt className="text-muted break-keep">{c.question}</dt>
                     <dd className="break-keep">{c.answer}</dd>
                   </div>
                 ))}
@@ -278,8 +278,8 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
         <ol aria-label={`지금 단계: ${STAGES[current]}`} className="mt-4 mb-8 grid grid-cols-5 gap-1">
           {STAGES.map((label, i) => (
             <li key={label} className="flex flex-col gap-1">
-              <span aria-hidden className={`h-1 rounded-full ${i <= current ? "bg-zinc-900 dark:bg-zinc-100" : "bg-zinc-200 dark:bg-zinc-800"}`} />
-              <span className={`text-xs ${i === current ? "font-medium" : "text-zinc-500"}`}>{label}</span>
+              <span aria-hidden className={`h-1 rounded-full ${i <= current ? "bg-accent" : "bg-line"}`} />
+              <span className={`text-xs ${i === current ? "font-medium" : "text-muted"}`}>{label}</span>
             </li>
           ))}
         </ol>
@@ -307,7 +307,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
 export default function SurveyPage(props: PageProps<"/admin/surveys/[id]">) {
   return (
     <main className="w-full px-4 py-8">
-      <Suspense fallback={<p className="text-zinc-500">불러오는 중…</p>}>
+      <Suspense fallback={<p className="text-muted">불러오는 중…</p>}>
         <SurveyDesign {...props} />
       </Suspense>
     </main>
