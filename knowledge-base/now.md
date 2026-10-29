@@ -9,12 +9,12 @@
 ## 승인 대기
 
 ## 다음 할 일
-1. plan 2단계: 스키마·RLS 마이그레이션(R-31, R-14) — [plan](../docs/plans/2026-10-29-survey-pilot.md). 1단계(뼈대)까지 머지됨. Supabase CLI 연결에 DB 비밀번호가 필요할 수 있음(사용자가 직접 입력)
-2. plan 4단계 전에 샘플 문제 정의 30개 준비(사용자 10 + Claude 초안 20, 사용자 검토)
+1. plan 3단계: 한도 가드(`usage_events` 카운터로 Gemini·메일 감싸기, R-27·R-28·R-29) — [plan](../docs/plans/2026-10-29-survey-pilot.md). 2단계(스키마)까지 머지됨
+2. plan 4단계 전에 샘플 문제 정의 30개 준비(사용자 10 + Claude 초안 20, 사용자 검토), Gemini 키
 
 ## 정해 둔 것
 - 결정 사항 1~26: [spec](../docs/specs/2026-10-29-survey-pilot.md) "결정 사항", [PRD](../docs/specs/2026-10-29-survey-pilot-prd.md), ADR 0017~0019
-- Supabase 프로젝트 생성·키 3개를 레포 루트 `.env.local`에 넣음, 두 키 동작 확인(2026-10-29). 지역은 서울로 안내했으나 실제 선택 지역은 확인하지 않음
+- Supabase 프로젝트 생성·키 3개를 레포 루트 `.env.local`에 넣음, 두 키 동작 확인(2026-10-29). 지역 서울(ap-northeast-2) 확인, 마이그레이션용 `SUPABASE_DB_URL`도 `.env.local`에
 
 ## 답이 필요한 것 (사람 손)
 - Gemini 키·AI Studio 실제 한도(4단계 전), 샘플 문제 10개(4단계 전), `ADMIN_EMAIL`·`CONTACT_EMAIL`(5단계 전), Gmail 앱 비밀번호(10단계 전), Vercel 연결(16단계 전)

@@ -22,6 +22,6 @@ AI와 새로 온 사람이 **묻지 않고 일할 수 있게** 하는 것이 목
 
 ## 개념
 
-- [Supabase API 키](concepts/supabase-api-keys.md) — 공개 키(anon/publishable)와 비밀 키(service_role/secret), 이 레포 변수와 쓰는 곳
+- [Supabase API 키](concepts/supabase-api-keys.md) — 공개 키·비밀 키, 이 레포 변수, 마이그레이션용 DB 접속(Session pooler)
 
 ## 외부 자료

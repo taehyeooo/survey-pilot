@@ -46,7 +46,7 @@
 ## 앱 명령
 
 Next.js 16 — 코드를 쓰기 전에 [AGENTS.md](AGENTS.md)대로 `node_modules/next/dist/docs/`의 해당 문서를 본다.
-`npm run lint` · `npm test`(Vitest, `test/`) · `npm run build` · `npm run check:bundle`(빌드 뒤 클라이언트 번들 비밀값 검사). 비밀값은 레포 루트 `.env.local`(양식 `.env.example`), 워크트리에는 복사해 쓴다. Gemini·메일은 테스트에서 `test/fakes.ts`의 가짜를 쓴다.
+`npm run lint` · `npm test`(Vitest, `test/`) · `npm run build` · `npm run check:bundle`(빌드 뒤 클라이언트 번들 비밀값 검사). DB 변경은 `supabase/migrations/`에 새 파일 → `npx supabase db push --db-url "$SUPABASE_DB_URL" --dry-run` 뒤 적용([개념](knowledge-base/concepts/supabase-api-keys.md)). 비밀값은 레포 루트 `.env.local`(양식 `.env.example`), 워크트리에는 복사해 쓴다. Gemini·메일은 테스트에서 `test/fakes.ts`의 가짜를 쓴다.
 
 ## 워크트리 흐름
 
