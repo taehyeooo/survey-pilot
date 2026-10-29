@@ -39,7 +39,8 @@ export async function findPublicSurvey(db: SupabaseClient, slug: string) {
   if (!/^[A-Za-z0-9]{12}$/.test(slug)) return null;
   const { data } = await db
     .from("surveys")
-    .select("id, status, intro, target_minutes, closes_at, archived_at")
+    .select("id, status, intro, target_minutes, closes_at, archived_at, questions(id, position, type, prompt, options, required)")
+    .order("position", { referencedTable: "questions" })
     .eq("slug", slug)
     .in("status", ["published", "closed"])
     .maybeSingle()

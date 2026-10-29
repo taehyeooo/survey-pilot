@@ -2,9 +2,11 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { findPublicSurvey } from "@/lib/publish";
+import { isClosed } from "@/lib/respond";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { RespondFlow, type PublicQuestion } from "./respond-flow";
 
-// 공개 응답 링크. 게시 전이면 404(R-13). 응답 화면(동의·인증번호·문항)은 plan 9단계.
+// 공개 응답 화면(R-17). 게시 전이면 404 화면(R-13), 마감·보관이면 안내(R-20).
 async function PublicSurvey({ params }: PageProps<"/s/[slug]">) {
   await connection();
   const { slug } = await params;
@@ -12,10 +14,15 @@ async function PublicSurvey({ params }: PageProps<"/s/[slug]">) {
   if (!survey) notFound();
   return (
     <>
-      <p className="leading-7">{survey.intro}</p>
-      <p className="mt-6 rounded-box bg-surface p-4 text-sm text-muted">
-        {survey.status === "closed" ? "마감된 설문이에요." : "응답 화면을 준비하고 있어요. 곧 열려요."}
-      </p>
+      <h1 className="text-xl font-semibold">설문에 참여해 주세요</h1>
+      <p className="mt-3 mb-8 leading-7">{survey.intro}</p>
+      {isClosed(survey) ? (
+        <p role="status" className="rounded-box bg-surface p-4">
+          마감된 설문이에요. 참여해 주셔서 고마워요.
+        </p>
+      ) : (
+        <RespondFlow slug={slug} questions={(survey.questions ?? []) as PublicQuestion[]} contact={process.env.CONTACT_EMAIL || null} />
+      )}
     </>
   );
 }
