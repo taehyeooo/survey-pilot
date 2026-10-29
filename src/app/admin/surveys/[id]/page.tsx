@@ -7,11 +7,12 @@ import { requireAdmin } from "@/lib/auth";
 import type { Clarification } from "@/lib/design";
 import { buildShareText, canEditQuestions, responseCount } from "@/lib/publish";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { closeOverdue } from "@/lib/submit";
 import { DemoNotice } from "../../demo-notice";
 import { StageBar, stageOf } from "../../stage-bar";
 import { AI_STEPS } from "../../ai-steps";
 import { SubmitButton } from "../../submit-button";
-import { answerAndDesign, publish, regenerateDesign, saveAndConfirm, saveSettings } from "../actions";
+import { answerAndDesign, closeNow, publish, regenerateDesign, saveAndConfirm, saveSettings } from "../actions";
 import { OtherOption } from "./other-option";
 import { QuestionsSection, type Question } from "./questions";
 import { ShareBox } from "./share-box";
@@ -30,6 +31,7 @@ interface Survey {
   intro: string | null;
   share_message: string | null;
   slug: string | null;
+  close_reason: string | null;
   hypotheses: { position: number; statement: string }[];
   questions: Question[];
 }
@@ -233,6 +235,12 @@ function Body({ survey, origin, canEdit, responses }: { survey: Survey; origin: 
           {survey.target_responses ? ` / ${survey.target_responses}` : ""}
         </p>
         <SettingsForm survey={survey} />
+        <form action={closeNow.bind(null, survey.id)} className="flex flex-col gap-2">
+          <p className="text-sm text-muted">목표 응답 수나 마감일에 닿으면 자동으로 마감돼요. 지금 끝내려면:</p>
+          <SubmitButton variant="secondary" pendingSteps={["마감하는 중…"]}>
+            지금 마감하기
+          </SubmitButton>
+        </form>
         <DesignDetails survey={survey} />
         <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={minutes} editable={canEdit} />
       </div>
@@ -259,6 +267,18 @@ function Body({ survey, origin, canEdit, responses }: { survey: Survey; origin: 
       </div>
     );
   }
+  if (survey.status === "closed") {
+    const reason = { target: "목표 응답 수에 닿아", deadline: "마감일이 지나", manual: "직접", archive: "보관하면서" }[survey.close_reason ?? ""] ?? "";
+    return (
+      <div className="flex flex-col gap-8">
+        <p role="status" className="rounded-box bg-surface p-4">
+          {reason} 마감했어요. 응답 {responses}개. 리포트는 다음 업데이트에서 볼 수 있어요.
+        </p>
+        <DesignDetails survey={survey} />
+        <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={minutes} editable={false} />
+      </div>
+    );
+  }
   if (survey.status !== "designing") return <ConfirmedSummary survey={survey} />;
   if (survey.purpose) return <DesignForm survey={survey} />;
   if (survey.clarifications.some((c) => !c.answer)) return <ClarifyForm survey={survey} />;
@@ -272,6 +292,7 @@ function Body({ survey, origin, canEdit, responses }: { survey: Survey; origin: 
 
 async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/[id]">) {
   const { db } = await requireAdmin();
+  await closeOverdue(createAdminClient()); // 마감일 지난 설문은 들어올 때 마감(R-16)
   const { id } = await params;
   const { error, moved } = await searchParams;
   const { data } = await db
@@ -285,7 +306,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
   const survey = data as Survey;
   const service = createAdminClient();
   const canEdit = await canEditQuestions(service, survey);
-  const responses = survey.status === "published" ? await responseCount(service, survey.id) : 0;
+  const responses = survey.status === "published" || survey.status === "closed" ? await responseCount(service, survey.id) : 0;
   const h = await headers();
   const origin = `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;
 

@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { findPublicSurvey } from "@/lib/publish";
 import { isClosed } from "@/lib/respond";
+import { closeOverdue } from "@/lib/submit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { RespondFlow, type PublicQuestion } from "./respond-flow";
 
@@ -10,7 +11,9 @@ import { RespondFlow, type PublicQuestion } from "./respond-flow";
 async function PublicSurvey({ params }: PageProps<"/s/[slug]">) {
   await connection();
   const { slug } = await params;
-  const survey = await findPublicSurvey(createAdminClient(), slug);
+  const db = createAdminClient();
+  await closeOverdue(db); // 마감일 지난 설문은 들어올 때 마감(R-16)
+  const survey = await findPublicSurvey(db, slug);
   if (!survey) notFound();
   return (
     <>

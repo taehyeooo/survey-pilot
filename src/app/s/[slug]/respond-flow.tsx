@@ -1,9 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
-import { checkCode, sendCode, type CodeState, type VerifyState } from "./actions";
+import { startTransition, useActionState, useState } from "react";
+import { checkCode, sendCode, submitAnswers, type CodeState, type SubmitState, type VerifyState } from "./actions";
 
-// 응답 흐름(R-17): 동의·이메일(R-3) → 인증번호(R-18) → 문항. 응답 저장은 plan 11단계.
+// 응답 흐름(R-17): 동의·이메일(R-3) → 인증번호(R-18) → 문항 → 제출(R-19).
 export interface PublicQuestion {
   id: string;
   position: number;
@@ -133,17 +133,44 @@ function QuestionField({ q, index }: { q: PublicQuestion; index: number }) {
   );
 }
 
-function QuestionsStep({ questions }: { questions: PublicQuestion[] }) {
+function QuestionsStep({ slug, token, questions }: { slug: string; token: string; questions: PublicQuestion[] }) {
+  const [state, action, pending] = useActionState<SubmitState, FormData>(submitAnswers.bind(null, slug, token), {});
+  const [localError, setLocalError] = useState<string | null>(null);
+
+  if (state.done) {
+    return (
+      <p role="status" className="rounded-box bg-surface p-6 text-center leading-7">
+        {state.error ?? "응답을 보냈어요. 참여해 주셔서 고마워요."}
+      </p>
+    );
+  }
+
+  // 폼 action으로 보내면 오류 뒤 폼이 비워진다 — 직접 보내서 입력한 답을 지킨다.
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const missing = questions.findIndex((q) => q.type === "multi" && q.required && data.getAll(q.id).length === 0);
+    if (missing >= 0) return setLocalError(`${missing + 1}번 문항에서 하나 이상 골라 주세요.`);
+    setLocalError(null);
+    startTransition(() => action(data));
+  }
+
+  const error = localError ?? state.error;
   return (
-    <form className="flex flex-col gap-8" onSubmit={(e) => e.preventDefault()}>
+    <form className="flex flex-col gap-8" onSubmit={onSubmit}>
       <p role="status" className="rounded-box bg-surface p-3 text-sm">
         이메일을 확인했어요. 이제 답해 주세요.
       </p>
       {questions.map((q, i) => (
         <QuestionField key={q.id} q={q} index={i} />
       ))}
-      <button type="submit" disabled className={button}>
-        제출은 곧 열려요
+      {error && (
+        <p role="alert" className="text-sm text-danger">
+          {error}
+        </p>
+      )}
+      <button type="submit" disabled={pending} aria-busy={pending} className={button}>
+        {pending ? "보내는 중…" : "응답 보내기"}
       </button>
     </form>
   );
@@ -154,7 +181,7 @@ export function RespondFlow({ slug, questions, contact }: { slug: string; questi
   const email = codeState.email ?? "";
   const [verifyState, verifyAction, verifyPending] = useActionState<VerifyState, FormData>(checkCode.bind(null, slug, email), {});
 
-  if (verifyState.token) return <QuestionsStep questions={questions} />;
+  if (verifyState.token) return <QuestionsStep slug={slug} token={verifyState.token} questions={questions} />;
   if (codeState.step === "code") {
     return <CodeStep email={email} state={verifyState} action={verifyAction} pending={verifyPending} resend={() => location.reload()} />;
   }
