@@ -120,7 +120,7 @@ describe.skipIf(!hasDb)("응답 제출·마감 (실제 DB)", () => {
 
     const other = await liveSurvey();
     await service.from("surveys").update({ closes_at: new Date(Date.now() - 1000).toISOString() }).eq("id", other.survey.id);
-    await closeOverdue(service);
+    await closeOverdue(service, new Date(), adminId);
     expect(await status(other.survey.id)).toEqual({ status: "closed", close_reason: "deadline" });
   });
 
