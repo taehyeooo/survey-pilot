@@ -17,6 +17,7 @@ import { SubmitButton } from "../../submit-button";
 import { answerAndDesign, closeNow, publish, regenerateDesign, saveAndConfirm, saveSettings } from "../actions";
 import { OtherOption } from "./other-option";
 import { QuestionsSection, type Question } from "./questions";
+import { DeleteRequest } from "./delete-request";
 import { ReportSection } from "./report";
 import { ResultsSection } from "./results";
 import { ShareBox } from "./share-box";
@@ -261,6 +262,7 @@ function Body({
         {reportSection}
         <ResultsSection surveyId={survey.id} stats={stats} responseCount={responses} target={survey.target_responses} closesAt={survey.closes_at} live />
         <SettingsForm survey={survey} />
+        {responses > 0 && <DeleteRequest surveyId={survey.id} />}
         <form action={closeNow.bind(null, survey.id)} className="flex flex-col gap-2">
           <p className="text-sm text-muted">목표 응답 수나 마감일에 닿으면 자동으로 마감돼요. 지금 끝내려면:</p>
           <SubmitButton variant="secondary" pendingSteps={["마감하는 중…"]}>
@@ -302,6 +304,7 @@ function Body({
         </p>
         {reportSection}
         <ResultsSection surveyId={survey.id} stats={stats} responseCount={responses} target={survey.target_responses} closesAt={survey.closes_at} live={false} />
+        {responses > 0 && <DeleteRequest surveyId={survey.id} />}
         <DesignDetails survey={survey} />
         <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={minutes} editable={false} />
       </div>

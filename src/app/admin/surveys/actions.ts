@@ -29,6 +29,8 @@ import {
 } from "@/lib/questions";
 import { canEditQuestions, publishSurvey, updateSettings } from "@/lib/publish";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { deleteRespondent, findRespondent } from "@/lib/deletion";
+import { hashSecret } from "@/lib/mailer-runtime";
 import { generateReport } from "@/lib/report";
 import { closeSurvey } from "@/lib/submit";
 
@@ -248,4 +250,34 @@ export async function makeReport(id: string) {
   }
   if (error) redirect(`/admin/surveys/${id}?error=${encodeURIComponent(error)}`);
   revalidatePath(`/admin/surveys/${id}`);
+}
+
+// ── 응답 삭제 요청(R-26, ADR 0012): 미리보기 → 사유 → 재확인 → 삭제 + 감사 기록 ──────────────
+export type DeletionState = {
+  step: "search" | "confirm" | "done";
+  email?: string;
+  preview?: { respondentId: string; submittedAt: string; answers: number };
+  error?: string;
+};
+
+export async function findForDeletion(id: string, _prev: DeletionState, formData: FormData): Promise<DeletionState> {
+  await loadOwned(id);
+  const email = String(formData.get("email") ?? "").trim();
+  if (!email) return { step: "search", error: "응답자 이메일을 적어 주세요." };
+  const found = await findRespondent(createAdminClient(), hashSecret(), id, email);
+  if (!found) return { step: "search", email, error: "이 이메일로 낸 응답이 없어요." };
+  return { step: "confirm", email, preview: { respondentId: found.id, submittedAt: found.submittedAt, answers: found.answers } };
+}
+
+export async function deleteForRequest(id: string, respondentId: string, _prev: DeletionState, formData: FormData): Promise<DeletionState> {
+  const { user } = await requireAdmin();
+  await loadOwned(id);
+  if (formData.get("confirm") !== "on") return { step: "confirm", error: "되돌릴 수 없다는 것을 확인해 주세요." };
+  try {
+    await deleteRespondent(createAdminClient(), { surveyId: id, respondentId, reason: String(formData.get("reason") ?? ""), actorEmail: user.email ?? "" });
+  } catch (e) {
+    return { step: "confirm", error: messageOf(e) };
+  }
+  revalidatePath(`/admin/surveys/${id}`);
+  return { step: "done" };
 }
