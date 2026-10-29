@@ -1,104 +1,95 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { requireAdmin } from "@/lib/auth";
-import { groupByTab, listSurveys, TABS, type SurveyListItem, type Tab } from "@/lib/surveys";
+import { groupByTab, listSurveys, type SurveyListItem, type Tab } from "@/lib/surveys";
 import { archive, logout, restore } from "./actions";
+import { ProblemForm } from "./new/problem-form";
+import { StageBar, stageOf } from "./stage-bar";
 
-const STATUS: Record<string, string> = { designing: "설계 중", reviewing: "검토 중", published: "진행 중", closed: "마감" };
-const EMPTY: Record<Tab, string> = {
-  designing: "첫 문제를 입력해 보세요.",
-  active: "진행 중인 설문이 없어요.",
-  closed: "마감된 설문이 없어요.",
-  archived: "보관한 설문이 없어요.",
-};
-const dateFormat = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", dateStyle: "medium" });
+// 관리자 목록(디자인 결정 27 C 단계형): 맨 위에서 바로 문제 입력, 설문마다 단계 진행.
+const SECTIONS: { key: Tab; label: string }[] = [
+  { key: "active", label: "진행 중" },
+  { key: "designing", label: "만드는 중" },
+  { key: "closed", label: "마감" },
+];
+const responses = (s: SurveyListItem) => `응답 ${s.responseCount}${s.target_responses ? ` / ${s.target_responses}` : ""}`;
 
-function SurveyCard({ survey, tab }: { survey: SurveyListItem; tab: Tab }) {
-  const toggle = tab === "archived" ? restore.bind(null, survey.id) : archive.bind(null, survey.id);
+function ToggleArchive({ survey }: { survey: SurveyListItem }) {
+  const archived = Boolean(survey.archived_at);
   return (
-    <li className="flex items-start justify-between gap-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
-      <div className="min-w-0">
-        <Link href={`/admin/surveys/${survey.id}`} className="line-clamp-2 font-medium break-keep hover:underline">
-          {survey.problem}
-        </Link>
-        <p className="mt-1 text-sm text-zinc-500">
-          {STATUS[survey.status]} · 응답 {survey.responseCount}
-          {survey.target_responses ? ` / ${survey.target_responses}` : ""} · {dateFormat.format(new Date(survey.created_at))}
-        </p>
-      </div>
-      <form action={toggle}>
-        <button
-          type="submit"
-          className="shrink-0 rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
-        >
-          {tab === "archived" ? "복원" : "보관"}
-        </button>
-      </form>
-    </li>
+    <form action={archived ? restore.bind(null, survey.id) : archive.bind(null, survey.id)}>
+      <button type="submit" className="min-h-11 shrink-0 rounded-box px-3 text-sm whitespace-nowrap text-muted hover:bg-surface">
+        {archived ? "복원" : "보관"}
+      </button>
+    </form>
   );
 }
 
-async function SurveyList({ searchParams }: { searchParams: PageProps<"/admin">["searchParams"] }) {
-  const { db } = await requireAdmin();
-  const { tab: raw } = await searchParams;
-  const tab: Tab = TABS.find((t) => t.key === raw)?.key ?? "active";
-  const groups = groupByTab(await listSurveys(db));
-
+function CardGrid({ items }: { items: SurveyListItem[] }) {
   return (
-    <>
-      <nav aria-label="설문 상태" className="flex gap-1 overflow-x-auto border-b border-zinc-200 dark:border-zinc-800">
-        {TABS.map((t) => (
-          <Link
-            key={t.key}
-            href={`/admin?tab=${t.key}`}
-            aria-current={t.key === tab ? "page" : undefined}
-            className="shrink-0 border-b-2 border-transparent px-3 py-2 text-sm text-zinc-500 aria-[current=page]:border-zinc-900 aria-[current=page]:font-medium aria-[current=page]:text-zinc-900 dark:aria-[current=page]:border-zinc-100 dark:aria-[current=page]:text-zinc-100"
-          >
-            {t.label} {groups[t.key].length}
-          </Link>
-        ))}
-      </nav>
-      {groups[tab].length === 0 ? (
-        <div className="flex flex-col items-center gap-4 py-16">
-          <p className="text-zinc-500">{EMPTY[tab]}</p>
-          {tab === "designing" && (
-            <Link href="/admin/new" className="rounded-lg bg-zinc-900 px-4 py-2.5 font-medium text-white dark:bg-zinc-100 dark:text-zinc-900">
-              새 설문
+    <ul className="grid gap-3 sm:grid-cols-2">
+      {items.map((s) => (
+        <li key={s.id} className="flex flex-col rounded-box border border-line p-4">
+          <div className="flex items-start justify-between gap-2">
+            <Link href={`/admin/surveys/${s.id}`} className="line-clamp-2 py-2 font-medium hover:underline">
+              {s.problem}
             </Link>
-          )}
-        </div>
-      ) : (
-        <ul className="flex flex-col gap-3 py-4">
-          {groups[tab].map((s) => (
-            <SurveyCard key={s.id} survey={s} tab={tab} />
-          ))}
-        </ul>
-      )}
-    </>
+            <ToggleArchive survey={s} />
+          </div>
+          <p className="text-sm text-muted">{responses(s)}</p>
+          <StageBar current={stageOf(s)} className="mt-3" />
+        </li>
+      ))}
+    </ul>
   );
 }
 
-export default function AdminPage({ searchParams }: PageProps<"/admin">) {
+async function SurveyList() {
+  const { db } = await requireAdmin();
+  const groups = groupByTab(await listSurveys(db));
+  const empty = SECTIONS.every(({ key }) => groups[key].length === 0);
+
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8">
+    <div className="flex flex-col gap-10">
+      <section aria-label="새 설문 시작" className="rounded-box border border-line p-5">
+        <ProblemForm />
+      </section>
+      {empty && <p className="text-center text-muted">아직 설문이 없어요. 위에 첫 문제를 적어 보세요.</p>}
+      {SECTIONS.map(({ key, label }) =>
+        groups[key].length === 0 ? null : (
+          <section key={key} aria-labelledby={`sec-${key}`}>
+            <h2 id={`sec-${key}`} className="mb-3 text-sm font-medium text-muted">
+              {label} {groups[key].length}
+            </h2>
+            <CardGrid items={groups[key]} />
+          </section>
+        ),
+      )}
+      {groups.archived.length > 0 && (
+        <details>
+          <summary className="flex min-h-11 cursor-pointer items-center text-sm text-muted">보관함 {groups.archived.length}</summary>
+          <div className="mt-3">
+            <CardGrid items={groups.archived} />
+          </div>
+        </details>
+      )}
+    </div>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <main className="mx-auto w-full max-w-3xl px-4 py-8">
       <header className="mb-6 flex items-center justify-between">
         <h1 className="text-xl font-semibold">내 설문</h1>
-        <div className="flex items-center gap-2">
-          <Link href="/admin/new" className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white dark:bg-zinc-100 dark:text-zinc-900">
-            새 설문
-          </Link>
-          <form action={logout}>
-            <button
-              type="submit"
-              className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
-            >
-              로그아웃
-            </button>
-          </form>
-        </div>
+        <form action={logout}>
+          <button type="submit" className="min-h-11 rounded-box px-3 text-sm text-muted hover:bg-surface">
+            로그아웃
+          </button>
+        </form>
       </header>
-      <Suspense fallback={<p className="py-16 text-center text-zinc-500">불러오는 중…</p>}>
-        <SurveyList searchParams={searchParams} />
+      <Suspense fallback={<p className="py-16 text-center text-muted">불러오는 중…</p>}>
+        <SurveyList />
       </Suspense>
     </main>
   );

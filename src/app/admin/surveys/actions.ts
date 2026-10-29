@@ -35,8 +35,9 @@ function messageOf(error: unknown) {
   return aiErrorMessage(error);
 }
 
+// 성공하면 ?moved=1 — 화면이 방금 끝난 단계 칸을 채우는 움직임을 보인다. 실패하면 ?error=.
 function back(id: string, error?: string): never {
-  redirect(`/admin/surveys/${id}${error ? `?error=${encodeURIComponent(error)}` : ""}`);
+  redirect(`/admin/surveys/${id}?${error ? `error=${encodeURIComponent(error)}` : "moved=1"}`);
 }
 
 export type StartState = { error?: string; problem?: string };

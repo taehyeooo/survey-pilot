@@ -1,33 +1,46 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 
-// AI를 부르는 폼은 몇 초 걸린다 — 누르는 동안 막고 무엇을 하는지 보여 준다.
+// 단계 문구(ai-steps.ts)를 2초마다 바꾸고 마지막 문구에서 멈춘다.
+
+export function usePendingStep(pending: boolean, steps: string[]) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    if (!pending) return;
+    const timer = setInterval(() => setIndex((i) => Math.min(i + 1, steps.length - 1)), 2000);
+    return () => {
+      clearInterval(timer);
+      setIndex(0);
+    };
+  }, [pending, steps.length]);
+  return steps[index];
+}
+
 export function SubmitButton({
   children,
-  pendingText,
+  pendingSteps,
   formAction,
   variant = "primary",
 }: {
   children: React.ReactNode;
-  pendingText: string;
+  pendingSteps: string[];
   formAction?: (formData: FormData) => void | Promise<void>;
   variant?: "primary" | "secondary";
 }) {
   const { pending } = useFormStatus();
-  const style =
-    variant === "primary"
-      ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-      : "border border-zinc-300 dark:border-zinc-700";
+  const step = usePendingStep(pending, pendingSteps);
+  const style = variant === "primary" ? "bg-accent text-on-accent" : "border border-line";
   return (
     <button
       type="submit"
       formAction={formAction}
       disabled={pending}
       aria-busy={pending}
-      className={`h-11 rounded-lg px-4 font-medium disabled:opacity-50 ${style}`}
+      className={`min-h-11 rounded-box px-4 font-medium disabled:opacity-60 ${style}`}
     >
-      {pending ? pendingText : children}
+      <span aria-live="polite">{pending ? step : children}</span>
     </button>
   );
 }

@@ -26,6 +26,7 @@ export function groupByTab<T extends { status: string; archived_at: string | nul
 export interface SurveyListItem {
   id: string;
   problem: string;
+  purpose: string | null;
   status: string;
   archived_at: string | null;
   target_responses: number | null;
@@ -36,7 +37,7 @@ export interface SurveyListItem {
 export async function listSurveys(db: SupabaseClient): Promise<SurveyListItem[]> {
   const { data } = await db
     .from("surveys")
-    .select("id, problem, status, archived_at, target_responses, created_at, responses(count)")
+    .select("id, problem, purpose, status, archived_at, target_responses, created_at, responses(count)")
     .order("created_at", { ascending: false })
     .throwOnError();
   return (data ?? []).map(({ responses, ...s }) => ({ ...s, responseCount: responses?.[0]?.count ?? 0 }));
