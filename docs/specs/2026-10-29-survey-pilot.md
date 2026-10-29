@@ -1,6 +1,6 @@
 ---
 title: 서베이 파일럿
-version: 1
+version: 2
 status: active
 updated: 2026-10-29
 owner: taehyeooo
@@ -25,7 +25,7 @@ related: [docs/specs/2026-10-29-survey-pilot-prd.md, knowledge-base/decisions/00
 ### 0. 기반 기능
 
 - **R-1** 0.1 관리자 로그인 — 매직링크로 로그인한 이메일이 `ADMIN_EMAIL`과 다르면, 서비스는 관리자 화면 접근을 거부한다.
-  - 권한: `ADMIN_EMAIL` 1명. 그 밖의 계정은 로그인돼도 관리자 화면·API가 403.
+  - 권한: `ADMIN_EMAIL` 1명. 그 밖의 계정은 로그인돼도 관리자 화면·API가 403. DB도 `admins` 테이블(서버가 `ADMIN_EMAIL`로 채움)에 있는 이메일만 관리자로 본다 — Supabase는 공개 키로 누구나 가입할 수 있으므로.
   - 예외: 링크 만료 → "링크가 만료됐어요. 다시 받아 주세요".
   - 확인: 다른 이메일 세션으로 관리자 API 호출 시 403 테스트.
 - **R-2** 0.2 내 설문 목록 — 관리자가 목록을 열면, 서비스는 설계 중·진행 중·마감·보관함 탭별로 최신순 설문을 보여 준다.
@@ -176,7 +176,8 @@ erDiagram
 
 | 테이블 | 핵심 규칙 |
 |---|---|
-| surveys | owner = 관리자, 상태 앞으로만, slug 유일, 보관은 `archived_at` |
+| admins | 관리자 이메일(소문자), 서버만 접근 |
+| surveys | owner = 관리자, 상태 앞으로만, slug 유일, 보관은 `archived_at`, 권장 응답 수 = 목표 응답 수(`target_responses` 한 칸) |
 | hypotheses | 설문당 2~4개 |
 | questions | (survey, position) 유일, 응답 1건 이상이면 수정·삭제 불가(트리거) |
 | verifications | 번호 해시·만료·시도 수·발송 시각, 서버만 접근 |
@@ -189,9 +190,9 @@ erDiagram
 
 ### 접근 제어 (Supabase RLS, ADR 0019)
 
-- surveys: `owner_id = auth.uid()` 그리고 JWT 이메일 = `ADMIN_EMAIL`일 때 select·insert·update. delete 정책 없음.
+- surveys: `owner_id = auth.uid()` 그리고 JWT 이메일이 `admins`에 있을 때(`is_admin()`) select·insert·update. delete 정책 없음.
 - 하위 테이블: 부모 설문의 owner일 때 select만. 쓰기는 service role.
-- verifications·usage_events·audit_logs: 정책 없음(서버만).
+- admins·verifications·usage_events·audit_logs: 정책 없음(서버만). anon에는 테이블 권한 자체를 주지 않는다.
 
 ### 환경변수
 
@@ -223,3 +224,4 @@ erDiagram
 ## 변경 이력
 
 - v1 (2026-10-29): 최초 작성
+- v2 (2026-10-29): DB 관리자 확인을 `admins` 테이블로(R-1·R-31), 권장·목표 응답 수를 `target_responses` 한 칸으로. 마이그레이션 `supabase/migrations/20261029000000_init.sql`이 컬럼 기준(ADR 0007)

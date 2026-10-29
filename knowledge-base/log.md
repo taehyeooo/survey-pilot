@@ -23,3 +23,9 @@
 - 확인한 것: 테스트 4개·변형 4/4(검사기 2, 클라이언트 import 빌드 실패, 비밀값 번들 검출) 통과, 빌드·린트·타입·문서 검사 통과.
 - 확인하지 않은 것: Vercel Hobby에서 `regions: icn1` 적용 여부, 배포 런타임 Node 버전, 실제 Supabase 질의.
 - 남긴 지식: [vitest ERESOLVE](troubleshooting/2026-10-29-vitest-types-node-eresolve.md)
+
+## 2026-10-29 DB 스키마와 접근 권한 — plan 2단계 (#5)
+- 한 것: 테이블 11개(+admins)·제약·잠금 트리거·RLS 마이그레이션을 실제 프로젝트(서울)에 적용, DB 통합 테스트 17개. spec v2.
+- 확인한 것: 테스트 21개 통과, DB 변형 4/4(anon 읽기·관리자 확인·문항 잠금·설계 잠금) 잡고 복원, 테스트 사용자 잔여 0.
+- 확인하지 않은 것: CI에서 DB 테스트(키 없음 — 건너뜀), 동시 수정 경합.
+- 남긴 지식: [Supabase 키와 DB 접속](concepts/supabase-api-keys.md) 갱신

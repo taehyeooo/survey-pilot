@@ -1,5 +1,5 @@
 ---
-title: Supabase API 키 — 공개 키와 비밀 키
+title: Supabase API 키와 DB 접속
 version: 1
 status: active
 updated: 2026-10-29
@@ -26,3 +26,9 @@ Supabase가 키 이름을 새 방식으로 바꾸는 중이라 대시보드에 �
 - `NEXT_PUBLIC_` 접두사가 붙은 값은 Next.js가 클라이언트 번들에 넣는다. 그래서 비밀 키에는 절대 붙이지 않는다.
 - 값은 레포 루트 `.env.local`(git 무시)과 Vercel 환경변수에만 둔다. 채팅·로그에 출력하지 않는다.
 - DB 비밀번호는 앱이 쓰지 않는다. 마이그레이션 때 Supabase CLI 연결에만 쓴다.
+
+## DB 접속(마이그레이션)
+- 앱은 DB 비밀번호를 쓰지 않는다. 마이그레이션 적용에만 `SUPABASE_DB_URL`을 쓴다: `npx supabase db push --db-url "$SUPABASE_DB_URL"`(먼저 `--dry-run`).
+- 주소는 대시보드 Connect → **Session pooler**(포트 5432). Direct connection은 IPv6 전용이라 IPv4 망에서 안 될 수 있다. 이 프로젝트는 `aws-0-ap-northeast-2.pooler.supabase.com`(서울, 2026-10-29 접속 확인).
+- 비밀번호의 특수문자는 퍼센트 인코딩한다.
+- Docker가 없어 로컬 Supabase는 쓰지 않는다. DB 테스트(`test/db`)는 실제 프로젝트에 대고 돌고, 만든 사용자·행은 끝나면 지운다. CI에는 키가 없어 건너뛴다.
