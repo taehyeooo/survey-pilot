@@ -5,8 +5,9 @@ import { Suspense } from "react";
 import { isDemoAi } from "@/lib/ai-runtime";
 import { requireAdmin } from "@/lib/auth";
 import type { Clarification } from "@/lib/design";
-import { buildShareText, canEditQuestions, responseCount } from "@/lib/publish";
+import { buildShareText, canEditQuestions } from "@/lib/publish";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { loadResults, type QuestionStat } from "@/lib/results";
 import { closeOverdue } from "@/lib/submit";
 import { DemoNotice } from "../../demo-notice";
 import { StageBar, stageOf } from "../../stage-bar";
@@ -15,6 +16,7 @@ import { SubmitButton } from "../../submit-button";
 import { answerAndDesign, closeNow, publish, regenerateDesign, saveAndConfirm, saveSettings } from "../actions";
 import { OtherOption } from "./other-option";
 import { QuestionsSection, type Question } from "./questions";
+import { ResultsSection } from "./results";
 import { ShareBox } from "./share-box";
 
 // 조사 설계(디자인 결정 27 C 단계형): 위에 단계 진행, 설계 폼은 묶음별 카드.
@@ -223,17 +225,14 @@ function DesignDetails({ survey }: { survey: Survey }) {
   );
 }
 
-function Body({ survey, origin, canEdit, responses }: { survey: Survey; origin: string; canEdit: boolean; responses: number }) {
+function Body({ survey, origin, canEdit, responses, stats }: { survey: Survey; origin: string; canEdit: boolean; responses: number; stats: QuestionStat[] }) {
   const minutes = survey.target_minutes ?? 3;
   if (survey.status === "published" && survey.slug) {
     const link = `${origin}/s/${survey.slug}`;
     return (
       <div className="flex flex-col gap-8">
         <ShareBox link={link} shareText={buildShareText(survey.share_message ?? "", link, minutes)} />
-        <p className="text-sm text-muted">
-          응답 {responses}
-          {survey.target_responses ? ` / ${survey.target_responses}` : ""}
-        </p>
+        <ResultsSection surveyId={survey.id} stats={stats} responseCount={responses} target={survey.target_responses} closesAt={survey.closes_at} live />
         <SettingsForm survey={survey} />
         <form action={closeNow.bind(null, survey.id)} className="flex flex-col gap-2">
           <p className="text-sm text-muted">목표 응답 수나 마감일에 닿으면 자동으로 마감돼요. 지금 끝내려면:</p>
@@ -272,8 +271,9 @@ function Body({ survey, origin, canEdit, responses }: { survey: Survey; origin: 
     return (
       <div className="flex flex-col gap-8">
         <p role="status" className="rounded-box bg-surface p-4">
-          {reason} 마감했어요. 응답 {responses}개. 리포트는 다음 업데이트에서 볼 수 있어요.
+          {reason} 마감했어요. 응답 {responses}개. 문제에 답하는 AI 리포트는 다음 업데이트에서 볼 수 있어요.
         </p>
+        <ResultsSection surveyId={survey.id} stats={stats} responseCount={responses} target={survey.target_responses} closesAt={survey.closes_at} live={false} />
         <DesignDetails survey={survey} />
         <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={minutes} editable={false} />
       </div>
@@ -306,7 +306,8 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
   const survey = data as Survey;
   const service = createAdminClient();
   const canEdit = await canEditQuestions(service, survey);
-  const responses = survey.status === "published" || survey.status === "closed" ? await responseCount(service, survey.id) : 0;
+  const results = survey.status === "published" || survey.status === "closed" ? await loadResults(db, survey.id) : null;
+  const responses = results?.responseCount ?? 0;
   const h = await headers();
   const origin = `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;
 
@@ -320,7 +321,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
           {error}
         </p>
       )}
-      <Body survey={survey} origin={origin} canEdit={canEdit} responses={responses} />
+      <Body survey={survey} origin={origin} canEdit={canEdit} responses={responses} stats={results?.stats ?? []} />
     </>
   );
 }

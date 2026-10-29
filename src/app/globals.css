@@ -15,6 +15,7 @@
   --color-danger-bg: var(--danger-bg);
   --color-note-bg: var(--note-bg);
   --color-note-fg: var(--note-fg);
+  --color-chart: var(--chart);
   --radius-box: var(--radius);
   --font-sans: var(--font-body), system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
@@ -31,6 +32,8 @@
   --danger-bg: #fef2f2;
   --note-bg: #fffbeb;
   --note-fg: #92400e;
+  /* 차트 막대 — dataviz 검사기 통과(밝은 면 #fff, 2026-10-29). 강조색(#0f766e)은 채도가 낮아 회색으로 읽혀 따로 둔다 */
+  --chart: #0d9488;
   --radius: 12px;
 }
 
@@ -47,6 +50,8 @@
     --danger-bg: #3b1212;
     --note-bg: #3a2a0a;
     --note-fg: #fcd34d;
+    /* 어두운 면 #0b1514 기준 검사 통과 — #2dd4bf는 너무 밝아 밝기 범위를 벗어난다 */
+    --chart: #22a99a;
   }
 }
 
