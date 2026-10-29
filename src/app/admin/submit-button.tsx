@@ -27,11 +27,11 @@ export function SubmitButton({
   children: React.ReactNode;
   pendingSteps: string[];
   formAction?: (formData: FormData) => void | Promise<void>;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "ghost";
 }) {
   const { pending } = useFormStatus();
   const step = usePendingStep(pending, pendingSteps);
-  const style = variant === "primary" ? "bg-accent text-on-accent" : "border border-line";
+  const style = { primary: "bg-accent text-on-accent", secondary: "border border-line", ghost: "text-sm text-muted hover:bg-surface" }[variant];
   return (
     <button
       type="submit"

@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 import { getAi } from "@/lib/ai-runtime";
 import { requireAdmin } from "@/lib/auth";
@@ -15,6 +16,15 @@ import {
   validateProblem,
   type SurveyRow,
 } from "@/lib/design";
+import {
+  addQuestion,
+  deleteQuestion,
+  generateQuestions,
+  moveQuestion,
+  regenerateQuestion,
+  updateQuestion,
+  type QuestionSurvey,
+} from "@/lib/questions";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // 소유 확인은 관리자 세션(RLS)으로, 쓰기는 서버 클라이언트로(ADR 0019).
@@ -22,11 +32,11 @@ async function loadOwned(id: string) {
   const { db } = await requireAdmin();
   const { data } = await db
     .from("surveys")
-    .select("id, status, problem, clarifications, purpose, closes_at")
+    .select("id, status, problem, clarifications, purpose, closes_at, audience, target_minutes")
     .eq("id", id)
     .maybeSingle();
   if (!data) notFound();
-  return data as SurveyRow;
+  return data as SurveyRow & QuestionSurvey;
 }
 
 function messageOf(error: unknown) {
@@ -120,4 +130,57 @@ export async function saveAndConfirm(id: string, formData: FormData) {
     error = e instanceof Error && e.name === "ZodError" ? "빈 칸이 없는지, 가설이 2~4개인지 확인해 주세요." : messageOf(e);
   }
   back(id, error);
+}
+
+// ── 문항(R-10~R-13) — 설계를 확인한(reviewing) 설문에서만 ─────────────────
+async function loadReviewing(id: string) {
+  const survey = await loadOwned(id);
+  if (survey.status !== "reviewing") throw new ConflictError("설계를 확인한 설문에서만 문항을 바꿀 수 있어요.");
+  return survey;
+}
+
+async function questionStep(id: string, step: (survey: QuestionSurvey) => Promise<void>) {
+  let error: string | undefined;
+  try {
+    await step(await loadReviewing(id));
+  } catch (e) {
+    error = messageOf(e);
+  }
+  // 성공하면 같은 화면을 새로 그린다. 같은 주소에 #만 바꿔 이동하면 라우터가 데이터를 다시 가져오지 않는다.
+  if (error) redirect(`/admin/surveys/${id}?error=${encodeURIComponent(error)}`);
+  revalidatePath(`/admin/surveys/${id}`);
+}
+
+export async function makeQuestions(id: string) {
+  await questionStep(id, (s) => generateQuestions(createAdminClient(), getAi("questions"), s));
+}
+
+export async function saveQuestion(id: string, questionId: string, formData: FormData) {
+  await questionStep(id, () =>
+    updateQuestion(createAdminClient(), id, questionId, {
+      prompt: String(formData.get("prompt") ?? ""),
+      options: String(formData.get("options") ?? "").split(/\r?\n/),
+      required: formData.get("required") === "on",
+    }),
+  );
+}
+
+export async function moveUp(id: string, questionId: string) {
+  await questionStep(id, () => moveQuestion(createAdminClient(), id, questionId, -1));
+}
+
+export async function moveDown(id: string, questionId: string) {
+  await questionStep(id, () => moveQuestion(createAdminClient(), id, questionId, 1));
+}
+
+export async function appendQuestion(id: string) {
+  await questionStep(id, () => addQuestion(createAdminClient(), id));
+}
+
+export async function removeQuestion(id: string, questionId: string) {
+  await questionStep(id, () => deleteQuestion(createAdminClient(), id, questionId));
+}
+
+export async function remakeQuestion(id: string, questionId: string) {
+  await questionStep(id, (s) => regenerateQuestion(createAdminClient(), getAi("question"), s, questionId));
 }

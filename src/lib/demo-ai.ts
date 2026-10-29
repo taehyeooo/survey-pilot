@@ -27,6 +27,26 @@ export function createDemoAi(): AiClient {
           share_message: "[데모] 3분짜리 설문이에요. 솔직한 의견 부탁해요!",
         };
       }
+      if (prompt.startsWith("[작업:문항 다시]")) {
+        return { questions: [{ hypothesis: 1, type: "scale", prompt: "[데모] 다시 만든 문항이에요. 얼마나 그렇다고 느끼나요?", options: [], required: true, review_note: null }] };
+      }
+      if (prompt.startsWith("[작업:문항]")) {
+        const count = (prompt.match(/<hypotheses>\n([\s\S]*?)\n<\/hypotheses>/)?.[1] ?? "").split("\n").filter(Boolean).length;
+        return {
+          questions: Array.from({ length: Math.max(count, 1) }, (_, i) => [
+            { hypothesis: i + 1, type: "single", prompt: `[데모] 가설 ${i + 1}에 대해 어떻게 생각하나요?`, options: ["그렇다", "아니다", "잘 모르겠다"], required: true, review_note: null },
+            { hypothesis: i + 1, type: "scale", prompt: `[데모] 가설 ${i + 1}이 얼마나 맞다고 느끼나요?`, options: [], required: true, review_note: null },
+          ]).flat(),
+        };
+      }
+      if (prompt.startsWith("[작업:점검]")) {
+        const { questions } = JSON.parse(prompt.match(/<questions>\n([\s\S]*?)\n<\/questions>/)?.[1] ?? '{"questions":[]}');
+        return {
+          questions: questions.map((q: { prompt: string }, i: number) =>
+            i === 0 ? { ...q, prompt: q.prompt.replace("어떻게 생각하나요", "어느 쪽에 가깝나요"), review_note: "[데모] 답을 암시하지 않게 바꿨어요" } : q,
+          ),
+        };
+      }
       throw new Error("데모 AI가 모르는 작업이다");
     },
   };
