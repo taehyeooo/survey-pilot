@@ -18,3 +18,9 @@ __pycache__/
 .DS_Store
 .vscode/
 .idea/
+
+# Next.js
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*

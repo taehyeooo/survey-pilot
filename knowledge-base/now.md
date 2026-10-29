@@ -9,7 +9,7 @@
 ## 승인 대기
 
 ## 다음 할 일
-1. plan 1단계: 프로젝트 뼈대(Next.js·Supabase 클라이언트·테스트·mock) — [plan](../docs/plans/2026-10-29-survey-pilot.md). 새 이슈·브랜치·워크트리로, 레포 루트 `.env.local`을 워크트리에 복사해 쓴다
+1. plan 2단계: 스키마·RLS 마이그레이션(R-31, R-14) — [plan](../docs/plans/2026-10-29-survey-pilot.md). 1단계(뼈대)까지 머지됨. Supabase CLI 연결에 DB 비밀번호가 필요할 수 있음(사용자가 직접 입력)
 2. plan 4단계 전에 샘플 문제 정의 30개 준비(사용자 10 + Claude 초안 20, 사용자 검토)
 
 ## 정해 둔 것

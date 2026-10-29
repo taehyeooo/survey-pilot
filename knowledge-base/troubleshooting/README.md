@@ -13,3 +13,4 @@
 
 | 날짜 | 문서 | 영역 |
 |---|---|---|
+| 2026-10-29 | [create-next-app 직후 vitest 설치 ERESOLVE](2026-10-29-vitest-types-node-eresolve.md) | npm·의존성 |
