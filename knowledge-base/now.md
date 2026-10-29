@@ -9,9 +9,9 @@
 ## 승인 대기
 
 ## 다음 할 일
-1. plan 15단계: 크론(KST 00:10, CRON_SECRET) — 마감일 마감 + 최종 리포트, 마감 30일 지난 이메일 원문 정리, 만료 인증번호 삭제(R-30, R-16). 14단계까지 머지됨
-2. plan 4단계(샘플 검증): **막힘 — 사용자 샘플 문제 10개**
-3. plan 16단계: Vercel 배포(사람 손: 가입·연결·환경변수, Supabase Auth URL)
+1. 사용자: Vercel 가입·`taehyeooo/survey-pilot` Import·환경변수(.env.local에서 SUPABASE_DB_URL 빼고, HASH_SECRET·CRON_SECRET은 로컬과 같은 값) → 배포 주소 알려 주기. 15단계까지 머지됨
+2. plan 16단계: 배포 뒤 Supabase Auth Site URL·Redirect URL에 배포 주소, 실제 로그인·응답·크론 확인
+3. plan 4단계(샘플 검증): 사용자가 "샘플 문제를 Claude가 생각해서 넣어 보라"고 함(2026-10-30) — Claude 30개로 실제 Gemini 검증 진행 중
 4. 결정 필요: `CONTACT_EMAIL`. 디자인 작업 때 apple-design 스킬 설치 여부
 
 ## 정해 둔 것
