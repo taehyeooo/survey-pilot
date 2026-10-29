@@ -1,0 +1,10 @@
+{
+  "extraKnownMarketplaces": {
+    "taeng-marketplace": {
+      "source": { "source": "github", "repo": "taehyeooo/taeng-marketplace" }
+    }
+  },
+  "enabledPlugins": {
+    "intaeng@taeng-marketplace": true
+  }
+}

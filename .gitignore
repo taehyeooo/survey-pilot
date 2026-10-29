@@ -1,0 +1,20 @@
+# 비밀값 — 커밋하지 않는다
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# 의존성·빌드
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+
+# 도구
+__pycache__/
+.DS_Store
+.vscode/
+.idea/

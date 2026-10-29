@@ -1,0 +1,3 @@
+#!/bin/sh
+# 커밋 메시지 규칙 검사 (ADR 0008). 켜기: git config core.hooksPath .githooks
+exec sh "$(git rev-parse --show-toplevel)/scripts/check-commit-msg.sh" "$1"

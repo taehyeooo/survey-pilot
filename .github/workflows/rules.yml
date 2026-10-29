@@ -1,0 +1,88 @@
+# 규칙 강제 — 가벼운 검사만. 빌드·테스트 잡은 이 레포가 더한다(무거운 잡은 고친 경로에서만 돌게 — ADR 0008).
+# - commit-messages: 커밋 메시지·PR 제목 (ADR 0008). 로컬 훅은 켜지 않으면 동작하지 않으므로 PR에서 한 번 더 검사한다.
+# - docs: 문서 frontmatter·based_on·깨진 링크·목차 빠짐·ADR 확인 방법·런북 단계 표시·요구사항 ID 추적 (ADR 0009·0001·0014)
+# - log: knowledge-base/log.md 미갱신·300자 넘는 새 줄 경고, 기존 줄 수정·삭제 실패 (ADR 0010)
+# - context: CLAUDE.md 200줄 이하, .claude/rules paths, 링크 (ADR 0013)
+name: rules
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+jobs:
+  commit-messages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 검사 스크립트 테스트
+        run: sh scripts/test-check-commit-msg.sh
+
+      - name: PR 제목 검사 (squash 머지 커밋 제목이 된다)
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          printf '%s\n' "$PR_TITLE" > "$RUNNER_TEMP/title.txt"
+          sh scripts/check-commit-msg.sh "$RUNNER_TEMP/title.txt"
+
+      - name: PR 커밋 메시지 검사
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          status=0
+          for sha in $(git rev-list "$BASE_SHA..$HEAD_SHA"); do
+            git log -1 --format=%B "$sha" > "$RUNNER_TEMP/msg.txt"
+            if ! sh scripts/check-commit-msg.sh "$RUNNER_TEMP/msg.txt"; then
+              echo "::error::$sha 커밋 메시지가 규칙에 맞지 않습니다"
+              status=1
+            fi
+          done
+          exit $status
+
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 검사 스크립트 테스트
+        run: python3 scripts/test_check_docs.py
+
+      - name: 문서 규칙 검사
+        run: python3 scripts/check_docs.py
+
+  log:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 검사 스크립트 테스트
+        run: python3 scripts/test_check_log.py
+
+      - name: 작업 기록 검사 (log.md 미갱신·긴 줄 경고, append-only)
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python3 scripts/check_log.py "$BASE_SHA" "$HEAD_SHA"
+
+  context:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: AI 컨텍스트 검사와 워크트리 정리 스크립트 테스트
+        run: |
+          python3 scripts/test_check_context.py
+          python3 scripts/check_context.py
+          python3 scripts/test_cleanup_worktree.py
