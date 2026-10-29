@@ -102,13 +102,14 @@ export async function submitResponse(
 }
 
 // 마감일이 지난 진행 중 설문을 한꺼번에 마감한다 — 화면에 들어올 때마다, 하루 1회 크론에서도(R-16).
-export async function closeOverdue(db: SupabaseClient, now = new Date()) {
-  await db
+export async function closeOverdue(db: SupabaseClient, now = new Date(), ownerId?: string) {
+  let query = db
     .from("surveys")
     .update({ status: "closed", closed_at: now.toISOString(), close_reason: "deadline" })
     .eq("status", "published")
-    .lte("closes_at", now.toISOString())
-    .throwOnError();
+    .lte("closes_at", now.toISOString());
+  if (ownerId) query = query.eq("owner_id", ownerId); // 테스트가 다른 설문을 건드리지 않게
+  await query.throwOnError();
 }
 
 export async function closeSurvey(db: SupabaseClient, survey: { id: string; status: string }) {
