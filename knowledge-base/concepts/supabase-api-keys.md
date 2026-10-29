@@ -31,4 +31,4 @@ Supabase가 키 이름을 새 방식으로 바꾸는 중이라 대시보드에 �
 - 앱은 DB 비밀번호를 쓰지 않는다. 마이그레이션 적용에만 `SUPABASE_DB_URL`을 쓴다: `npx supabase db push --db-url "$SUPABASE_DB_URL"`(먼저 `--dry-run`).
 - 주소는 대시보드 Connect → **Session pooler**(포트 5432). Direct connection은 IPv6 전용이라 IPv4 망에서 안 될 수 있다. 이 프로젝트는 `aws-0-ap-northeast-2.pooler.supabase.com`(서울, 2026-10-29 접속 확인).
 - 비밀번호의 특수문자는 퍼센트 인코딩한다.
-- Docker가 없어 로컬 Supabase는 쓰지 않는다. DB 테스트(`test/db`)는 실제 프로젝트에 대고 돌고, 만든 사용자·행은 끝나면 지운다. CI에는 키가 없어 건너뛴다.
+- Docker가 없어 로컬 Supabase는 쓰지 않는다. DB 테스트(`test/db`)는 실제 프로젝트에 대고 돌고, 만든 사용자·행은 끝나면 지운다. CI에는 키가 없어 건너뛴다 — `describe.skipIf`여도 describe 본문은 실행되므로 클라이언트는 `beforeAll`에서 만들고, PR 전에 `.env.local` 없이 한 번 돌려 본다(PR #8에서 CI만 실패했던 원인).
