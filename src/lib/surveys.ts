@@ -46,20 +46,21 @@ export async function listSurveys(db: SupabaseClient): Promise<SurveyListItem[]>
 const NOT_FOUND = "설문을 찾을 수 없어요";
 
 // 진행 중이면 먼저 마감하고 보관한다(R-5, spec 가정 2).
-export async function archiveSurvey(db: SupabaseClient, id: string, now = new Date()) {
-  const { data: survey } = await db.from("surveys").select("status").eq("id", id).maybeSingle().throwOnError();
+// 쓰기는 서버(service role)만 하므로 주인 확인을 쿼리에 건다(multi-user R-3, ADR 0019 v2).
+export async function archiveSurvey(db: SupabaseClient, ownerId: string, id: string, now = new Date()) {
+  const { data: survey } = await db.from("surveys").select("status").eq("id", id).eq("owner_id", ownerId).maybeSingle().throwOnError();
   if (!survey) throw new Error(NOT_FOUND);
   const at = now.toISOString();
   const patch =
     survey.status === "published"
       ? { status: "closed", closed_at: at, close_reason: "archive", archived_at: at }
       : { archived_at: at };
-  const { data } = await db.from("surveys").update(patch).eq("id", id).select("id").throwOnError();
+  const { data } = await db.from("surveys").update(patch).eq("id", id).eq("owner_id", ownerId).select("id").throwOnError();
   if (!data?.length) throw new Error(NOT_FOUND);
 }
 
 // 보관 전 상태로 — 마감된 설문은 마감 그대로.
-export async function restoreSurvey(db: SupabaseClient, id: string) {
-  const { data } = await db.from("surveys").update({ archived_at: null }).eq("id", id).select("id").throwOnError();
+export async function restoreSurvey(db: SupabaseClient, ownerId: string, id: string) {
+  const { data } = await db.from("surveys").update({ archived_at: null }).eq("id", id).eq("owner_id", ownerId).select("id").throwOnError();
   if (!data?.length) throw new Error(NOT_FOUND);
 }

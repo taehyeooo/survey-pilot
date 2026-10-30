@@ -7,6 +7,7 @@ describe.skipIf(!hasDb)("설문 목록·보관 (실제 DB, 관리자 세션)", (
   let admin: Db;
   let stranger: Db;
   let adminId: string;
+  let strangerId: string;
 
   async function survey(fields: Record<string, unknown>) {
     const { data } = await users.service
@@ -22,7 +23,7 @@ describe.skipIf(!hasDb)("설문 목록·보관 (실제 DB, 관리자 세션)", (
   beforeAll(async () => {
     users = testUsers();
     ({ client: admin, id: adminId } = await users.signIn("admin", { admin: true }));
-    ({ client: stranger } = await users.signIn("stranger"));
+    ({ client: stranger, id: strangerId } = await users.signIn("stranger"));
   });
   afterAll(async () => users?.cleanup());
 
@@ -50,13 +51,13 @@ describe.skipIf(!hasDb)("설문 목록·보관 (실제 DB, 관리자 세션)", (
   // survey-pilot#R-5
   it("진행 중 설문을 보관하면 마감(archive)되고, 복원해도 마감 상태다", async () => {
     const s = await published();
-    await archiveSurvey(admin, s.id);
+    await archiveSurvey(users.service, adminId, s.id);
     let { data } = await users.service.from("surveys").select("*").eq("id", s.id).single();
     expect(data).toMatchObject({ status: "closed", close_reason: "archive" });
     expect(data.archived_at).not.toBeNull();
     expect(data.closed_at).not.toBeNull();
 
-    await restoreSurvey(admin, s.id);
+    await restoreSurvey(users.service, adminId, s.id);
     ({ data } = await users.service.from("surveys").select("*").eq("id", s.id).single());
     expect(data).toMatchObject({ status: "closed", archived_at: null });
   });
@@ -64,20 +65,21 @@ describe.skipIf(!hasDb)("설문 목록·보관 (실제 DB, 관리자 세션)", (
   // survey-pilot#R-5
   it("설계 중 설문은 보관해도 상태가 그대로이고, 복원하면 설계 중으로 돌아온다", async () => {
     const s = await survey({});
-    await archiveSurvey(admin, s.id);
+    await archiveSurvey(users.service, adminId, s.id);
     let { data } = await users.service.from("surveys").select("*").eq("id", s.id).single();
     expect(data).toMatchObject({ status: "designing", closed_at: null });
     expect(data.archived_at).not.toBeNull();
-    await restoreSurvey(admin, s.id);
+    await restoreSurvey(users.service, adminId, s.id);
     ({ data } = await users.service.from("surveys").select("*").eq("id", s.id).single());
     expect(data).toMatchObject({ status: "designing", archived_at: null });
   });
 
-  // survey-pilot#R-1
-  it("관리자가 아닌 세션은 목록이 비고 보관할 수 없다", async () => {
+  // survey-pilot#R-1, multi-user#R-3
+  it("다른 사용자의 세션은 남의 설문이 목록에 없고 보관할 수 없다", async () => {
     const s = await published();
     expect(await listSurveys(stranger)).toEqual([]);
-    await expect(archiveSurvey(stranger, s.id)).rejects.toThrow(/찾을 수 없/);
+    await expect(archiveSurvey(users.service, strangerId, s.id)).rejects.toThrow(/찾을 수 없/);
+    await expect(restoreSurvey(users.service, strangerId, s.id)).rejects.toThrow(/찾을 수 없/);
     const { data } = await users.service.from("surveys").select("archived_at").eq("id", s.id).single();
     expect(data!.archived_at).toBeNull();
   });
