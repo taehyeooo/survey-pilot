@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { findPublicSurvey } from "@/lib/publish";
-import { isClosed } from "@/lib/respond";
+import { isClosed, PAUSED } from "@/lib/respond";
 import { closeOverdue } from "@/lib/submit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { RespondFlow, type PublicQuestion } from "./respond-flow";
@@ -22,6 +22,10 @@ async function PublicSurvey({ params }: PageProps<"/s/[slug]">) {
       {isClosed(survey) ? (
         <p role="status" className="rounded-box bg-surface p-4">
           마감된 설문이에요. 참여해 주셔서 고마워요.
+        </p>
+      ) : survey.paused ? (
+        <p role="status" className="rounded-box bg-surface p-4">
+          {PAUSED}
         </p>
       ) : (
         <RespondFlow slug={slug} questions={(survey.questions ?? []) as PublicQuestion[]} contact={process.env.CONTACT_EMAIL || null} />

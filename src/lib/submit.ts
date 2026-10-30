@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { ConflictError } from "@/lib/design";
-import { ipHashOf, isClosed, readToken, type OpenSurvey } from "@/lib/respond";
+import { ipHashOf, isClosed, PAUSED, readToken, type OpenSurvey } from "@/lib/respond";
 
 // 응답 제출(R-19)·마감(R-16)·제출 횟수 제한(R-4). 저장은 DB 함수 submit_response가 한 트랜잭션으로 한다.
 // db는 서버(service role) 클라이언트(ADR 0019).
@@ -65,6 +65,7 @@ export async function submitResponse(
   const respondentId = readToken(secret, input.token, now);
   if (!respondentId) throw new SubmitError("인증한 지 30분이 지났어요. 새로고침해서 이메일 인증을 다시 해 주세요.", "token");
   if (isClosed(input.survey, now)) throw new SubmitError(CLOSED, "closed");
+  if (input.survey.paused) throw new SubmitError(PAUSED, "closed");
 
   // 다른 설문에서 받은 토큰으로 내지 못하게
   const { data: respondent } = await db

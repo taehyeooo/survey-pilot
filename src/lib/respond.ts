@@ -53,7 +53,10 @@ export interface OpenSurvey {
   status: string;
   archived_at: string | null;
   closes_at: string | null;
+  paused?: boolean; // 설문 주인이 정지됨(multi-user R-8)
 }
+
+export const PAUSED = "지금은 응답을 받지 않아요.";
 
 export function isClosed(survey: OpenSurvey, now = Date.now()) {
   return survey.status !== "published" || Boolean(survey.archived_at) || (survey.closes_at !== null && Date.parse(survey.closes_at) <= now);
@@ -80,6 +83,7 @@ export async function requestCode(
   if (input.honeypot.trim()) return "ignored"; // 봇에게는 성공처럼(R-4)
   if (!input.consent) throw new RespondError("개인정보 수집·이용에 동의해야 응답할 수 있어요.", "consent");
   if (isClosed(input.survey, now)) throw new RespondError("마감된 설문이에요.", "closed");
+  if (input.survey.paused) throw new RespondError(PAUSED, "closed");
   const email = normalizeEmail(input.email);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new RespondError("이메일 주소를 다시 확인해 주세요.", "email");
 
@@ -133,6 +137,7 @@ export async function verifyCode(
   now = Date.now(),
 ) {
   if (isClosed(input.survey, now)) throw new RespondError("마감된 설문이에요.", "closed");
+  if (input.survey.paused) throw new RespondError(PAUSED, "closed");
   const email = normalizeEmail(input.email);
   const emailHash = emailHashOf(secret, email);
   const { data: v } = await db

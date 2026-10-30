@@ -35,17 +35,20 @@ export async function publishSurvey(db: SupabaseClient, survey: { id: string; st
 }
 
 // 공개 링크로 찾는다 — 게시 전(designing·reviewing)이면 없는 것과 같다(R-13).
+// paused: 설문 주인이 정지됐으면 응답을 받지 않는다(multi-user R-8). 해제되면 다시 false.
 export async function findPublicSurvey(db: SupabaseClient, slug: string) {
   if (!/^[A-Za-z0-9]{12}$/.test(slug)) return null;
   const { data } = await db
     .from("surveys")
-    .select("id, status, intro, target_minutes, closes_at, archived_at, questions(id, position, type, prompt, options, required)")
+    .select("id, status, intro, target_minutes, closes_at, archived_at, owner:profiles(suspended_at), questions(id, position, type, prompt, options, required)")
     .order("position", { referencedTable: "questions" })
     .eq("slug", slug)
     .in("status", ["published", "closed"])
     .maybeSingle()
     .throwOnError();
-  return data;
+  if (!data) return null;
+  const { owner, ...survey } = data as typeof data & { owner: { suspended_at: string | null } | null };
+  return { ...survey, paused: Boolean(owner?.suspended_at) };
 }
 
 export async function responseCount(db: SupabaseClient, surveyId: string) {
