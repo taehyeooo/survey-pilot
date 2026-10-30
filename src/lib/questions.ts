@@ -215,18 +215,20 @@ export async function updateQuestion(
   db: SupabaseClient,
   surveyId: string,
   questionId: string,
-  edit: { prompt: string; options: string[]; required: boolean },
+  edit: { prompt: string; options: string[]; required: boolean; type?: string },
 ) {
   const { question } = await find(db, surveyId, questionId);
   if (isClosing(question)) throw new ConflictError(FIXED);
   const prompt = edit.prompt.trim();
   if (!prompt) throw new RangeError("문항을 비워 둘 수 없어요.");
+  const type = edit.type ?? question.type;
+  if (!Object.hasOwn(SECONDS, type)) throw new RangeError("문항 종류를 다시 골라 주세요.");
   const options = edit.options.map((o) => o.trim()).filter(Boolean);
-  const choice = question.type === "single" || question.type === "multi";
+  const choice = type === "single" || type === "multi";
   if (choice && options.length < 2) throw new RangeError("선택지는 2개 이상이어야 해요.");
   await db
     .from("questions")
-    .update({ prompt, options: choice ? optionRows(options) : [], required: edit.required, review_note: null })
+    .update({ prompt, type, options: choice ? optionRows(options) : [], required: edit.required, review_note: null })
     .eq("id", questionId)
     .eq("survey_id", surveyId)
     .throwOnError();
