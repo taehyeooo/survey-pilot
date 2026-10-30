@@ -9,7 +9,7 @@
 ## 승인 대기
 
 ## 다음 할 일
-1. 여러 사용자 [plan](../docs/plans/2026-10-30-multi-user.md) 4단계: 경로 `/admin` → `/app` 이전과 첫 화면(로그인 상태면 `/app`) — 3단계(누구나 입장·이용 안내 동의·주인 확인)까지 머지됨. [spec](../docs/specs/2026-10-30-multi-user.md), ADR 0020. 화면 단계(11)는 apple-design 스킬
+1. 여러 사용자 [plan](../docs/plans/2026-10-30-multi-user.md) 5단계: 사용 기록에 user_id·survey_id — 4단계(사용자 화면 `/app`, 첫 화면)까지 머지됨. [spec](../docs/specs/2026-10-30-multi-user.md), ADR 0020. 화면 단계(11)는 apple-design 스킬
 2. plan 4단계(샘플 검증): 문항 30개(Claude 판정 29/30)·리포트(3/3) 끝 — [결과](../docs/samples/2026-10-30-run.md). **사용자 판정이 남음**(기준 24/30) — 판정하면 4단계 체크. 결정 필요: 서로 반대인 가설의 중복 문항(#11) — 그대로(편집에서 지움) 또는 문항-가설 다대다 구조
 3. 결정 필요: `CONTACT_EMAIL`(Vercel에도 아직 없음) — 여러 사용자 11단계 전
 4. 운영 크론(KST 00:10) 첫 실행 결과는 다음 날 Vercel 로그에서 확인

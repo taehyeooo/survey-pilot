@@ -120,7 +120,7 @@ export function ResultsSection({
           결과
         </h2>
         {responseCount > 0 && (
-          <a href={`/admin/surveys/${surveyId}/export`} className="inline-flex min-h-11 items-center rounded-box px-3 text-sm text-muted underline hover:bg-surface">
+          <a href={`/app/surveys/${surveyId}/export`} className="inline-flex min-h-11 items-center rounded-box px-3 text-sm text-muted underline hover:bg-surface">
             CSV 내려받기
           </a>
         )}

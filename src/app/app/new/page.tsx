@@ -20,7 +20,7 @@ async function NewSurvey() {
 export default function NewSurveyPage() {
   return (
     <main className="mx-auto flex min-h-[70vh] w-full max-w-2xl flex-col justify-center gap-6 px-4 py-8">
-      <Link href="/admin" className="inline-flex min-h-11 items-center self-start text-sm text-muted hover:underline">
+      <Link href="/app" className="inline-flex min-h-11 items-center self-start text-sm text-muted hover:underline">
         ← 내 설문
       </Link>
       <StageBar current={0} />

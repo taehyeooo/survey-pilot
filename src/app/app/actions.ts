@@ -10,13 +10,13 @@ import { archiveSurvey, restoreSurvey } from "@/lib/surveys";
 export async function archive(id: string) {
   const { user } = await requireMember();
   await archiveSurvey(createAdminClient(), user.id, id);
-  revalidatePath("/admin");
+  revalidatePath("/app");
 }
 
 export async function restore(id: string) {
   const { user } = await requireMember();
   await restoreSurvey(createAdminClient(), user.id, id);
-  revalidatePath("/admin");
+  revalidatePath("/app");
 }
 
 export async function logout() {

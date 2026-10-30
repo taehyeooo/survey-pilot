@@ -9,5 +9,5 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export async function agree() {
   const { user } = await requireSignedIn();
   await agreeToTerms(createAdminClient(), user.id);
-  redirect("/admin");
+  redirect("/app");
 }

@@ -22,7 +22,7 @@ sources:
    ```bash
    ADMIN_EMAIL=test-e2e-admin@example.com npm run dev -- --port 3001
    ```
-3. 출력된 링크의 `localhost`를 **`127.0.0.1`로 바꿔** 브라우저로 연다 → `/auth/confirm`이 `verifyOtp(token_hash)`로 세션을 만들고 `/admin`으로 보낸다.
+3. 출력된 링크의 `localhost`를 **`127.0.0.1`로 바꿔** 브라우저로 연다 → `/auth/confirm`이 `verifyOtp(token_hash)`로 세션을 만들고 `/app`으로 보낸다.
    - 쿠키는 포트가 아니라 호스트 이름으로 나뉜다. `localhost:3001`로 열면 `localhost:3000`의 실제 관리자 세션을 덮어써 로그아웃시킨다(2026-10-29 겪을 뻔함).
    - `127.0.0.1`에서 개발용 JS를 받으려면 `next.config.ts`의 `allowedDevOrigins`에 있어야 한다 — 없으면 화면은 보이지만 하이드레이트가 안 돼 버튼 클릭(복사 등)이 동작하지 않는다(폼은 서버 액션이라 동작해서 헷갈린다).
 4. 끝나면 정리한다(계정·설문·admins 행). 서버는 PID로 끈다.
