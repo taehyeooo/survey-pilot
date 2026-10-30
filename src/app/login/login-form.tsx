@@ -26,7 +26,8 @@ const linkButton = "inline-flex min-h-11 items-center text-sm text-muted underli
 
 // 인증번호 남은 시간(1초마다). 0이 되면 확인 버튼을 막고 다시 받게 한다.
 function useSecondsLeft(sentAt: number | undefined) {
-  const [now, setNow] = useState(() => Date.now());
+  // 처음에는 보낸 시각으로 본다(3:00) — 미리 렌더링 중에 현재 시각을 읽지 않는다(Cache Components).
+  const [now, setNow] = useState(0);
   useEffect(() => {
     if (!sentAt) return;
     const timer = setInterval(() => setNow(Date.now()), 1000);
