@@ -99,6 +99,7 @@ const FORMAT = `JSON만 출력한다: {"questions":[{"hypothesis":1,"type":"sing
 - hypothesis: 확인하는 가설 번호(1부터), 어느 가설과도 무관하면 null
 - type: single(하나 고르기)·multi(여러 개 고르기)·scale(1~5 척도)·text(주관식)
 - options: single·multi만 2~8개, scale·text는 []
+- 경험·원인·이유·쓰는 것처럼 한 사람에게 여러 개가 함께 해당할 수 있으면 multi("해당하는 것을 모두 골라 주세요"). "가장 ~한 것 하나"를 물을 때나 답이 하나뿐일 때만 single
 - 한 문항에 대상 하나: "A와 B에 만족하나요?", "A나 B를 겪었나요?"처럼 두 가지를 묶지 않는다(하나만 묻거나 문항을 나눈다)
 - 말투는 해요체: "~인가요?", "~하나요?", "~골라 주세요" (O) / "~입니까?", "~하십니까?", "~했습니다." (X)
 - scale은 한 가지의 정도를 묻는 질문(1~5로 답할 수 있게). 두 가지 중 어느 쪽인지 묻는다면 single
@@ -215,18 +216,20 @@ export async function updateQuestion(
   db: SupabaseClient,
   surveyId: string,
   questionId: string,
-  edit: { prompt: string; options: string[]; required: boolean },
+  edit: { prompt: string; options: string[]; required: boolean; type?: string },
 ) {
   const { question } = await find(db, surveyId, questionId);
   if (isClosing(question)) throw new ConflictError(FIXED);
   const prompt = edit.prompt.trim();
   if (!prompt) throw new RangeError("문항을 비워 둘 수 없어요.");
+  const type = edit.type ?? question.type;
+  if (!Object.hasOwn(SECONDS, type)) throw new RangeError("문항 종류를 다시 골라 주세요.");
   const options = edit.options.map((o) => o.trim()).filter(Boolean);
-  const choice = question.type === "single" || question.type === "multi";
+  const choice = type === "single" || type === "multi";
   if (choice && options.length < 2) throw new RangeError("선택지는 2개 이상이어야 해요.");
   await db
     .from("questions")
-    .update({ prompt, options: choice ? optionRows(options) : [], required: edit.required, review_note: null })
+    .update({ prompt, type, options: choice ? optionRows(options) : [], required: edit.required, review_note: null })
     .eq("id", questionId)
     .eq("survey_id", surveyId)
     .throwOnError();

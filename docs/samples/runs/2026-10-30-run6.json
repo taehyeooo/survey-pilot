@@ -1,0 +1,1336 @@
+[
+  {
+    "n": 1,
+    "kind": "명확",
+    "problem": "주 2회 저녁 7시에 모이는 개발 스터디(회원 15명)의 출석률이 최근 3개월 동안 80%에서 50%로 떨어진 이유를 알고, 모임 방식을 바꿀지 정하고 싶다",
+    "clarify": {
+      "ms": 1147,
+      "questions": []
+    },
+    "design": {
+      "ms": 3222,
+      "purpose": "최근 3개월간 개발 스터디의 출석률 하락 원인과 회원들의 모임 방식 변경 선호도를 알아본다.",
+      "hypotheses": [
+        "저녁 7시라는 시간대가 퇴근 시간 교통체증 및 야근과 겹쳐 참석을 어렵게 만든다.",
+        "스터디에서 다루는 내용이나 난이도가 현재 회원들의 관심사나 실력과 맞지 않는다.",
+        "온라인 참여 옵션이 부족하거나 오프라인 대면 모임의 부담감이 커졌다.",
+        "개인 일정 및 번아웃으로 인해 스터디 외적인 시간 할애가 여유롭지 않다."
+      ],
+      "audience": "주 2회 저녁 개발 스터디 회원 15명 전원",
+      "target_responses": 15,
+      "target_minutes": 3,
+      "intro": "최근 스터디 출석률 변화와 관련하여 회원 여러분의 의견을 듣고자 합니다. 더 나은 모임 운영 방식을 정하기 위한 기초 자료로만 활용되며, 소요 시간은 약 3분입니다. 편하게 솔직한 의견을 남겨주세요.",
+      "share_message": "개발 스터디 방향성을 정하기 위한 3분 설문입니다! 여러분의 소중한 의견을 들려주세요."
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "multi",
+          "prompt": "저녁 7시 스터디 참석을 어렵게 만드는 요인은 무엇인가요? 해당하는 것을 모두 골라 주세요.",
+          "options": [
+            "퇴근 시간 교통체증",
+            "야근 및 업무 연장",
+            "저녁 식사 시간 부족",
+            "기타",
+            "없음"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "현재 스터디에서 다루는 내용과 난이도는 본인의 실력과 관심사에 적절한가요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "오프라인 대면 모임 중심의 진행 방식에 대해 어떻게 생각하시나요?",
+          "options": [
+            "매우 부담스럽다",
+            "약간 부담스럽다",
+            "보통이다",
+            "부담스럽지 않다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "multi",
+          "prompt": "최근 3개월 동안 스터디 외적으로 시간 할애를 어렵게 만든 요인은 무엇인가요? 해당하는 것을 모두 골라 주세요.",
+          "options": [
+            "개인 일정 증가",
+            "업무로 인한 번아웃",
+            "체력 저하",
+            "기타",
+            "없음"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "multi",
+          "prompt": "저녁 7시 스터디 참석을 어렵게 만드는 요인은 무엇인가요? 해당하는 것을 모두 골라 주세요.",
+          "options": [
+            "퇴근 시간 교통체증",
+            "야근 및 업무 연장",
+            "저녁 식사 시간 부족",
+            "기타",
+            "없음"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "현재 스터디에서 다루는 내용과 난이도는 본인의 실력과 적절한가요?",
+          "options": [],
+          "required": true,
+          "review_note": "한 문항에 내용과 난이도 두 가지를 묻고 있어 '난이도' 하나만 묻도록 수정함"
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "오프라인 대면 모임 중심의 진행 방식에 대해 어떻게 생각하시나요?",
+          "options": [
+            "매우 부담스럽다",
+            "약간 부담스럽다",
+            "보통이다",
+            "부담스럽지 않다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "multi",
+          "prompt": "최근 3개월 동안 스터디 외적으로 시간 할애를 어렵게 만든 요인은 무엇인가요? 해당하는 것을 모두 골라 주세요.",
+          "options": [
+            "개인 일정 증가",
+            "업무로 인한 번아웃",
+            "체력 저하",
+            "기타",
+            "없음"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 32,
+      "ms": 3919
+    }
+  },
+  {
+    "n": 2,
+    "kind": "명확",
+    "problem": "우리 동네 작은 카페의 평일 오후 2~5시 손님이 지난달보다 30% 줄었다. 단골손님들에게 이유를 물어 신메뉴나 할인 중 무엇을 할지 정하고 싶다",
+    "clarify": {
+      "ms": 848,
+      "questions": []
+    },
+    "design": {
+      "ms": 2261,
+      "purpose": "동네 작은 카페의 평일 오후 시간대 매출 감소 원인을 파악하고 고객 요구에 맞는 대응 방안을 알아본다.",
+      "hypotheses": [
+        "평일 오후 시간대에 인근 직장인이나 학생들의 주요 방문 동선이 변경되었거나 체류 시간이 줄었다.",
+        "최근 주변에 새로 생긴 경쟁 카페로 인해 고객 유출이 발생했다.",
+        "신메뉴 출시나 할인 프로모션 여부와 관계없이, 해당 시간대 음료 및 공간 가치에 대한 고객의 매력도가 감소했다."
+      ],
+      "audience": "최근 3개월 이내에 평일 오후 2~5시 사이에 해당 카페를 방문한 적이 있는 고객",
+      "target_responses": 100,
+      "target_minutes": 3,
+      "intro": "안녕하세요! 저희 동네 작은 카페를 아껴주시는 고객님의 소중한 의견을 듣고자 설문을 준비했습니다. 평일 오후 시간대 방문 변화의 이유를 여쭙고 더 나은 공간을 만들기 위함이며, 약 3분이 소요됩니다. 솔직한 답변을 부탁드립니다.",
+      "share_message": "[카페 이용 설문] 평일 오후 시간대 방문 변화에 대해 의견을 들려주세요! (소요 시간: 약 3분)"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "평일 오후 2시에서 5시 사이에 본인의 일과나 이동 동선에 변화가 생겼나요?",
+          "options": [
+            "그렇다",
+            "아니다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "multi",
+          "prompt": "최근 3개월 이내에 평일 오후 시간대에 본 카페를 방문했을 때 주변의 다른 카페를 이용해 본 적이 있나요? 해당하는 이유를 모두 골라 주세요.",
+          "options": [
+            "새로 생긴 카페가 궁금해서",
+            "더 다양한 메뉴가 있어서",
+            "할인 혜택이 좋아서",
+            "위치가 더 편리해서",
+            "이용해 본 적 없다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "평일 오후 시간대에 이용하는 이 카페의 음료 맛과 메뉴 구성에 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "평일 오후 시간대에 머무는 이 카페의 공간 분위기와 편의성에 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "평일 오후 2시에서 5시 사이에 본인의 일과나 이동 동선에 변화가 생겼나요?",
+          "options": [
+            "그렇다",
+            "아니다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "multi",
+          "prompt": "최근 3개월 이내에 평일 오후 시간대에 본 카페 대신 주변의 다른 카페를 이용한 이유는 무엇인가요? 해당하는 것을 모두 골라 주세요.",
+          "options": [
+            "새로 생긴 카페가 궁금해서",
+            "더 다양한 메뉴가 있어서",
+            "할인 혜택이 좋아서",
+            "위치가 더 편리해서",
+            "기타",
+            "이용해 본 적 없다"
+          ],
+          "required": true,
+          "review_note": "방문 경험과 이유를 한 문항에서 묻던 것을 분리하고, 선택지에 '기타'를 추가함"
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "평일 오후 시간대에 이용하는 이 카페의 음료 맛에 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": "음료 맛과 메뉴 구성을 동시에 묻던 것을 음료 맛 하나만 묻도록 수정함"
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "평일 오후 시간대에 머무는 이 카페의 공간 분위기에 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": "공간 분위기와 편의성을 동시에 묻던 것을 공간 분위기 하나만 묻도록 수정함"
+        }
+      ],
+      "seconds": 27,
+      "ms": 4232
+    }
+  },
+  {
+    "n": 4,
+    "kind": "명확",
+    "problem": "사내 점심 배달 서비스를 3개월째 쓰고 있는데 직원 만족도가 낮다는 이야기가 있다. 직원 60명에게 무엇이 불만인지 물어 업체를 바꿀지 정하고 싶다",
+    "clarify": {
+      "ms": 1676,
+      "questions": []
+    },
+    "design": {
+      "ms": 1885,
+      "purpose": "사내 점심 배달 서비스에 대한 직원들의 실제 만족도와 주요 불만족 요인을 파악한다.",
+      "hypotheses": [
+        "메뉴의 다양성과 맛이 부족하여 불만족이 발생한다.",
+        "배달 시간 지연이나 일정한 수령 시간 확보의 어려움이 불만족의 주원인이다.",
+        "가격 대비 양이나 품질(가성비)이 기대에 미치지 못한다.",
+        "배달 서비스 자체의 문제라기보다는 구내식당이나 외부 식당 이용 등 직원 개개인의 선호하는 점심 형태가 다양해진 것이 원인이다."
+      ],
+      "audience": "사내 점심 배달 서비스를 이용하는 전 직원",
+      "target_responses": 60,
+      "target_minutes": 3,
+      "intro": "안녕하세요. 사내 점심 배달 서비스 이용 경험과 개선점을 알아보기 위한 설문입니다. 더 나은 점심 환경을 만들기 위해 소중한 의견을 들려주세요. 소요 시간은 약 3분입니다.",
+      "share_message": "[설문] 사내 점심 배달 서비스 만족도 조사 (약 3분 소요)"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "현재 제공되는 점심 배달 메뉴의 다양성에 대해 어떻게 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "현재 제공되는 점심 배달 메뉴의 맛에 대해 어떻게 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "점심 배달 서비스의 배달 시간 준수 정도에 대해 어떻게 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "원하는 시간에 점심을 수령하는 과정이 원활하다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "현재 점심 배달 서비스의 가격 대비 양(포만감)에 대해 어떻게 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "현재 점심 배달 서비스의 가격 대비 음식 품질에 대해 어떻게 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "single",
+          "prompt": "평소 선호하는 점심 식사 형태와 가장 가까운 것은 무엇인가요?",
+          "options": [
+            "구내식당 이용",
+            "사내 점심 배달 서비스",
+            "회사 근처 외부 식당 이용",
+            "도시락 지참",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "현재 제공되는 점심 배달 메뉴의 다양성에 대해 어떻게 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "현재 제공되는 점심 배달 메뉴의 맛에 대해 어떻게 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "점심 배달 서비스의 배달 시간 준수 정도에 대해 어떻게 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "원하는 시간에 점심을 수령하는 과정이 원활하다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "현재 점심 배달 서비스의 가격 대비 양(포만감)에 대해 어떻게 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "현재 점심 배달 서비스의 가격 대비 음식 품질에 대해 어떻게 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "single",
+          "prompt": "평소 선호하는 점심 식사 형태와 가장 가까운 것은 무엇인가요?",
+          "options": [
+            "구내식당 이용",
+            "사내 점심 배달 서비스",
+            "회사 근처 외부 식당 이용",
+            "도시락 지참",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 37,
+      "ms": 4171
+    }
+  },
+  {
+    "n": 5,
+    "kind": "명확",
+    "problem": "온라인 독서 모임(회원 25명)에서 매달 고르는 책을 끝까지 읽는 사람이 절반도 안 된다. 책 분량·장르·고르는 방식 중 무엇이 문제인지 알고 싶다",
+    "clarify": {
+      "ms": 1466,
+      "questions": [
+        {
+          "question": "이 모임은 주로 어떤 장르의 책을 읽나요?",
+          "options": [
+            "인문/사회/과학",
+            "소설/에세이",
+            "실용서/자기계발",
+            "다양한 장르 혼합"
+          ]
+        },
+        {
+          "question": "온라인 모임은 주로 어떤 방식으로 진행되나요?",
+          "options": [
+            "카카오톡 텍스트 채팅",
+            "화상회의 (줌 등)",
+            "게시판/카페 글쓰기",
+            "자율 인증 방식"
+          ]
+        }
+      ]
+    },
+    "design": {
+      "ms": 1791,
+      "purpose": "온라인 독서 모임 회원들이 매달 선정된 책을 완독하지 못하는 주된 이유와 요인을 알아본다.",
+      "hypotheses": [
+        "선정된 도서의 분량이 많거나 호흡이 길어 정해진 기간 내에 읽기 부담스럽다.",
+        "인문, 사회, 과학 중심의 도서 장르 자체가 회원들의 평소 독서 취향과 맞지 않는다.",
+        "텍스트 위주의 온라인 소통 방식만으로는 독서 동기를 지속적으로 유지하기 어렵다.",
+        "책의 분량이나 장르보다는 개인의 바쁜 일상과 시간 부족이 완독률 저하의 주된 원인이다."
+      ],
+      "audience": "온라인 독서 모임 회원 25명",
+      "target_responses": 25,
+      "target_minutes": 3,
+      "intro": "안녕하세요! 우리 독서 모임의 도서 완독률을 높이고 더 즐거운 모임을 만들기 위해 의견을 묻고자 합니다. 솔직한 답변을 부탁드리며, 작성에는 3분 정도 소요됩니다.",
+      "share_message": "[독서모임] 더 즐겁고 알찬 모임을 위한 3분 설문조사에 참여해 주세요!"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "매달 선정되는 도서의 분량이 정해진 기간 내에 읽기 부담스러우신가요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "매달 선정되는 도서의 장르가 평소 본인의 독서 취향과 잘 맞지 않다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "텍스트 위주의 온라인 소통 방식만으로는 독서 동기를 지속하기 어렵다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "scale",
+          "prompt": "개인적인 바쁜 일상과 시간 부족 때문에 책을 끝까지 읽지 못하는 경우가 많으신가요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "매달 선정되는 도서의 분량이 정해진 기간 내에 읽기 부담스러우신가요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "매달 선정되는 도서의 장르가 평소 본인의 독서 취향과 잘 맞지 않다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "텍스트 위주의 온라인 소통 방식만으로는 독서 동기를 지속하기 어렵다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "scale",
+          "prompt": "개인적인 바쁜 일상과 시간 부족 때문에 책을 끝까지 읽지 못하는 경우가 많으신가요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 20,
+      "ms": 3294
+    }
+  },
+  {
+    "n": 8,
+    "kind": "명확",
+    "problem": "회사 신입사원 온보딩 프로그램(2주)을 마친 직원 30명에게 무엇이 도움이 됐고 무엇이 부족했는지 물어 다음 기수 프로그램을 고치고 싶다",
+    "clarify": {
+      "ms": 1156,
+      "questions": []
+    },
+    "design": {
+      "ms": 1897,
+      "purpose": "신입사원 온보딩 프로그램의 실효성을 파악하고 향후 개선 방향을 알아본다",
+      "hypotheses": [
+        "직무 관련 실무 교육이 문화 적응 교육보다 온보딩 만족도에 더 큰 영향을 미칠 것이다",
+        "버디(멘토) 프로그램의 유무가 초기 업무 몰입도에 유의미한 차이를 만들지 않았다",
+        "온보딩 기간(2주)이 실제 업무 수행에 필요한 지식을 습득하기에 부족하다는 의견이 많을 것이다"
+      ],
+      "audience": "신입사원 온보딩 프로그램을 수료한 입사 3개월 이내의 직원",
+      "target_responses": 30,
+      "target_minutes": 3,
+      "intro": "안녕하세요! 더 나은 신입사원 온보딩 프로그램을 만들기 위해 여러분의 솔직한 의견을 듣고자 합니다. 설문 소요 시간은 약 3분이며, 응답은 프로그램 개선 목적으로만 활용됩니다.",
+      "share_message": "[설문] 신입사원 온보딩 프로그램 개선을 위한 설문입니다! 소중한 경험을 들려주세요 (약 3분 소요)"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "직무 관련 실무 교육에 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "회사 문화 적응 교육에 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "입사 후 버디(멘토) 프로그램에 참여하셨나요?",
+          "options": [
+            "참여했다",
+            "참여하지 않았다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "현재 업무에 얼마나 몰입하고 계시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "온보딩 프로그램 2주일간 실제 업무에 필요한 지식을 충분히 습득하셨나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "text",
+          "prompt": "온보딩 기간과 관련하여 부족하다고 느낀 점이 있다면 적어 주세요.",
+          "options": [],
+          "required": false,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "직무 관련 실무 교육에 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "회사 문화 적응 교육에 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "입사 후 버디(멘토) 프로그램에 참여하셨나요?",
+          "options": [
+            "참여했다",
+            "참여하지 않았다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "현재 업무에 얼마나 몰입하고 계시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "온보딩 기간 동안 실제 업무에 필요한 지식을 충분히 습득하셨나요?",
+          "options": [],
+          "required": true,
+          "review_note": "문항 내 특정 기간(2주일간)을 언급하여 대상을 한정하던 것을 수정함"
+        },
+        {
+          "hypothesis": 3,
+          "type": "text",
+          "prompt": "온보딩 기간과 관련하여 부족하다고 느낀 점이 있다면 적어 주세요.",
+          "options": [],
+          "required": false,
+          "review_note": null
+        }
+      ],
+      "seconds": 57,
+      "ms": 4174
+    }
+  },
+  {
+    "n": 9,
+    "kind": "명확",
+    "problem": "아파트 단지(300세대) 입주자회의가 헬스장 운영 시간을 늘릴지 정해야 한다. 주민들이 언제 얼마나 쓰는지, 추가 관리비를 낼 의향이 있는지 알고 싶다",
+    "clarify": {
+      "ms": 1019,
+      "questions": []
+    },
+    "design": {
+      "ms": 1883,
+      "purpose": "아파트 단지 헬스장 운영 시간 연장 필요성과 추가 관리비 수용 의사를 알아본다",
+      "hypotheses": [
+        "현재 운영 시간 외의 시간대(이른 아침이나 심야)에 이용을 희망하는 주민이 전체의 30% 이상이다",
+        "운영 시간 연장으로 발생하는 추가 관리비를 월 5천 원 이상 부담할 의향이 있는 세대는 과반수이다",
+        "운영 시간을 늘려도 실제 이용 시간 증가로 인한 추가 수요는 미미할 것이다"
+      ],
+      "audience": "해당 아파트 단지 300세대의 입주민 대표 또는 세대원",
+      "target_responses": 150,
+      "target_minutes": 3,
+      "intro": "안녕하세요, 입주자회의입니다. 더 나은 헬스장 운영 방안을 마련하기 위해 주민 여러분의 이용 현황과 의견을 묻는 설문을 진행합니다. 소요 시간은 약 3분입니다.",
+      "share_message": "[설문] 헬스장 운영 시간 연장 및 관리비 관련 주민 의견 조사 (3분 소요)"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "multi",
+          "prompt": "현재 헬스장 운영 시간 외에 추가로 이용하고 싶은 시간대를 모두 골라 주세요.",
+          "options": [
+            "이른 아침 (06:00 이전)",
+            "늦은 밤 (22:00 이후)",
+            "주말 오전",
+            "주말 야간",
+            "추가 이용 희망 시간대 없음"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "헬스장 운영 시간 연장 시 발생하는 추가 관리비를 월 5천 원 이상 부담할 의향이 있으신가요?",
+          "options": [
+            "매우 그렇다",
+            "그런 편이다",
+            "보통이다",
+            "아닌 편이다",
+            "전혀 아니다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "헬스장 운영 시간이 늘어나면 실제 이용 시간이 크게 늘어날 것이라고 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "multi",
+          "prompt": "현재 헬스장 운영 시간 외에 추가로 이용하고 싶은 시간대를 모두 골라 주세요.",
+          "options": [
+            "이른 아침 (06:00 이전)",
+            "늦은 밤 (22:00 이후)",
+            "주말 오전",
+            "주말 야간",
+            "추가 이용 희망 시간대 없음",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "응답자가 빠짐없이 선택할 수 있도록 '기타' 선택지를 추가함."
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "헬스장 운영 시간 연장 시 발생하는 추가 관리비를 월 5천 원 이상 부담할 의향이 있으신가요?",
+          "options": [
+            "매우 그렇다",
+            "그런 편이다",
+            "보통이다",
+            "아닌 편이다",
+            "전혀 아니다",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "다양한 의견을 수용하기 위해 '기타' 선택지를 추가함."
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "헬스장 운영 시간이 늘어나면 실제 이용 시간이 늘어날 것으로 생각하시나요?",
+          "options": [
+            "매우 그렇다",
+            "그런 편이다",
+            "보통이다",
+            "아닌 편이다",
+            "전혀 아니다"
+          ],
+          "required": true,
+          "review_note": "결과를 전제하는 유도 질문 성격을 제거하고, 1~5 척도 대신 명확한 단일 선택(single) 문항으로 수정함."
+        }
+      ],
+      "seconds": 24,
+      "ms": 4037
+    }
+  },
+  {
+    "n": 15,
+    "kind": "모호",
+    "problem": "신메뉴를 뭐로 할지 정하고 싶어요",
+    "clarify": {
+      "ms": 1862,
+      "questions": [
+        {
+          "question": "이 신메뉴는 어떤 매장에서 판매할 예정인가요?",
+          "options": [
+            "기존 매장 전체",
+            "특정 상권 매장",
+            "온라인 전용"
+          ]
+        },
+        {
+          "question": "어떤 고객층을 대상으로 하고 싶나요?",
+          "options": [
+            "2030 젊은 층",
+            "가족 단위 손님",
+            "직장인 점심 손님"
+          ]
+        },
+        {
+          "question": "신메뉴의 카테고리는 무엇인가요?",
+          "options": [
+            "음료 및 디저트",
+            "식사류 메인 메뉴",
+            "간편 사이드 메뉴"
+          ]
+        }
+      ]
+    },
+    "design": {
+      "ms": 2226,
+      "purpose": "2030 고객이 선호하는 음료 및 디저트 신메뉴의 특성과 구매 결정 요인을 알아본다.",
+      "hypotheses": [
+        "2030 고객은 맛과 품질보다 시각적 완성도(인스타 감성)를 신메뉴 선택의 가장 중요한 요인으로 여길 것이다.",
+        "기존 메뉴와 차별화된 이색적인 맛의 조합이 신메뉴 구매 의향에 가장 큰 영향을 미칠 것이다.",
+        "시각적 요소나 이색적인 맛보다는 가격과 가성비가 신메뉴 선택의 핵심 요인일 것이다."
+      ],
+      "audience": "기존 매장을 이용하는 20세~39세 남녀",
+      "target_responses": 200,
+      "target_minutes": 3,
+      "intro": "안녕하세요! 저희 매장에서 새롭게 선보일 음료와 디저트 메뉴를 기획하기 위해 고객님의 소중한 의견을 듣고자 합니다. 설문 작성에는 약 3분이 소요되며, 더 나은 맛과 서비스로 보답하겠습니다.",
+      "share_message": "여러분이 가장 먹고 싶은 신메뉴는 무엇인가요? 3분 만에 취향을 알려주세요!"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "음료나 디저트를 고를 때 시각적 완성도(비주얼, 플레이팅 등)가 얼마나 중요한가요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "신메뉴를 구매할 때 가장 중요하게 고려하는 요인은 무엇인가요?",
+          "options": [
+            "시각적 완성도(인스타 감성)",
+            "이색적인 맛의 조합",
+            "합리적인 가격과 가성비",
+            "기존에 익숙한 맛과 품질",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "음료나 디저트를 고를 때 가격과 가성비가 얼마나 중요한가요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "음료나 디저트를 고를 때 시각적 완성도(비주얼, 플레이팅 등)가 얼마나 중요한가요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "신메뉴를 구매할 때 가장 중요하게 고려하는 요인은 무엇인가요?",
+          "options": [
+            "시각적 완성도(인스타 감성)",
+            "이색적인 맛의 조합",
+            "합리적인 가격과 가성비",
+            "기존에 익숙한 맛과 품질",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "음료나 디저트를 고를 때 가격과 가성비가 얼마나 중요한가요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 17,
+      "ms": 3528
+    }
+  },
+  {
+    "n": 19,
+    "kind": "모호",
+    "problem": "강의 평가를 받아 보고 싶어요",
+    "clarify": {
+      "ms": 1696,
+      "questions": [
+        {
+          "question": "어떤 대상에게 강의 평가를 받고 싶으신가요?",
+          "options": [
+            "대학생",
+            "직장인 교육생",
+            "일반 취미 수강생"
+          ]
+        },
+        {
+          "question": "강의 평가는 언제 진행할 예정인가요?",
+          "options": [
+            "강의 중간에",
+            "강의가 모두 끝난 직후",
+            "강의 종료 후 일정 시간이 지난 뒤"
+          ]
+        },
+        {
+          "question": "이번 평가를 통해 가장 알고 싶은 점은 무엇인가요?",
+          "options": [
+            "강사의 전달력과 진행 방식",
+            "교재 및 강의 자료의 유익함",
+            "전반적인 강의 만족도와 개선점"
+          ]
+        }
+      ]
+    },
+    "design": {
+      "ms": 2487,
+      "purpose": "대학생 수강생들을 대상으로 중간고사 시점에서의 강의 전달력과 진행 방식에 대한 인식을 알아본다",
+      "hypotheses": [
+        "수강생의 절반 이상이 강사의 설명 속도와 전달력에 만족하고 있다",
+        "수강생들은 이론 중심의 설명보다 실습 및 예시 중심의 진행 방식을 더 선호한다",
+        "강의 중간 지점에서의 피드백 반영 여부가 학습 이해도에 긍정적인 영향을 미친다고 생각한다",
+        "현재의 전달력과 진행 방식에 불만을 느끼는 이유는 강사의 일방적인 소통 방식 때문이다"
+      ],
+      "audience": "현재 대학에서 강의를 수강 중인 대학생",
+      "target_responses": 100,
+      "target_minutes": 3,
+      "intro": "안녕하세요! 더 나은 강의를 만들기 위해 여러분의 솔직한 의견을 듣고자 합니다. 강의 진행 방식과 전달력에 대한 생각을 들려주세요. 소요 시간은 약 3분입니다.",
+      "share_message": "[설문] 더 알찬 강의를 위한 중간 피드백에 참여해 주세요! (약 3분 소요)"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "현재 강의의 설명 속도와 전달력에 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "강의 진행 방식 중 어떤 방식을 더 선호하시나요?",
+          "options": [
+            "이론 중심의 설명",
+            "실습 및 예시 중심의 진행",
+            "두 방식이 비슷하게 중요함"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "강의 중간 피드백이 반영되는 것이 학습 이해도에 긍정적인 영향을 미친다고 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "multi",
+          "prompt": "현재 강의의 전달력과 진행 방식에 불만이 있다면, 그 이유는 무엇인가요? 해당하는 것을 모두 골라 주세요.",
+          "options": [
+            "강사의 일방적인 소통 방식",
+            "부족한 실습 및 예시",
+            "적절하지 않은 설명 속도",
+            "질문하기 어려운 분위기",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "현재 강의의 설명 속도에 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": "속도와 전달력이라는 두 가지 내용을 한 문항에서 묻고 있어 설명 속도로 범위를 좁혀 하나만 묻도록 수정했습니다."
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "강의 진행 방식 중 어떤 방식을 더 선호하시나요?",
+          "options": [
+            "이론 중심의 설명",
+            "실습 및 예시 중심의 진행",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "선택지 중 '두 방식이 비슷하게 중요함'은 선호 방식을 묻는 취지와 혼동을 줄 수 있어 '기타'로 대체했습니다."
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "강의 중간 피드백이 학습 이해도에 긍정적인 영향을 미치나요?",
+          "options": [],
+          "required": true,
+          "review_note": "말투를 간결한 해요체(~인가요?)로 다듬었습니다."
+        },
+        {
+          "hypothesis": 4,
+          "type": "multi",
+          "prompt": "현재 강의의 전달력에 불만이 있다면, 그 이유는 무엇인가요? 해당하는 것을 모두 골라 주세요.",
+          "options": [
+            "강사의 일방적인 소통 방식",
+            "부족한 실습 및 예시",
+            "적절하지 않은 설명 속도",
+            "질문하기 어려운 분위기",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "전달력과 진행 방식을 동시에 묻던 것을 전달력으로 한정하여 한 문항에 하나의 대상만 묻도록 수정했습니다."
+        }
+      ],
+      "seconds": 27,
+      "ms": 4326
+    }
+  },
+  {
+    "n": 24,
+    "kind": "편향",
+    "problem": "우리 카페 커피가 맛없어서 손님이 줄어든 것 같은데, 원두를 바꾸면 좋아한다는 걸 보여 주는 설문을 만들고 싶다",
+    "clarify": {
+      "ms": 1736,
+      "questions": [
+        {
+          "question": "설문에 참여할 주 대상은 누구인가요?",
+          "options": [
+            "우리 카페를 자주 찾는 단골손님",
+            "최근 발길이 뜸해진 예전 손님",
+            "근처를 지나가다 들르는 신규 손님",
+            "카페를 이용하는 모든 방문객"
+          ]
+        },
+        {
+          "question": "설문은 언제, 어디서 진행할 예정인가요?",
+          "options": [
+            "계산대 앞에서 테이크아웃할 때",
+            "자리에 앉아 음료를 마실 때",
+            "카페에서 나갈 때 모바일로",
+            "매장 방문 후 SNS나 문자로"
+          ]
+        }
+      ]
+    },
+    "design": {
+      "ms": 2191,
+      "purpose": "단골손님의 카페 커피 맛과 메뉴 만족도를 파악하고 방문 빈도 변화의 원인을 알아본다.",
+      "hypotheses": [
+        "원두의 산미와 로스팅 강도가 손님의 취향과 맞지 않아 커피 만족도가 낮아졌다.",
+        "원두 맛보다는 가격, 주변 경쟁 카페 증가, 서비스 등 다른 요인이 방문 감소에 더 큰 영향을 미쳤다.",
+        "디저트나 음료 메뉴의 다양성 부족이 전반적인 만족도 저하로 이어졌다."
+      ],
+      "audience": "우리 카페를 자주 찾는 단골손님",
+      "target_responses": 100,
+      "target_minutes": 2,
+      "intro": "안녕하세요! 더 맛있는 커피와 편안한 공간을 만들기 위해 단골손님들의 소중한 의견을 듣고자 합니다. 잠시 시간을 내어 솔직한 생각을 남겨주세요. 소요 시간은 약 2분입니다.",
+      "share_message": "더 나은 우리 카페를 위해 커피와 메뉴에 대한 생각을 들려주세요! 2분이면 충분합니다. 많은 참여 부탁드려요!"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "현재 우리 카페 커피의 원두 산미와 로스팅 강도에 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "선호하시는 커피 원두의 로스팅 스타일은 어떤가요?",
+          "options": [
+            "가벼운 바디감과 산미가 있는 밝은 로스팅",
+            "균형 잡힌 맛과 적당한 바디감의 중간 로스팅",
+            "묵직한 바디감과 쓴맛이 중심인 진한 로스팅",
+            "특별한 선호는 없다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "multi",
+          "prompt": "최근 카페 방문 빈도가 줄어들었다면, 그 주된 이유는 무엇인가요? 해당하는 것을 모두 골라 주세요.",
+          "options": [
+            "커피 및 음료 가격",
+            "주변 경쟁 카페의 증가",
+            "직원 서비스 및 응대",
+            "매장 분위기 및 좌석 불편",
+            "방문 빈도에 변화가 없다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "현재 판매 중인 디저트 메뉴의 다양성에 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "현재 판매 중인 커피 외 음료 메뉴의 다양성에 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "현재 우리 카페 커피의 원두 산미에 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": "원두 산미와 로스팅 강도 두 가지를 한 문항에 묻고 있어 산미에 대한 만족도만 묻도록 수정함"
+        },
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "선호하시는 커피 원두의 로스팅 스타일은 어떤가요?",
+          "options": [
+            "가벼운 바디감과 산미가 있는 밝은 로스팅",
+            "균형 잡힌 맛과 적당한 바디감의 중간 로스팅",
+            "묵직한 바디감과 쓴맛이 중심인 진한 로스팅",
+            "특별한 선호는 없다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "multi",
+          "prompt": "최근 카페 방문 빈도가 줄어들었을 때, 그 주된 이유는 무엇인가요? 해당하는 것을 모두 골라 주세요.",
+          "options": [
+            "커피 및 음료 가격",
+            "주변 경쟁 카페의 증가",
+            "직원 서비스 및 응대",
+            "매장 분위기 및 좌석 불편",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "방문 빈도에 변화가 없다는 응답을 제외하고 '기타' 선택지를 추가하여 모든 응답자가 선택할 수 있도록 수정함"
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "현재 판매 중인 디저트 메뉴의 다양성에 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "현재 판매 중인 커피 외 음료 메뉴의 다양성에 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 32,
+      "ms": 3933
+    }
+  },
+  {
+    "n": 28,
+    "kind": "편향",
+    "problem": "우리 앱의 새 디자인이 훨씬 예쁘다는 반응을 모아서 발표 자료에 쓰고 싶다",
+    "clarify": {
+      "ms": 1686,
+      "questions": [
+        {
+          "question": "이 설문은 누구를 대상으로 하나요?",
+          "options": [
+            "기존 앱 사용자",
+            "신규 앱 사용자",
+            "내외부 일반 대중",
+            "임직원 및 디자인팀"
+          ]
+        },
+        {
+          "question": "설문 결과를 활용해 어떤 결정을 내리려 하나요?",
+          "options": [
+            "발표 자료에 객관적 수치 인용",
+            "디자인 개선 방향성 도출",
+            "마케팅 소구점 발굴",
+            "임원진 보고 및 승인 획득"
+          ]
+        }
+      ]
+    },
+    "design": {
+      "ms": 2455,
+      "purpose": "기존 앱 사용자의 새 디자인에 대한 실제 반응과 인식의 다양성을 알아본다.",
+      "hypotheses": [
+        "새 디자인의 시각적 완성도가 높아졌다고 느끼는 사용자가 과반수 이상이다.",
+        "새로운 디자인이 시각적으로 예뻐졌음에도 불구하고 기존 사용하던 기능의 위치가 낯설어져 불편함을 느끼는 사용자가 존재한다.",
+        "디자인 변화에 큰 관심이 없거나 이전 디자인이 더 직관적이었다고 선호하는 사용자가 일정 비율 존재한다."
+      ],
+      "audience": "기존 앱 사용자",
+      "target_responses": 200,
+      "target_minutes": 2,
+      "intro": "안녕하세요! 우리 앱의 새 디자인 개편에 대한 사용자 여러분의 솔직한 의견을 듣고자 설문을 진행합니다. 2분 정도 소요되며, 더 나은 서비스를 만드는 데 소중한 자료로 활용됩니다.",
+      "share_message": "앱 새 디자인 개편 관련 2분 설문입니다! 여러분의 솔직한 의견을 들려주세요."
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "새로운 디자인의 시각적 완성도가 높아졌다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "디자인 개편 후 기능의 위치가 낯설어져 불편함을 느끼신 적이 있나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "multi",
+          "prompt": "새 디자인에서 위치가 낯설어져 찾기 어려웠던 기능을 모두 골라 주세요.",
+          "options": [
+            "메뉴 및 설정",
+            "검색 및 필터",
+            "주요 콘텐츠 보기",
+            "마이페이지 및 프로필",
+            "기타 기능",
+            "불편했던 기능은 없어요"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "앱 디자인 변화에 대해 어떻게 생각하시나요?",
+          "options": [
+            "관심이 별로 없다",
+            "이전 디자인이 더 직관적이었다",
+            "새 디자인이 더 낫다",
+            "잘 모르겠다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": null,
+          "type": "multi",
+          "prompt": "새로운 디자인을 처음 접했을 때 느낀 점을 모두 골라 주세요.",
+          "options": [
+            "화면이 세련되어졌다",
+            "전체적인 분위기가 밝아졌다",
+            "익숙해지는 데 시간이 걸린다",
+            "이전과 큰 차이를 느끼지 못했다",
+            "시각적으로 복잡해졌다"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "새로운 디자인의 시각적 완성도가 어느 정도라고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": "결과를 전제하는 유도 질문 형태를 중립적인 척도 질문으로 수정함."
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "디자인 개편 후 기능의 위치가 낯설어져 불편함을 느끼셨나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "multi",
+          "prompt": "새 디자인에서 위치가 낯설어져 찾기 어려웠던 기능을 모두 골라 주세요.",
+          "options": [
+            "메뉴 및 설정",
+            "검색 및 필터",
+            "주요 콘텐츠 보기",
+            "마이페이지 및 프로필",
+            "기타",
+            "불편했던 기능은 없어요"
+          ],
+          "required": true,
+          "review_note": "'기타 기능'을 '기타'로 통일하여 자연스럽게 수정함."
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "앱 디자인 변화에 대해 어떻게 생각하시나요?",
+          "options": [
+            "관심이 별로 없다",
+            "이전 디자인이 더 직관적이었다",
+            "새 디자인이 더 낫다",
+            "잘 모르겠다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": null,
+          "type": "multi",
+          "prompt": "새로운 디자인을 처음 접했을 때 느낀 점을 모두 골라 주세요.",
+          "options": [
+            "화면이 세련되어졌다",
+            "전체적인 분위기가 밝아졌다",
+            "익숙해지는 데 시간이 걸린다",
+            "이전과 큰 차이를 느끼지 못했다",
+            "시각적으로 복잡해졌다"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 37,
+      "ms": 4465
+    }
+  }
+]

@@ -172,6 +172,7 @@ export async function saveQuestion(id: string, questionId: string, formData: For
       prompt: String(formData.get("prompt") ?? ""),
       options: String(formData.get("options") ?? "").split(/\r?\n/),
       required: formData.get("required") === "on",
+      type: String(formData.get("type") ?? ""),
     }),
   );
 }
