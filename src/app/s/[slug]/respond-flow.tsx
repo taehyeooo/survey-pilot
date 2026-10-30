@@ -2,6 +2,7 @@
 
 import { startTransition, useActionState, useState } from "react";
 import { consentNotes } from "@/lib/consent-copy";
+import { Confetti } from "../../confetti";
 import { checkCode, sendCode, startAnswering, submitAnswers, type CodeState, type SubmitState, type VerifyState } from "./actions";
 
 // 응답 흐름(R-17): 동의·이메일(R-3) → 인증번호(R-18) → 문항 → 제출(R-19).
@@ -179,9 +180,12 @@ function QuestionsStep({ slug, token, questions, verified = false }: { slug: str
 
   if (state.done) {
     return (
-      <p role="status" className="card p-6 text-center leading-7">
-        {state.error ?? "응답을 보냈어요. 참여해 주셔서 고마워요."}
-      </p>
+      <>
+        {!state.error && <Confetti />}
+        <p role="status" className="card p-6 text-center leading-7">
+          {state.error ?? "응답을 보냈어요. 참여해 주셔서 고마워요."}
+        </p>
+      </>
     );
   }
 

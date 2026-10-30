@@ -7,6 +7,7 @@ import { latestReport, VERDICT_LABEL } from "@/lib/report";
 import { buildReportView, type ReportGroup } from "@/lib/report-view";
 import { loadResults, type QuestionStat } from "@/lib/results";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { IconArrowRight, IconCalendar, IconChat, IconCheckCircle, IconList, IconTarget, IconUsers } from "../../../../icons";
 import { PrintButton } from "./print-button";
 
 // 결과 보고서(survey-pilot R-33): 설문이 끝난 뒤 한눈에 평가하는 한 장.
@@ -163,7 +164,10 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
         </div>
         <dl className="grid grid-cols-2 gap-3 lg:grid-cols-1">
           <div className="flex flex-col gap-2 card p-5">
-            <dt className="text-sm text-muted">응답</dt>
+            <dt className="flex items-center gap-1.5 text-sm text-muted">
+              <IconUsers className="size-4 text-brand" />
+              응답
+            </dt>
             <dd className="text-3xl font-bold tracking-display tabular-nums">
               {summary.responses}
               <span className="text-base font-medium text-muted">{summary.target ? ` / ${summary.target}명` : "명"}</span>
@@ -178,7 +182,10 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
             )}
           </div>
           <div className="flex flex-col gap-1 card p-5">
-            <dt className="text-sm text-muted">조사 기간</dt>
+            <dt className="flex items-center gap-1.5 text-sm text-muted">
+              <IconCalendar className="size-4 text-brand" />
+              조사 기간
+            </dt>
             <dd className="text-3xl font-bold tracking-display tabular-nums">{days ? `${days}일` : "—"}</dd>
             <dd className="text-sm text-muted">{period}</dd>
           </div>
@@ -187,7 +194,8 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
 
       {/* 2. 핵심 문제 — 큰 숫자 하나씩 */}
       <section aria-labelledby="problems" className="flex flex-col gap-3">
-        <h2 id="problems" className="text-eyebrow">
+        <h2 id="problems" className="text-eyebrow flex items-center gap-1.5">
+          <IconTarget className="size-4 text-brand" />
           드러난 핵심 문제
         </h2>
         <ol className={`grid gap-4 ${content.key_problems.length >= 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"}`}>
@@ -208,9 +216,10 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
       <div className="grid gap-4 lg:grid-cols-2">
         <section aria-labelledby="verdicts" className="flex flex-col gap-3 card p-5">
           <div className="flex items-baseline justify-between gap-3">
-            <h2 id="verdicts" className="text-lg font-semibold">
-              가설 판정
-            </h2>
+            <h2 id="verdicts" className="flex items-center gap-2 text-lg font-semibold">
+            <IconCheckCircle className="size-5 text-brand" />
+            가설 판정
+          </h2>
             <span className="text-sm text-muted">
               지지 {summary.verdicts.supported} · 기각 {summary.verdicts.rejected} · 판단 불가 {summary.verdicts.unclear}
             </span>
@@ -234,7 +243,8 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
           </ul>
         </section>
         <section aria-labelledby="highlights" className="flex flex-col gap-3 card p-5">
-          <h2 id="highlights" className="text-lg font-semibold">
+          <h2 id="highlights" className="flex items-center gap-2 text-lg font-semibold">
+            <IconList className="size-5 text-brand" />
             문항별 대표 결과
           </h2>
           <ul className="flex flex-col gap-3">
@@ -261,9 +271,10 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
       <div className="grid gap-4 lg:grid-cols-2">
         {view.themes.length > 0 && (
           <section aria-labelledby="themes" className="flex flex-col gap-3 card p-5">
-            <h2 id="themes" className="text-lg font-semibold">
-              주관식에서 나온 이야기
-            </h2>
+            <h2 id="themes" className="flex items-center gap-2 text-lg font-semibold">
+            <IconChat className="size-5 text-brand" />
+            주관식에서 나온 이야기
+          </h2>
             <ul className="flex flex-col gap-4">
               {view.themes.map((t) => {
                 const mentions = t.mentions ?? t.quotes.length;
@@ -284,7 +295,8 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
           </section>
         )}
         <section aria-labelledby="next" className="flex flex-col gap-3 card p-5">
-          <h2 id="next" className="text-lg font-semibold">
+          <h2 id="next" className="flex items-center gap-2 text-lg font-semibold">
+            <IconArrowRight className="size-5 text-brand" />
             다음 행동
           </h2>
           <ol className="flex flex-col gap-3">

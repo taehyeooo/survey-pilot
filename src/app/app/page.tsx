@@ -5,6 +5,7 @@ import { closeOverdue } from "@/lib/submit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { groupByTab, listSurveys, type SurveyListItem, type Tab } from "@/lib/surveys";
 import { archive, restore } from "./actions";
+import { IconInbox, IconPlus } from "../icons";
 import { CardsSkeleton } from "./skeleton";
 import { StageBar, stageOf } from "./stage-bar";
 
@@ -65,6 +66,9 @@ async function SurveyList() {
     <div className="flex flex-col gap-10">
       {empty && (
         <div className="flex flex-col items-center gap-4 card px-6 py-16 text-center">
+          <span className="flex size-14 items-center justify-center rounded-full bg-tint-4 text-brand">
+            <IconInbox className="size-7" />
+          </span>
           <p className="text-lg font-semibold">아직 설문이 없어요</p>
           <p className="text-muted">풀고 싶은 문제 한 줄이면 AI가 조사 설계와 문항을 먼저 짜 드려요.</p>
           <Link href="/app/new" className="btn btn-primary">
@@ -100,6 +104,7 @@ export default function AdminPage() {
       <div className="mb-8 flex items-center justify-between gap-4">
         <h1 className="text-headline">내 설문</h1>
         <Link href="/app/new" className="btn btn-primary">
+          <IconPlus className="size-4" />
           새 설문 만들기
         </Link>
       </div>

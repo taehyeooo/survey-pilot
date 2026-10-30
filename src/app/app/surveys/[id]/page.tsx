@@ -11,6 +11,8 @@ import { latestReport, type ReportRow } from "@/lib/report";
 import { loadResults, type QuestionStat } from "@/lib/results";
 import { closeOverdue } from "@/lib/submit";
 import { DemoNotice } from "../../demo-notice";
+import { Confetti } from "../../../confetti";
+import { IconSparkle } from "../../../icons";
 import { PageSkeleton } from "../../skeleton";
 import { StageBar, stageOf } from "../../stage-bar";
 import { AI_STEPS } from "../../ai-steps";
@@ -363,7 +365,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
   const { db, user } = await requireMember();
   await closeOverdue(createAdminClient()); // 마감일 지난 설문은 들어올 때 마감(R-16)
   const { id } = await params;
-  const { error, moved } = await searchParams;
+  const { error, moved, celebrate } = await searchParams;
   const { data } = await db
     .from("surveys")
     .select("*, hypotheses(position, statement), questions(id, position, type, prompt, options, required, review_note)")
@@ -392,6 +394,15 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
         <h1 className="text-headline">{survey.problem}</h1>
         <StageBar current={stageOf(survey)} animate={moved === "1"} className="mt-2" />
       </header>
+      {celebrate === "1" && survey.status === "published" && (
+        <>
+          <Confetti />
+          <p role="status" className="mb-6 flex items-center gap-2 rounded-box bg-tint-2 p-4 font-medium">
+            <IconSparkle className="size-5 text-brand" />
+            게시했어요! 이제 링크를 공유하고 응답을 기다려요.
+          </p>
+        </>
+      )}
       {isDemoAi() && <DemoNotice />}
       {survey.taken_down_at && (
         // 운영자가 내린 설문(multi-user R-14) — 주인은 되돌릴 수 없다. 사유는 보이지 않는다.

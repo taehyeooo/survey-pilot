@@ -203,6 +203,7 @@ export async function publish(id: string) {
   } catch (e) {
     error = messageOf(e);
   }
+  if (!error) redirect(`/app/surveys/${id}?moved=1&celebrate=1`); // 게시 축하 폭죽(결정 35)
   back(id, error);
 }
 

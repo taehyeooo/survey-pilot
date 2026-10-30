@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { createSessionClient } from "@/lib/supabase/server";
 import { HeroPreview } from "./hero-preview";
+import { IconChart, IconLink, IconPencil, IconSparkle } from "./icons";
 import { LoginForm } from "./login/login-form";
 
 // 로그인한 상태면 바로 내 설문으로(multi-user R-5).
@@ -25,7 +26,10 @@ export default function Home() {
         <SignedInRedirect />
       </Suspense>
       <section className="flex max-w-3xl flex-col items-center gap-6 text-center">
-        <p className="text-eyebrow">서베이 파일럿</p>
+        <p className="text-eyebrow inline-flex items-center gap-1.5 rounded-full bg-bg/70 px-3 py-1 text-brand">
+          <IconSparkle className="size-4" />
+          AI가 함께 만드는 설문
+        </p>
         <h1 className="text-display">
           설문 만들다 막히는 곳,
           <br />
@@ -39,12 +43,17 @@ export default function Home() {
         <HeroPreview />
       </div>
       <ol className="mt-16 grid w-full max-w-4xl gap-4 sm:grid-cols-3">
-        {[
-          ["1", "문제를 적어요", "풀고 싶은 문제 한 줄"],
-          ["2", "링크로 응답을 받아요", "바로 응답, 이메일 없이도"],
-          ["3", "한눈에 결과를 봐요", "결론·핵심 문제·그래프"],
-        ].map(([n, title, body], i) => (
+        {(
+          [
+            ["1", "문제를 적어요", "풀고 싶은 문제 한 줄", IconPencil],
+            ["2", "링크로 응답을 받아요", "바로 응답, 이메일 없이도", IconLink],
+            ["3", "한눈에 결과를 봐요", "결론·핵심 문제·그래프", IconChart],
+          ] as const
+        ).map(([n, title, body, Icon], i) => (
           <li key={n} className={`flex flex-col gap-1 rounded-box p-6 text-left ${["bg-tint-1", "bg-tint-2", "bg-tint-3"][i]}`}>
+            <span className="mb-2 flex size-10 items-center justify-center rounded-full bg-bg text-brand">
+              <Icon className="size-5" />
+            </span>
             <span className="text-sm font-semibold text-brand tabular-nums">{n}</span>
             <span className="text-lg font-semibold">{title}</span>
             <span className="text-muted">{body}</span>
