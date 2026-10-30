@@ -45,12 +45,12 @@ export async function authAction(prev: AuthState, formData: FormData): Promise<A
   if (intent === "signup") {
     if (!(await allowMail(email))) return { mode: "signup", email, error: tooMany };
     const error = await startSignup(db, email, field(formData, "password"));
-    return error ? { mode: "signup", email, error } : { mode: "verify", email, info: `${email}로 인증번호 6자리를 보냈어요.` };
+    return error ? { mode: "signup", email, error } : { mode: "verify", email, info: `${email}로 인증번호 6자리를 보냈어요. 3분 안에 넣어 주세요.` };
   }
   if (intent === "resend") {
     if (!(await allowMail(email))) return { mode: "verify", email, error: tooMany };
     const error = await resendSignupCode(db, email);
-    return error ? { mode: "verify", email, error } : { mode: "verify", email, info: "인증번호를 다시 보냈어요." };
+    return error ? { mode: "verify", email, error } : { mode: "verify", email, info: "인증번호를 다시 보냈어요. 3분 안에 넣어 주세요." };
   }
   if (intent === "verify") {
     const error = await confirmSignup(db, email, field(formData, "code"));
@@ -61,7 +61,7 @@ export async function authAction(prev: AuthState, formData: FormData): Promise<A
   if (intent === "forgot") {
     if (!(await allowMail(email))) return { mode: "forgot", email, error: tooMany };
     const error = await requestReset(db, email);
-    return error ? { mode: "forgot", email, error } : { mode: "reset", email, info: `${email}로 인증번호 6자리를 보냈어요.` };
+    return error ? { mode: "forgot", email, error } : { mode: "reset", email, info: `${email}로 인증번호 6자리를 보냈어요. 3분 안에 넣어 주세요.` };
   }
   if (intent === "reset") {
     const error = await resetWithCode(db, email, field(formData, "code"), field(formData, "password"));

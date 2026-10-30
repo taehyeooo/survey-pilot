@@ -60,7 +60,7 @@ export function LoginForm({ notice, info }: { notice?: string; info?: string }) 
       {codeStep && (
         <>
           <label htmlFor="code" className="text-sm font-medium">
-            메일로 받은 인증번호 6자리
+            메일로 받은 인증번호 6자리(3분 안에)
           </label>
           <input id="code" name="code" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} required className="field tracking-[0.3em]" />
         </>
