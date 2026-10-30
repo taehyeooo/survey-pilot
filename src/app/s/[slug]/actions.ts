@@ -1,16 +1,17 @@
 "use server";
 
-import { headers } from "next/headers";
+import { randomUUID } from "node:crypto";
+import { cookies, headers } from "next/headers";
 import { after } from "next/server";
 import { finalReportQuietly } from "@/lib/report-runtime";
 import { findPublicSurvey } from "@/lib/publish";
 import { hashSecret, getMailer } from "@/lib/mailer-runtime";
-import { RespondError, requestCode, verifyCode } from "@/lib/respond";
+import { RespondError, requestCode, startAnonymous, verifyCode } from "@/lib/respond";
 import { SubmitError, submitResponse } from "@/lib/submit";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export type CodeState = { step: "email" | "code"; email?: string; error?: string };
-export type VerifyState = { token?: string; error?: string };
+export type VerifyState = { token?: string; error?: string; done?: boolean };
 export type SubmitState = { done?: boolean; error?: string };
 
 function messageOf(error: unknown) {
@@ -53,6 +54,30 @@ export async function checkCode(slug: string, email: string, _prev: VerifyState,
     const token = await verifyCode(createAdminClient(), hashSecret(), { survey: await openSurvey(slug), email, code: String(formData.get("code") ?? "") });
     return { token };
   } catch (error) {
+    return { error: messageOf(error) };
+  }
+}
+
+// 바로 응답 시작(ADR 0017 v2): 동의 → 브라우저 표시로 응답자를 만들고 토큰. 표시는 이 브라우저의 쿠키에만 둔다.
+const BROWSER_COOKIE = "sp_browser";
+export async function startAnswering(slug: string, _prev: VerifyState, formData: FormData): Promise<VerifyState> {
+  try {
+    const jar = await cookies();
+    let clientId = jar.get(BROWSER_COOKIE)?.value;
+    if (!clientId) {
+      clientId = randomUUID();
+      jar.set(BROWSER_COOKIE, clientId, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/s", maxAge: 60 * 60 * 24 * 365 });
+    }
+    const token = await startAnonymous(createAdminClient(), hashSecret(), {
+      survey: await openSurvey(slug),
+      clientId,
+      consent: formData.get("consent") === "on",
+      honeypot: String(formData.get("website") ?? ""),
+      ip: await clientIp(),
+    });
+    return token ? { token } : { error: "잠시 후 다시 시도해 주세요." };
+  } catch (error) {
+    if (error instanceof RespondError && error.code === "done") return { error: error.message, done: true };
     return { error: messageOf(error) };
   }
 }

@@ -14,7 +14,7 @@ import { DemoNotice } from "../../demo-notice";
 import { StageBar, stageOf } from "../../stage-bar";
 import { AI_STEPS } from "../../ai-steps";
 import { SubmitButton } from "../../submit-button";
-import { answerAndDesign, closeNow, publish, regenerateDesign, saveAndConfirm, saveSettings } from "../actions";
+import { answerAndDesign, closeNow, publish, regenerateDesign, saveAndConfirm, saveResponseMode, saveSettings } from "../actions";
 import { OtherOption } from "./other-option";
 import { QuestionsSection, type Question } from "./questions";
 import { DeleteRequest } from "./delete-request";
@@ -38,6 +38,7 @@ interface Survey {
   slug: string | null;
   close_reason: string | null;
   taken_down_at: string | null;
+  require_email: boolean;
   hypotheses: { position: number; statement: string }[];
   questions: Question[];
 }
@@ -218,6 +219,26 @@ function SettingsForm({ survey }: { survey: Survey }) {
   );
 }
 
+// 응답 방식(ADR 0017 v2): 기본은 이메일 없이 바로 응답, 켜면 한 사람 한 번만(이메일 인증).
+function ResponseModeForm({ survey }: { survey: Survey }) {
+  return (
+    <form action={saveResponseMode.bind(null, survey.id)} className="flex flex-col gap-3 rounded-box border border-line p-4">
+      <label className="flex min-h-11 items-start gap-3">
+        <input type="checkbox" name="require_email" defaultChecked={survey.require_email} className="mt-1 size-5" />
+        <span className="flex flex-col gap-1">
+          <span className="font-medium">한 사람 한 번만 받기</span>
+          <span className="text-sm text-muted break-keep">
+            켜면 응답자가 이메일 인증번호를 받아야 응답할 수 있어요. 끄면 링크를 열자마자 바로 응답하고, 같은 브라우저에서만 두 번 응답을 막아요.
+          </span>
+        </span>
+      </label>
+      <SubmitButton pendingSteps={AI_STEPS.save} variant="secondary">
+        응답 방식 저장
+      </SubmitButton>
+    </form>
+  );
+}
+
 function DesignDetails({ survey }: { survey: Survey }) {
   return (
     <details className="rounded-box border border-line p-4">
@@ -262,6 +283,7 @@ function Body({
         <ShareBox link={link} shareText={buildShareText(survey.share_message ?? "", link, minutes)} />
         {reportSection}
         <ResultsSection surveyId={survey.id} stats={stats} responseCount={responses} target={survey.target_responses} closesAt={survey.closes_at} live />
+        <ResponseModeForm survey={survey} />
         <SettingsForm survey={survey} />
         {responses > 0 && <DeleteRequest surveyId={survey.id} />}
         <form action={closeNow.bind(null, survey.id)} className="flex flex-col gap-2">
@@ -293,6 +315,7 @@ function Body({
             )
           }
         />
+        {ready && <ResponseModeForm survey={survey} />}
       </div>
     );
   }

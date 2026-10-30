@@ -2,7 +2,7 @@
 
 import { startTransition, useActionState, useState } from "react";
 import { consentNotes } from "@/lib/consent-copy";
-import { checkCode, sendCode, submitAnswers, type CodeState, type SubmitState, type VerifyState } from "./actions";
+import { checkCode, sendCode, startAnswering, submitAnswers, type CodeState, type SubmitState, type VerifyState } from "./actions";
 
 // 응답 흐름(R-17): 동의·이메일(R-3) → 인증번호(R-18) → 문항 → 제출(R-19).
 export interface PublicQuestion {
@@ -50,6 +50,44 @@ function EmailStep({ slug, contact, state, action, pending }: { slug: string; co
         {pending ? "보내는 중…" : "인증번호 받기"}
       </button>
       <input type="hidden" name="slug" value={slug} />
+    </form>
+  );
+}
+
+// 바로 응답(ADR 0017 v2): 이메일 없이 안내 동의만 받고 문항으로.
+function ConsentStep({ contact, state, action, pending }: { contact: string | null; state: VerifyState; action: (f: FormData) => void; pending: boolean }) {
+  if (state.done) {
+    return (
+      <p role="status" className="rounded-box bg-surface p-4">
+        {state.error}
+      </p>
+    );
+  }
+  return (
+    <form action={action} className="flex flex-col gap-4">
+      <fieldset className="flex flex-col gap-2 rounded-box bg-surface p-4 text-sm leading-6">
+        <legend className="sr-only">응답 안내 동의</legend>
+        <p>
+          <strong>수집 항목</strong> 없음(이메일을 받지 않아요) · 같은 브라우저에서 두 번 응답하지 않도록 브라우저에 표시만 남겨요
+        </p>
+        {consentNotes(contact, { anonymous: true }).map((note) => (
+          <p key={note}>{note}</p>
+        ))}
+        <label className="mt-1 flex min-h-11 items-center gap-3 font-medium">
+          <input type="checkbox" name="consent" required className="size-5" />
+          위 내용에 동의해요
+        </label>
+      </fieldset>
+      {/* 봇만 채우는 숨은 칸(R-4) */}
+      <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-px w-px opacity-0" />
+      {state.error && (
+        <p role="alert" className="text-sm text-danger">
+          {state.error}
+        </p>
+      )}
+      <button type="submit" disabled={pending} aria-busy={pending} className={button}>
+        {pending ? "준비하는 중…" : "응답 시작"}
+      </button>
     </form>
   );
 }
@@ -135,7 +173,7 @@ function QuestionField({ q, index }: { q: PublicQuestion; index: number }) {
   );
 }
 
-function QuestionsStep({ slug, token, questions }: { slug: string; token: string; questions: PublicQuestion[] }) {
+function QuestionsStep({ slug, token, questions, verified = false }: { slug: string; token: string; questions: PublicQuestion[]; verified?: boolean }) {
   const [state, action, pending] = useActionState<SubmitState, FormData>(submitAnswers.bind(null, slug, token), {});
   const [localError, setLocalError] = useState<string | null>(null);
 
@@ -161,7 +199,7 @@ function QuestionsStep({ slug, token, questions }: { slug: string; token: string
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
       <p role="status" className="rounded-box bg-surface p-3 text-sm">
-        이메일을 확인했어요. 이제 답해 주세요.
+        {verified ? "이메일을 확인했어요. 이제 답해 주세요." : "이제 답해 주세요."}
       </p>
       {questions.map((q, i) => (
         <QuestionField key={q.id} q={q} index={i} />
@@ -178,12 +216,22 @@ function QuestionsStep({ slug, token, questions }: { slug: string; token: string
   );
 }
 
-export function RespondFlow({ slug, questions, contact }: { slug: string; questions: PublicQuestion[]; contact: string | null }) {
+export function RespondFlow(props: { slug: string; questions: PublicQuestion[]; contact: string | null; requireEmail: boolean }) {
+  return props.requireEmail ? <EmailFlow {...props} /> : <DirectFlow {...props} />;
+}
+
+function DirectFlow({ slug, questions, contact }: { slug: string; questions: PublicQuestion[]; contact: string | null }) {
+  const [state, action, pending] = useActionState<VerifyState, FormData>(startAnswering.bind(null, slug), {});
+  if (state.token) return <QuestionsStep slug={slug} token={state.token} questions={questions} />;
+  return <ConsentStep contact={contact} state={state} action={action} pending={pending} />;
+}
+
+function EmailFlow({ slug, questions, contact }: { slug: string; questions: PublicQuestion[]; contact: string | null }) {
   const [codeState, codeAction, codePending] = useActionState<CodeState, FormData>(sendCode.bind(null, slug), { step: "email" });
   const email = codeState.email ?? "";
   const [verifyState, verifyAction, verifyPending] = useActionState<VerifyState, FormData>(checkCode.bind(null, slug, email), {});
 
-  if (verifyState.token) return <QuestionsStep slug={slug} token={verifyState.token} questions={questions} />;
+  if (verifyState.token) return <QuestionsStep slug={slug} token={verifyState.token} questions={questions} verified />;
   if (codeState.step === "code") {
     return <CodeStep email={email} state={verifyState} action={verifyAction} pending={verifyPending} resend={() => location.reload()} />;
   }
