@@ -18,7 +18,7 @@ export function LoginForm({ notice }: { notice?: string }) {
   return (
     <form action={action} className="flex flex-col gap-3">
       <label htmlFor="email" className="text-sm font-medium">
-        관리자 이메일
+        이메일
       </label>
       <input
         id="email"
