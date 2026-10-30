@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { requireOperator } from "@/lib/auth";
 import { listUsers } from "@/lib/operator";
@@ -26,7 +27,11 @@ async function Users() {
         <tbody>
           {users.map((u) => (
             <tr key={u.id} className="border-t border-line">
-              <td className="py-2 pr-3 break-all">{u.email}</td>
+              <td className="py-2 pr-3 break-all">
+                <Link href={`/ops/users/${u.id}`} className="hover:underline">
+                  {u.email}
+                </Link>
+              </td>
               <td className="py-2 pr-3 whitespace-nowrap tabular-nums">{kst(u.createdAt)}</td>
               <td className="py-2 pr-3 whitespace-nowrap tabular-nums">{kst(u.lastSignInAt)}</td>
               <td className="py-2 pr-3 text-right tabular-nums">{u.surveys}</td>

@@ -38,7 +38,10 @@ function CardGrid({ items }: { items: SurveyListItem[] }) {
             </Link>
             <ToggleArchive survey={s} />
           </div>
-          <p className="text-sm text-muted">{responses(s)}</p>
+          <p className="text-sm text-muted">
+            {responses(s)}
+            {s.taken_down_at && <span className="ml-2 text-danger">운영자가 내림</span>}
+          </p>
           <StageBar current={stageOf(s)} className="mt-3" />
         </li>
       ))}

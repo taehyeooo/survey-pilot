@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 // 운영 페이지 머리. 사용자 화면(/app)과 따로 둔다(multi-user R-6).
-export function OpsNav({ current }: { current: "overview" | "users" }) {
+export function OpsNav({ current }: { current: "overview" | "users" | "surveys" }) {
   const item = (key: typeof current, href: string, label: string) => (
     <Link
       href={href}
@@ -17,6 +17,7 @@ export function OpsNav({ current }: { current: "overview" | "users" }) {
       <nav className="flex items-center gap-1">
         {item("overview", "/ops", "개요")}
         {item("users", "/ops/users", "사용자")}
+        {item("surveys", "/ops/surveys", "설문")}
         <Link href="/app" className="inline-flex min-h-11 items-center rounded-box px-3 text-sm text-muted hover:bg-surface">
           내 설문
         </Link>

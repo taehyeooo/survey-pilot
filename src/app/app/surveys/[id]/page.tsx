@@ -37,6 +37,7 @@ interface Survey {
   share_message: string | null;
   slug: string | null;
   close_reason: string | null;
+  taken_down_at: string | null;
   hypotheses: { position: number; statement: string }[];
   questions: Question[];
 }
@@ -349,6 +350,12 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
       <StageBar current={stageOf(survey)} animate={moved === "1"} className="mb-8" />
       {isDemoAi() && <DemoNotice />}
       <p className="mb-6 rounded-box border border-line p-4 leading-7">{survey.problem}</p>
+      {survey.taken_down_at && (
+        // 운영자가 내린 설문(multi-user R-14) — 주인은 되돌릴 수 없다. 사유는 보이지 않는다.
+        <p role="status" className="mb-6 rounded-box bg-danger-bg p-3 text-sm text-danger">
+          운영자가 내린 설문이에요. 응답 링크가 응답을 받지 않아요.
+        </p>
+      )}
       {typeof error === "string" && (
         <p role="alert" className="mb-6 rounded-box bg-danger-bg p-3 text-sm text-danger">
           {error}

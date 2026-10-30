@@ -29,6 +29,7 @@ export interface SurveyListItem {
   purpose: string | null;
   status: string;
   archived_at: string | null;
+  taken_down_at: string | null;
   target_responses: number | null;
   created_at: string;
   responseCount: number;
@@ -38,7 +39,7 @@ export interface SurveyListItem {
 export async function listSurveys(db: SupabaseClient, ownerId: string): Promise<SurveyListItem[]> {
   const { data } = await db
     .from("surveys")
-    .select("id, problem, purpose, status, archived_at, target_responses, created_at, responses(count)")
+    .select("id, problem, purpose, status, archived_at, taken_down_at, target_responses, created_at, responses(count)")
     .eq("owner_id", ownerId)
     .order("created_at", { ascending: false })
     .throwOnError();
