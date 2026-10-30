@@ -33,7 +33,7 @@ export default function Home() {
         </ul>
       </div>
       <div className="flex flex-col gap-3">
-        <div className="rounded-box border border-line p-5">
+        <div className="rounded-box bg-surface p-5">
           <LoginForm />
         </div>
         <p className="text-sm text-muted">처음이면 &ldquo;가입하기&rdquo;에서 이메일과 비밀번호를 정하고, 메일로 받은 인증번호로 가입을 마쳐요.</p>

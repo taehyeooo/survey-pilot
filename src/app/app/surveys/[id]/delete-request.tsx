@@ -60,7 +60,7 @@ function ConfirmStep({ surveyId, state, reset }: { surveyId: string; state: Dele
 export function DeleteRequest({ surveyId }: { surveyId: string }) {
   const [state, action, pending] = useActionState<DeletionState, FormData>(findForDeletion.bind(null, surveyId), { step: "search" });
   return (
-    <details className="rounded-box border border-line p-4">
+    <details className="rounded-box bg-surface p-4">
       <summary className="flex min-h-11 cursor-pointer items-center font-medium">응답 삭제 요청 처리</summary>
       <div className="mt-3 flex flex-col gap-3">
         <p className="text-sm text-muted">응답자가 자기 응답을 지워 달라고 하면 이메일로 찾아 지워요. 지운 사람·시각·사유는 기록으로 남아요.</p>

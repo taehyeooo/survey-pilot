@@ -32,7 +32,7 @@ function CardGrid({ items }: { items: SurveyListItem[] }) {
   return (
     <ul className="grid gap-3 sm:grid-cols-2">
       {items.map((s) => (
-        <li key={s.id} className="flex flex-col rounded-box border border-line p-4">
+        <li key={s.id} className="flex flex-col rounded-box bg-surface p-4">
           <div className="flex items-start justify-between gap-2">
             <Link href={`/app/surveys/${s.id}`} className="line-clamp-2 py-2 font-medium hover:underline">
               {s.problem}
@@ -58,7 +58,7 @@ async function SurveyList() {
 
   return (
     <div className="flex flex-col gap-10">
-      <section aria-label="새 설문 시작" className="rounded-box border border-line p-5">
+      <section aria-label="새 설문 시작" className="rounded-box bg-surface p-5">
         <ProblemForm />
       </section>
       {empty && <p className="text-center text-muted">아직 설문이 없어요. 위에 첫 문제를 적어 보세요.</p>}

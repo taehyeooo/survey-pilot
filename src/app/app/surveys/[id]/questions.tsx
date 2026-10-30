@@ -19,7 +19,7 @@ const toolBase = "min-h-11 rounded-box px-3 text-sm hover:bg-surface disabled:op
 const toolButton = `${toolBase} text-muted`;
 
 function Preview({ question }: { question: Question }) {
-  if (question.type === "text") return <div aria-hidden className="field h-20 bg-surface" />;
+  if (question.type === "text") return <div aria-hidden className="field h-20" />;
   if (question.type === "scale") {
     return (
       <div aria-hidden className="grid grid-cols-5 gap-2">
@@ -46,7 +46,7 @@ function Preview({ question }: { question: Question }) {
 function QuestionCard({ surveyId, question, index, last, editable }: { surveyId: string; question: Question; index: number; last: boolean; editable: boolean }) {
   const fixed = isClosing(question);
   return (
-    <li className="flex flex-col gap-3 rounded-box border border-line p-4">
+    <li className="flex flex-col gap-3 rounded-box bg-surface p-4">
       <div className="flex items-baseline justify-between gap-3">
         <p className="font-medium">
           {index + 1}. {question.prompt}
@@ -55,7 +55,7 @@ function QuestionCard({ surveyId, question, index, last, editable }: { surveyId:
         <span className="shrink-0 text-xs text-muted">{fixed ? "고정" : TYPE_LABEL[question.type]}</span>
       </div>
       <Preview question={question} />
-      {question.review_note && <p className="rounded-box bg-surface px-3 py-2 text-sm text-muted">자동으로 고침: {question.review_note}</p>}
+      {question.review_note && <p className="rounded-box bg-bg px-3 py-2 text-sm text-muted">자동으로 고침: {question.review_note}</p>}
       {!fixed && editable && (
         <div className="flex flex-wrap items-center gap-1 border-t border-line pt-2">
           <form action={moveUp.bind(null, surveyId, question.id)}>
@@ -87,7 +87,7 @@ function QuestionCard({ surveyId, question, index, last, editable }: { surveyId:
               </label>
               <label className="flex flex-col gap-2">
                 <span className="text-sm font-medium">종류</span>
-                <select name="type" defaultValue={question.type} className="field bg-surface">
+                <select name="type" defaultValue={question.type} className="field">
                   {(Object.keys(TYPE_LABEL) as QuestionType[]).map((t) => (
                     <option key={t} value={t}>
                       {TYPE_LABEL[t]}

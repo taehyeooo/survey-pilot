@@ -37,7 +37,7 @@ export function ReportSection({
         문제에 대한 답
       </h2>
       {!report ? (
-        <div className="flex flex-col gap-3 rounded-box border border-line p-4">
+        <div className="flex flex-col gap-3 rounded-box bg-surface p-4">
           <p className="text-sm text-muted">
             {responseCount === 0
               ? "응답이 들어오면 AI가 가설마다 판정하고 문제에 대한 답을 정리해요."
@@ -48,9 +48,9 @@ export function ReportSection({
           {responseCount > 0 && button}
         </div>
       ) : (
-        <article className="flex flex-col gap-5 rounded-box border border-line p-5">
+        <article className="flex flex-col gap-5 rounded-box bg-surface p-5">
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
-            <span className="rounded-full bg-surface px-2 py-1 font-medium text-fg">{report.kind === "final" ? "최종" : "중간"}</span>
+            <span className="rounded-full bg-bg px-2 py-1 font-medium text-fg">{report.kind === "final" ? "최종" : "중간"}</span>
             {report.is_tentative && (
               <span className="rounded-full bg-note-bg px-2 py-1 font-medium text-note-fg">
                 참고용 — 응답 {report.response_count}명{target ? ` / 목표 ${target}명` : ""}
@@ -65,7 +65,7 @@ export function ReportSection({
             <h3 className="text-sm font-medium text-muted">가설 판정</h3>
             <ul className="flex flex-col gap-2">
               {report.content.hypotheses.map((h) => (
-                <li key={h.index} className={`rounded-box border-l-4 bg-surface p-3 ${VERDICT_STYLE[h.verdict]}`}>
+                <li key={h.index} className={`rounded-box border-l-4 bg-bg p-3 ${VERDICT_STYLE[h.verdict]}`}>
                   <p className="text-sm">
                     <span className="font-semibold">{VERDICT_LABEL[h.verdict]}</span> · {hypotheses[h.index - 1] ?? `가설 ${h.index}`}
                   </p>

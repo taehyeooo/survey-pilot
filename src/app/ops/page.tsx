@@ -9,7 +9,7 @@ async function Overview() {
   await requireOperator();
   const { ai, mail, ranking, unattributed } = await usageSummary(createAdminClient());
   const meter = (label: string, { used, limit }: { used: number; limit: number }) => (
-    <div className="rounded-box border border-line p-4">
+    <div className="rounded-box bg-surface p-4">
       <p className="text-sm text-muted">{label}</p>
       <p className="mt-1 text-2xl font-semibold tabular-nums">
         {used} <span className="text-base font-normal text-muted">/ {limit}</span>
