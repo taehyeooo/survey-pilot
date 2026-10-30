@@ -4,7 +4,7 @@ import { loadResults, toCsv } from "@/lib/results";
 import { createSessionClient } from "@/lib/supabase/server";
 
 // CSV 내려받기(R-25). 세션(RLS)과 주인 조건으로 읽으므로 자기 설문만 받을 수 있다(multi-user R-3).
-export async function GET(_request: NextRequest, { params }: RouteContext<"/admin/surveys/[id]/export">) {
+export async function GET(_request: NextRequest, { params }: RouteContext<"/app/surveys/[id]/export">) {
   await connection();
   const db = await createSessionClient();
   const {

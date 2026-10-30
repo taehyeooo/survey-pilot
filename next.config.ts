@@ -5,6 +5,13 @@ const nextConfig: NextConfig = {
   // (knowledge-base/concepts/local-admin-login.md). 개발 서버에서만 쓰이는 설정이다.
   allowedDevOrigins: ["127.0.0.1"],
   cacheComponents: true,
+  // 사용자 화면은 /app, 운영 페이지는 /ops(multi-user R-6). 옛 /admin 링크는 같은 아래 경로로.
+  async redirects() {
+    return [
+      { source: "/admin", destination: "/app", permanent: true },
+      { source: "/admin/:path*", destination: "/app/:path*", permanent: true },
+    ];
+  },
   partialPrefetching: true,
   turbopack: {
     rules: {

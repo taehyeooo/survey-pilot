@@ -8,7 +8,7 @@ import { agree } from "./actions";
 // 처음 로그인한 사용자에게 한 번(multi-user R-2). 화면 디자인은 plan 11단계에서 다듬는다.
 async function Welcome() {
   const { db, user } = await requireSignedIn();
-  if (!needsAgreement(await loadMember(db, user.id))) redirect("/admin");
+  if (!needsAgreement(await loadMember(db, user.id))) redirect("/app");
   return (
     <form action={agree} className="flex flex-col gap-6">
       <ul className="flex list-disc flex-col gap-3 pl-5 break-keep">

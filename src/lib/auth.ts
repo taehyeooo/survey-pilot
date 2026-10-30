@@ -20,6 +20,6 @@ export async function requireSignedIn() {
 // 사용자 화면 입구(multi-user R-2). 이용 안내에 동의하기 전이면 안내 화면으로.
 export async function requireMember() {
   const session = await requireSignedIn();
-  if (needsAgreement(await loadMember(session.db, session.user.id))) redirect("/admin/welcome");
+  if (needsAgreement(await loadMember(session.db, session.user.id))) redirect("/app/welcome");
   return session;
 }

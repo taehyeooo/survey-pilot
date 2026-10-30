@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   if (code) {
     const db = await createSessionClient();
     const { error } = await db.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(new URL("/admin", originOf(request)));
+    if (!error) return NextResponse.redirect(new URL("/app", originOf(request)));
   }
   return NextResponse.redirect(new URL("/login?error=link", originOf(request)));
 }

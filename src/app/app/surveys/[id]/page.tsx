@@ -321,7 +321,7 @@ function Body({
   );
 }
 
-async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/[id]">) {
+async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[id]">) {
   const { db, user } = await requireMember();
   await closeOverdue(createAdminClient()); // 마감일 지난 설문은 들어올 때 마감(R-16)
   const { id } = await params;
@@ -359,10 +359,10 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
   );
 }
 
-export default function SurveyPage(props: PageProps<"/admin/surveys/[id]">) {
+export default function SurveyPage(props: PageProps<"/app/surveys/[id]">) {
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-8">
-      <Link href="/admin" className="mb-4 inline-flex min-h-11 items-center text-sm text-muted hover:underline">
+      <Link href="/app" className="mb-4 inline-flex min-h-11 items-center text-sm text-muted hover:underline">
         ← 내 설문
       </Link>
       <Suspense fallback={<p className="text-muted">불러오는 중…</p>}>
