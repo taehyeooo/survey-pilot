@@ -1,8 +1,8 @@
 ---
 title: survey-pilot PRD
-version: 2
+version: 3
 status: active
-updated: 2026-10-29
+updated: 2026-10-30
 owner: taehyeooo
 related: [knowledge-base/decisions/0002-cost-zero-free-tiers.md, knowledge-base/decisions/0003-validate-with-own-samples.md]
 ---
@@ -33,7 +33,7 @@ related: [knowledge-base/decisions/0002-cost-zero-free-tiers.md, knowledge-base/
 
 ## 타깃 사용자와 사용 시나리오
 
-- 사용자: 나 혼자(관리자 1명). 응답자는 링크를 받은 누구나(이메일 입력).
+- 사용자: 나 혼자(관리자 1명) — 2026-10-30부터 여러 사용자(결정 2 참고). 응답자는 링크를 받은 누구나(이메일 입력).
 
 1. 문제 정의 입력 → 모호하면 AI가 최대 3개 되묻기 → 목적·가설·대상 제안 → **확인 ①**
 2. 문항 자동 생성 + 자동 점검 → 미리보기에서 필요하면 수정 → **확인 ②** 후 게시
@@ -116,7 +116,7 @@ mindmap
 
 사용자에게 물어 정한 것
 1. 핵심 가치: 문제 정의 하나로 설문 만들기·배포·응답 수집·결과 분석까지 자동화.
-2. 사용자: 나 혼자(개인 도구).
+2. 사용자: 나 혼자(개인 도구). → 2026-10-30 누구나 가입하는 여러 사용자로 바뀜([여러 사용자 spec](2026-10-30-multi-user.md), ADR 0020).
 3. 기술 스택: Next.js + Supabase + Vercel(무료 티어).
 4. 완료 기준: 배포된 데모에서 전체 흐름이 동작.
 5. AI: Gemini API 무료 티어.
