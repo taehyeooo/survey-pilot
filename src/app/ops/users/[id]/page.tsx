@@ -23,7 +23,7 @@ async function Detail({ params, searchParams }: PageProps<"/ops/users/[id]">) {
         <p className="text-muted">{preview.suspended ? "정지됨" : "이용 중"}</p>
       </section>
       {preview.protected ? (
-        <p className="rounded-box bg-surface p-4">운영자 계정은 정지할 수 없어요.</p>
+        <p className="card p-4">운영자 계정은 정지할 수 없어요.</p>
       ) : preview.suspended ? (
         <>
           <p className="leading-7 break-keep">해제하면 진행 중인 설문 {preview.openLinks}개의 응답 링크가 다시 응답을 받아요.</p>

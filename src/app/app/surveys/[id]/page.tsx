@@ -78,7 +78,7 @@ function ClarifyForm({ survey }: { survey: Survey }) {
 
 function Card({ index, title, children }: { index: number; title: string; children: React.ReactNode }) {
   return (
-    <section aria-labelledby={`group-${index}`} className="flex flex-col gap-4 rounded-box bg-surface p-5">
+    <section aria-labelledby={`group-${index}`} className="flex flex-col gap-4 card p-5">
       <h2 id={`group-${index}`} className="text-sm font-medium text-muted">
         {index}. {title}
       </h2>
@@ -161,7 +161,7 @@ function DesignForm({ survey }: { survey: Survey }) {
 function ConfirmedSummary({ survey }: { survey: Survey }) {
   return (
     <section className="flex flex-col gap-4">
-      <p role="status" className="rounded-box bg-surface p-4">
+      <p role="status" className="card p-4">
         설계를 확인했어요.
       </p>
       <dl className="grid gap-3 text-sm">
@@ -193,7 +193,7 @@ function ConfirmedSummary({ survey }: { survey: Survey }) {
 // 게시 뒤에도 고칠 수 있는 칸(R-14, R-15)
 function SettingsForm({ survey }: { survey: Survey }) {
   return (
-    <details className="rounded-box bg-surface p-4">
+    <details className="card p-4">
       <summary className="flex min-h-11 cursor-pointer items-center font-medium">소개글·공유 메시지·마감·목표 바꾸기</summary>
       <form action={saveSettings.bind(null, survey.id)} className="mt-3 flex flex-col gap-4">
         <label className="flex flex-col gap-2">
@@ -230,7 +230,7 @@ function SettingsForm({ survey }: { survey: Survey }) {
 // 응답 방식(ADR 0017 v2): 기본은 이메일 없이 바로 응답, 켜면 한 사람 한 번만(이메일 인증).
 function ResponseModeForm({ survey }: { survey: Survey }) {
   return (
-    <form action={saveResponseMode.bind(null, survey.id)} className="flex flex-col gap-3 rounded-box bg-surface p-4">
+    <form action={saveResponseMode.bind(null, survey.id)} className="flex flex-col gap-3 card p-4">
       <label className="flex min-h-11 items-start gap-3">
         <input type="checkbox" name="require_email" defaultChecked={survey.require_email} className="mt-1 size-5" />
         <span className="flex flex-col gap-1">
@@ -249,7 +249,7 @@ function ResponseModeForm({ survey }: { survey: Survey }) {
 
 function DesignDetails({ survey }: { survey: Survey }) {
   return (
-    <details className="rounded-box bg-surface p-4">
+    <details className="card p-4">
       <summary className="flex min-h-11 cursor-pointer items-center font-medium">확인한 설계 보기</summary>
       <div className="mt-3">
         <ConfirmedSummary survey={survey} />
@@ -336,7 +336,7 @@ function Body({
     const reason = { target: "목표 응답 수에 닿아", deadline: "마감일이 지나", manual: "직접", archive: "보관하면서" }[survey.close_reason ?? ""] ?? "";
     return (
       <div className="flex flex-col gap-8">
-        <p role="status" className="rounded-box bg-surface p-4">
+        <p role="status" className="card p-4">
           {reason} 마감했어요. 응답 {responses}개.
         </p>
         {reportSection}

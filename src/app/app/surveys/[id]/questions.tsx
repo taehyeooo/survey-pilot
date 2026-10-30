@@ -15,7 +15,7 @@ export interface Question {
 }
 
 const TYPE_LABEL: Record<QuestionType, string> = { single: "하나 고르기", multi: "여러 개 고르기", scale: "1~5 척도", text: "주관식" };
-const toolBase = "min-h-11 rounded-box px-3 text-sm hover:bg-surface disabled:opacity-40";
+const toolBase = "min-h-11 rounded-box px-3 text-sm hover:bg-line/50 disabled:opacity-40";
 const toolButton = `${toolBase} text-muted`;
 
 function Preview({ question }: { question: Question }) {
@@ -46,7 +46,7 @@ function Preview({ question }: { question: Question }) {
 function QuestionCard({ surveyId, question, index, last, editable }: { surveyId: string; question: Question; index: number; last: boolean; editable: boolean }) {
   const fixed = isClosing(question);
   return (
-    <li className="flex flex-col gap-3 rounded-box bg-surface p-4">
+    <li className="flex flex-col gap-3 card p-4">
       <div className="flex items-baseline justify-between gap-3">
         <p className="font-medium">
           {index + 1}. {question.prompt}
@@ -152,7 +152,7 @@ export function QuestionsSection({
       </ol>
       {editable ? (
         <form action={appendQuestion.bind(null, surveyId)}>
-          <button type="submit" className="min-h-11 w-full rounded-box border border-dashed border-line text-sm text-muted hover:bg-surface">
+          <button type="submit" className="min-h-11 w-full rounded-box border border-dashed border-line text-sm text-muted hover:bg-line/50">
             + 문항 추가
           </button>
         </form>

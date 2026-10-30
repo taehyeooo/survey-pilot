@@ -38,7 +38,7 @@ function StatCard({ stat, index }: { stat: QuestionStat; index: number }) {
   );
   if (stat.kind === "choice") {
     return (
-      <li className="flex flex-col gap-3 rounded-box bg-surface p-4">
+      <li className="flex flex-col gap-3 card p-4">
         {title}
         {stat.question.type === "multi" && <p className="text-xs text-muted">여러 개 고르기 — 답한 사람 기준 비율이라 합이 100%를 넘을 수 있어요.</p>}
         <ul className="flex flex-col gap-2">
@@ -52,7 +52,7 @@ function StatCard({ stat, index }: { stat: QuestionStat; index: number }) {
   if (stat.kind === "scale") {
     const max = Math.max(1, stat.answered);
     return (
-      <li className="flex flex-col gap-3 rounded-box bg-surface p-4">
+      <li className="flex flex-col gap-3 card p-4">
         {title}
         <p className="text-2xl font-semibold tabular-nums">
           {stat.mean ?? "–"}
@@ -67,7 +67,7 @@ function StatCard({ stat, index }: { stat: QuestionStat; index: number }) {
     );
   }
   return (
-    <li className="flex flex-col gap-3 rounded-box bg-surface p-4">
+    <li className="flex flex-col gap-3 card p-4">
       {title}
       {stat.texts.length === 0 ? (
         <p className="text-sm text-muted">아직 답이 없어요.</p>
@@ -120,12 +120,12 @@ export function ResultsSection({
           결과
         </h2>
         {responseCount > 0 && (
-          <a href={`/app/surveys/${surveyId}/export`} className="inline-flex min-h-11 items-center rounded-box px-3 text-sm text-muted underline hover:bg-surface">
+          <a href={`/app/surveys/${surveyId}/export`} className="inline-flex min-h-11 items-center rounded-box px-3 text-sm text-muted underline hover:bg-line/50">
             CSV 내려받기
           </a>
         )}
       </div>
-      <div className="flex flex-col gap-2 rounded-box bg-surface p-4">
+      <div className="flex flex-col gap-2 card p-4">
         <p className="text-sm text-muted">응답</p>
         <p className="text-3xl font-semibold tabular-nums">
           {responseCount}

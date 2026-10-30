@@ -19,7 +19,7 @@ const button = "min-h-11 w-full rounded-box bg-accent font-medium text-on-accent
 function EmailStep({ slug, contact, state, action, pending }: { slug: string; contact: string | null; state: CodeState; action: (f: FormData) => void; pending: boolean }) {
   return (
     <form action={action} className="flex flex-col gap-4">
-      <fieldset className="flex flex-col gap-2 rounded-box bg-surface p-4 text-sm leading-6">
+      <fieldset className="flex flex-col gap-2 card p-4 text-sm leading-6">
         <legend className="sr-only">개인정보 수집·이용 동의</legend>
         <p>
           <strong>수집 항목</strong> 이메일 · <strong>목적</strong> 한 사람이 한 번만 응답하도록 확인 · <strong>보관</strong> 설문 마감 30일 뒤 삭제
@@ -58,14 +58,14 @@ function EmailStep({ slug, contact, state, action, pending }: { slug: string; co
 function ConsentStep({ contact, state, action, pending }: { contact: string | null; state: VerifyState; action: (f: FormData) => void; pending: boolean }) {
   if (state.done) {
     return (
-      <p role="status" className="rounded-box bg-surface p-4">
+      <p role="status" className="card p-4">
         {state.error}
       </p>
     );
   }
   return (
     <form action={action} className="flex flex-col gap-4">
-      <fieldset className="flex flex-col gap-2 rounded-box bg-surface p-4 text-sm leading-6">
+      <fieldset className="flex flex-col gap-2 card p-4 text-sm leading-6">
         <legend className="sr-only">응답 안내 동의</legend>
         <p>
           <strong>수집 항목</strong> 없음(이메일을 받지 않아요) · 같은 브라우저에서 두 번 응답하지 않도록 브라우저에 표시만 남겨요
@@ -179,7 +179,7 @@ function QuestionsStep({ slug, token, questions, verified = false }: { slug: str
 
   if (state.done) {
     return (
-      <p role="status" className="rounded-box bg-surface p-6 text-center leading-7">
+      <p role="status" className="card p-6 text-center leading-7">
         {state.error ?? "응답을 보냈어요. 참여해 주셔서 고마워요."}
       </p>
     );
@@ -198,7 +198,7 @@ function QuestionsStep({ slug, token, questions, verified = false }: { slug: str
   const error = localError ?? state.error;
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
-      <p role="status" className="rounded-box bg-surface p-3 text-sm">
+      <p role="status" className="card p-3 text-sm">
         {verified ? "이메일을 확인했어요. 이제 답해 주세요." : "이제 답해 주세요."}
       </p>
       {questions.map((q, i) => (

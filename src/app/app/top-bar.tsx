@@ -22,7 +22,7 @@ async function Account() {
       <div className="ml-auto flex items-center gap-2">
         <span className="hidden text-sm text-muted md:inline">{user?.email}</span>
         <form action={logout}>
-          <button type="submit" className="min-h-11 rounded-box px-3 text-sm text-muted hover:bg-surface hover:text-fg">
+          <button type="submit" className="min-h-11 rounded-box px-3 text-sm text-muted hover:bg-line/50 hover:text-fg">
             로그아웃
           </button>
         </form>

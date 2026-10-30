@@ -19,10 +19,10 @@ export function ShareBox({ link, shareText }: { link: string; shareText: string 
       <h2 id="share-title" className="font-semibold">
         응답 받는 중 — 링크를 공유하세요
       </h2>
-      <p className="rounded-box bg-surface px-3 py-2 text-sm break-all">{link}</p>
-      <pre className="rounded-box bg-surface px-3 py-2 font-sans text-sm whitespace-pre-wrap">{shareText}</pre>
+      <p className="card px-3 py-2 text-sm break-all">{link}</p>
+      <pre className="card px-3 py-2 font-sans text-sm whitespace-pre-wrap">{shareText}</pre>
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={() => copy("링크", link)} className={`${base} border border-line hover:bg-surface`}>
+        <button type="button" onClick={() => copy("링크", link)} className={`${base} border border-line hover:bg-line/50`}>
           링크 복사
         </button>
         <button type="button" onClick={() => copy("공유 메시지", shareText)} className={`${base} bg-accent text-on-accent hover:opacity-90`}>

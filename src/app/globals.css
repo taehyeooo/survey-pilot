@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
-/* 디자인 토큰(2026-10-31 디자인 2단계 시안 B "애플 회색·파랑", 밝은 모드만 — spec 결정 29, ADR 0021 apple-design).
-   이전: 세트 1 청록·차분, 밝은·어두운 모드(결정 28).
+/* 디자인 토큰(2026-10-31 느낌 시안 T2 "화이트·블랙(Tally 쪽)" — spec 결정 32, 밝은 모드만 결정 29).
+   이전: B 애플 회색·파랑(결정 29), 세트 1 청록·차분(결정 28).
    화면은 역할 이름(bg-bg·bg-surface·text-fg·text-muted·border-line·bg-accent·text-on-accent·text-danger·bg-danger-bg·bg-note-bg·text-note-fg·rounded-box)만 쓴다.
-   대비 4.5:1 이상(최저 4.66 — 옅은 회색 면 위 muted). 카드는 테두리 대신 면(bg-surface)으로 묶는다. */
+   대비 4.5:1 이상(최저 4.9 — 파스텔 위 muted). 묶음은 `card`(하얀 면+얇은 선), 설문마다 파스텔 포인트(bg-tint-n). */
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -17,6 +17,12 @@
   --color-note-bg: var(--note-bg);
   --color-note-fg: var(--note-fg);
   --color-chart: var(--chart);
+  /* 설문마다 붙는 파스텔 포인트(카드 머리) — 위 글자는 fg·muted 모두 4.5:1 이상 */
+  --color-tint-1: var(--tint-1);
+  --color-tint-2: var(--tint-2);
+  --color-tint-3: var(--tint-3);
+  --color-tint-4: var(--tint-4);
+  --color-tint-5: var(--tint-5);
   --radius-box: var(--radius);
   /* 글자 간격(apple-design §15 — 크기별): 큰 제목 display, 중간 제목 title, 인증번호처럼 한 글자씩 읽는 칸 code */
   --tracking-display: -0.02em;
@@ -26,21 +32,31 @@
 }
 
 :root {
-  color-scheme: light; /* 밝은 모드만(2026-10-31 사용자 결정) — 입력 칸·스크롤바도 밝게 */
+  color-scheme: light; /* 밝은 모드만(결정 29) — 입력 칸·스크롤바도 밝게 */
   --bg: #ffffff;
-  --surface: #f5f5f7;
-  --fg: #1d1d1f;
-  --muted: #6e6e73;
-  --line: #d2d2d7; /* 회색 면 위에서도 보이는 구분선·막대 바탕 */
-  --accent: #0066cc;
+  --surface: #fafafa;
+  --fg: #111111;
+  --muted: #666666;
+  --line: #e6e6e6;
+  --accent: #111111;
   --on-accent: #ffffff;
-  --danger: #c41e3a;
-  --danger-bg: #fff1f2;
+  --danger: #c4320a;
+  --danger-bg: #fff1ec;
   --note-bg: #fff8e6;
   --note-fg: #8a5300;
-  /* 차트 막대 — 흰 면 기준 */
-  --chart: #0071e3;
-  --radius: 18px;
+  /* 차트 막대 — 한 계열이라 한 색(검정), 바탕 #fff·#fafafa 위 18:1 */
+  --chart: #111111;
+  --radius: 14px;
+  /* 설문마다 붙는 파스텔 포인트 — 위 글자 fg 14:1·muted 4.9:1 이상 */
+  --tint-1: #ece9fe;
+  --tint-2: #e1f3ea;
+  --tint-3: #fde8dc;
+  --tint-4: #e0ecfd;
+  --tint-5: #fbf1cf;
+  /* 카드 — 하얀 면에 얇은 선과 아주 옅은 그림자 */
+  --card-bg: #ffffff;
+  --card-line: #e6e6e6;
+  --card-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
 }
 
 body {
@@ -54,6 +70,13 @@ body {
 /* 큰 제목은 자간을 좁힌다(apple-design §15 — 글자가 클수록 음수 자간) */
 h1 {
   letter-spacing: -0.02em;
+}
+/* 카드 — 면·선·그림자를 토큰으로 */
+@utility card {
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  border: 1px solid var(--card-line);
+  box-shadow: var(--card-shadow);
 }
 
 /* 입력 칸 — 누르는 높이 44px 이상, 키보드 포커스가 보이게 */

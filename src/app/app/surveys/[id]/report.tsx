@@ -46,7 +46,7 @@ export function ReportSection({
         )}
       </div>
       {!report ? (
-        <div className="flex flex-col gap-3 rounded-box bg-surface p-4">
+        <div className="flex flex-col gap-3 card p-4">
           <p className="text-sm text-muted">
             {responseCount === 0
               ? "응답이 들어오면 AI가 가설마다 판정하고 문제에 대한 답을 정리해요."
@@ -58,7 +58,7 @@ export function ReportSection({
         </div>
       ) : (
         // 설문 화면에서는 결론과 판정 수만 — 자세한 것은 결과 보고서(R-33)에서 한 장으로 본다
-        <article className="flex flex-col gap-4 rounded-box bg-surface p-5">
+        <article className="flex flex-col gap-4 card p-5">
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
             <span className="rounded-full bg-bg px-2 py-1 font-medium text-fg">{report.kind === "final" ? "최종" : "중간"}</span>
             {report.is_tentative && (

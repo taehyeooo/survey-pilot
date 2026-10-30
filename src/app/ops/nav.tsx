@@ -6,7 +6,7 @@ export function OpsNav({ current }: { current: "overview" | "users" | "surveys" 
     <Link
       href={href}
       aria-current={current === key ? "page" : undefined}
-      className="inline-flex min-h-11 items-center rounded-box px-3 text-sm text-muted hover:bg-surface aria-[current=page]:bg-surface aria-[current=page]:font-medium aria-[current=page]:text-fg"
+      className="inline-flex min-h-11 items-center rounded-box px-3 text-sm text-muted hover:bg-line/50 aria-[current=page]:bg-line aria-[current=page]:font-medium aria-[current=page]:text-fg"
     >
       {label}
     </Link>

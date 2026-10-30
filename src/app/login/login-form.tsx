@@ -54,7 +54,7 @@ export function LoginForm({ notice, info }: { notice?: string; info?: string }) 
       <input type="hidden" name="intent" value={mode} />
       <h2 className="text-lg font-semibold tracking-title">{TITLES[mode]}</h2>
       {message && (
-        <p role="status" className="rounded-box bg-surface p-3 text-sm">
+        <p role="status" className="card p-3 text-sm">
           {message}
         </p>
       )}

@@ -11,14 +11,14 @@ function ConfirmStep({ surveyId, state, reset }: { surveyId: string; state: Dele
   const [result, action, pending] = useActionState<DeletionState, FormData>(deleteForRequest.bind(null, surveyId, preview.respondentId), state);
   if (result.step === "done") {
     return (
-      <p role="status" className="rounded-box bg-surface p-3 text-sm">
+      <p role="status" className="card p-3 text-sm">
         응답을 지우고 기록을 남겼어요. 집계와 CSV에서 빠졌어요.
       </p>
     );
   }
   return (
     <form action={action} className="flex flex-col gap-3">
-      <dl className="rounded-box bg-surface p-3 text-sm">
+      <dl className="card p-3 text-sm">
         <div className="flex gap-2">
           <dt className="text-muted">이메일</dt>
           <dd>{state.email}</dd>
@@ -49,7 +49,7 @@ function ConfirmStep({ surveyId, state, reset }: { surveyId: string; state: Dele
         <button type="submit" disabled={pending} className="min-h-11 rounded-box border border-danger px-4 text-sm font-medium text-danger disabled:opacity-60">
           {pending ? "지우는 중…" : "응답 지우기"}
         </button>
-        <button type="button" onClick={reset} className="min-h-11 rounded-box px-4 text-sm text-muted hover:bg-surface">
+        <button type="button" onClick={reset} className="min-h-11 rounded-box px-4 text-sm text-muted hover:bg-line/50">
           취소
         </button>
       </div>
@@ -60,7 +60,7 @@ function ConfirmStep({ surveyId, state, reset }: { surveyId: string; state: Dele
 export function DeleteRequest({ surveyId }: { surveyId: string }) {
   const [state, action, pending] = useActionState<DeletionState, FormData>(findForDeletion.bind(null, surveyId), { step: "search" });
   return (
-    <details className="rounded-box bg-surface p-4">
+    <details className="card p-4">
       <summary className="flex min-h-11 cursor-pointer items-center font-medium">응답 삭제 요청 처리</summary>
       <div className="mt-3 flex flex-col gap-3">
         <p className="text-sm text-muted">응답자가 자기 응답을 지워 달라고 하면 이메일로 찾아 지워요. 지운 사람·시각·사유는 기록으로 남아요.</p>
@@ -77,7 +77,7 @@ export function DeleteRequest({ surveyId }: { surveyId: string }) {
                 {state.error}
               </p>
             )}
-            <button type="submit" disabled={pending} className="min-h-11 self-start rounded-box border border-line px-4 text-sm font-medium hover:bg-surface disabled:opacity-60">
+            <button type="submit" disabled={pending} className="min-h-11 self-start rounded-box border border-line px-4 text-sm font-medium hover:bg-line/50 disabled:opacity-60">
               {pending ? "찾는 중…" : "응답 찾기"}
             </button>
           </form>

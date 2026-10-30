@@ -31,7 +31,7 @@ export function SubmitButton({
 }) {
   const { pending } = useFormStatus();
   const step = usePendingStep(pending, pendingSteps);
-  const style = { primary: "bg-accent text-on-accent", secondary: "border border-line", ghost: "text-sm text-muted hover:bg-surface" }[variant];
+  const style = { primary: "bg-accent text-on-accent", secondary: "border border-line", ghost: "text-sm text-muted hover:bg-line/50" }[variant];
   return (
     <button
       type="submit"
