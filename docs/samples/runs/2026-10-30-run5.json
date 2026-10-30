@@ -1,0 +1,604 @@
+[
+  {
+    "n": 1,
+    "kind": "명확",
+    "problem": "주 2회 저녁 7시에 모이는 개발 스터디(회원 15명)의 출석률이 최근 3개월 동안 80%에서 50%로 떨어진 이유를 알고, 모임 방식을 바꿀지 정하고 싶다",
+    "clarify": {
+      "ms": 1232,
+      "questions": []
+    },
+    "design": {
+      "ms": 1860,
+      "purpose": "주 2회 개발 스터디의 출석률 하락 원인과 모임 방식 변경에 대한 회원들의 선호도를 알아본다.",
+      "hypotheses": [
+        "모임 빈도가 주 2회로 너무 잦아 개인 일정과 병행하기 부담스러워졌다.",
+        "스터디 진행 방식(커리큘럼, 발표 방식 등)이 현재 회원의 관심사나 수준과 맞지 않는다.",
+        "퇴근 시간이나 저녁 7시라는 시간대가 직장인 회원들의 저녁 일정과 자주 겹친다."
+      ],
+      "audience": "주 2회 저녁 개발 스터디 회원 15명",
+      "target_responses": 15,
+      "target_minutes": 3,
+      "intro": "안녕하세요! 최근 스터디 출석률 변화에 대한 원인을 파악하고 더 나은 모임 운영 방식을 논의하고자 설문을 진행합니다. 솔직한 의견을 남겨주시면 모임 개편에 큰 도움이 됩니다. 소요 시간은 약 3분입니다.",
+      "share_message": "[개발 스터디] 출석률 개선을 위한 설문입니다. 더 나은 모임 방식을 위해 소중한 의견을 들려주세요! (소요 시간: 약 3분)"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "주 2회 모임 빈도가 개인 일정을 소화하는 데 부담이 되나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "현재 스터디의 진행 방식이 본인의 관심사와 수준에 잘 맞나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "저녁 7시라는 모임 시간이 퇴근 및 저녁 일정과 얼마나 자주 겹치나요?",
+          "options": [
+            "전혀 겹치지 않는다",
+            "가끔 겹친다",
+            "자주 겹친다",
+            "거의 항상 겹친다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": null,
+          "type": "single",
+          "prompt": "향후 스터디 모임 횟수는 어떻게 변경하는 것을 선호하시나요?",
+          "options": [
+            "주 2회 유지",
+            "주 1회로 축소",
+            "격주 1회로 변경",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "주 2회 모임 빈도가 개인 일정을 소화하는 데 부담이 되나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "현재 스터디의 진행 방식이 본인의 관심사와 수준에 잘 맞나요?",
+          "options": [
+            "전혀 그렇지 않다",
+            "그렇지 않다",
+            "보통이다",
+            "그렇다",
+            "매우 그렇다"
+          ],
+          "required": true,
+          "review_note": "scale 문항은 1~5 척도 옵션이 비어 있어야 하거나형식을 준수해야 하므로, type을 single로 변경하고 5점 척도 선택지를 추가함."
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "저녁 7시라는 모임 시간이 퇴근 및 저녁 일정과 얼마나 자주 겹치나요?",
+          "options": [],
+          "required": true,
+          "review_note": "얼마나 자주 겹치는지 묻는 정도의 질문이므로 1~5 척도에 맞게 type을 scale로 변경하고 options를 비움."
+        },
+        {
+          "hypothesis": null,
+          "type": "single",
+          "prompt": "향후 스터디 모임 횟수는 어떻게 변경하는 것을 선호하시나요?",
+          "options": [
+            "주 2회 유지",
+            "주 1회로 축소",
+            "격주 1회로 변경",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 24,
+      "ms": 4110
+    }
+  },
+  {
+    "n": 11,
+    "kind": "명확",
+    "problem": "사내 해커톤(작년 참가자 50명)을 올해도 열지, 연다면 1박 2일과 평일 하루 중 어느 형식이 좋은지 작년 참가자에게 물어 정하고 싶다",
+    "clarify": {
+      "ms": 1205,
+      "questions": []
+    },
+    "design": {
+      "ms": 1867,
+      "purpose": "작년 사내 해커톤 참가자들의 만족도와 올해 개최 선호 형식을 알아본다",
+      "hypotheses": [
+        "참가자들은 업무 공백이 적은 평일 하루 형식을 1박 2일 형식보다 더 선호할 것이다",
+        "몰입도 높은 결과물을 내기 위해 1박 2일 형식을 선호하는 수요가 상당할 것이다",
+        "올해 해커톤 개최 여부 자체에 대한 관심도가 낮아져 형식이 중요하지 않을 수 있다"
+      ],
+      "audience": "작년 사내 해커톤 참가자 전원",
+      "target_responses": 40,
+      "target_minutes": 3,
+      "intro": "안녕하세요! 작년에 이어 올해 사내 해커톤 개최 방향을 결정하기 위해 참가자 여러분의 소중한 의견을 듣고자 합니다. 약 3분 정도 소요되며, 더 나은 행사를 만드는 데 큰 도움이 됩니다.",
+      "share_message": "[사설] 올해 사내 해커톤 운영 방식 설문 (3분 소요)"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "올해 사내 해커톤을 개최한다면 어떤 형식을 가장 선호하시나요?",
+          "options": [
+            "평일 하루 형식",
+            "1박 2일 형식",
+            "기타",
+            "개최를 선호하지 않음"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "해커톤 과정에서 몰입도 높은 결과물을 내기 위해 1박 2일 형식이 필요하다고 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "올해 사내 해커톤 개최에 대해 얼마나 관심을 가지고 계시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": null,
+          "type": "scale",
+          "prompt": "작년에 진행된 사내 해커톤 운영 전반에 대해 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "올해 사내 해커톤을 개최한다면 어떤 형식을 가장 선호하시나요?",
+          "options": [
+            "평일 하루 형식",
+            "1박 2일 형식",
+            "개최를 선호하지 않음",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "몰입도 높은 결과물을 내기 위해 해커톤 형식으로 가장 적절하다고 생각하는 것은 무엇인가요?",
+          "options": [
+            "평일 하루 형식",
+            "1박 2일 형식",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "유도 질문 및 scale 형태를 단답형 single 문항으로 수정함"
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "올해 사내 해커톤 개최에 대해 얼마나 관심을 가지고 계시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": null,
+          "type": "scale",
+          "prompt": "작년에 진행된 사내 해커톤 운영 전반에 대해 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 24,
+      "ms": 3329
+    }
+  },
+  {
+    "n": 23,
+    "kind": "편향",
+    "problem": "다들 저녁 7시 시작이 너무 이르다고 하니까, 모임 시간을 8시로 바꾸면 출석률이 오를 거라는 걸 확인하고 싶다",
+    "clarify": {
+      "ms": 1637,
+      "questions": [
+        {
+          "question": "이 설문은 어떤 모임의 참여자들을 대상으로 하나요?",
+          "options": [
+            "사내 동호회 모임",
+            "스터디 및 교육 모임",
+            "친목 및 사교 모임",
+            "기타 정기 모임"
+          ]
+        },
+        {
+          "question": "설문을 진행하는 장소나 온·오프라인 여부가 어떻게 되나요?",
+          "options": [
+            "오프라인 대면 모임",
+            "온라인 화상 모임",
+            "온·오프라인 병행 모임"
+          ]
+        }
+      ]
+    },
+    "design": {
+      "ms": 2079,
+      "purpose": "사내 동호회 오프라인 모임의 시작 시간이 출석률에 미치는 영향을 알아본다.",
+      "hypotheses": [
+        "시작 시간을 오후 8시로 변경하면 퇴근 후 이동 시간 확보로 인해 참석이 어려웠던 회원들의 출석률이 높아질 것이다.",
+        "시작 시간을 오후 8시로 늦추면 귀가 시간 지연 및 다음 날 일정 부담으로 인해 오히려 참여를 포기하는 회원이 늘어나 출석률에 큰 변화가 없거나 낮아질 것이다.",
+        "시작 시간 외에도 모임 요일이나 장소의 접근성이 출석 여부를 결정하는 더 중요한 요인일 것이다."
+      ],
+      "audience": "사내 동호회 오프라인 모임 회원 전체",
+      "target_responses": 50,
+      "target_minutes": 2,
+      "intro": "안녕하세요, 사내 동호회 회원 여러분! 더 많은 분이 부담 없이 모임에 참여하실 수 있도록 적절한 모임 시간을 알아보고자 설문을 진행합니다. 소요 시간은 약 2분이며, 소중한 의견은 더 나은 모임 운영을 위해 사용됩니다.",
+      "share_message": "[설문] 더 즐거운 사내 동호회 모임을 위해 알맞은 시작 시간을 골라주세요! (약 2분 소요)"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "현재 오후 7시인 오프라인 모임 시작 시간이 퇴근 후 이동하기에 너무 이르다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "모임 시작 시간을 오후 8시로 늦추면 오프라인 모임 참석이 더 수월해지시나요?",
+          "options": [
+            "매우 수월해진다",
+            "대체로 수월해진다",
+            "비슷하다",
+            "오히려 어려워진다",
+            "전혀 어려워진다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "모임 시작 시간이 오후 8시로 늦춰질 경우, 귀가 시간 지연이나 다음 날 일정으로 인해 참여를 고민하게 되시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "오후 8시 이후에 시작하는 모임에 참여할 때 가장 부담되는 요소는 무엇인가요?",
+          "options": [
+            "늦은 귀가 시간",
+            "다음 날 일정을 위한 피로 누적",
+            "대중교통 막차 시간",
+            "기타 개인 일정",
+            "부담되는 요소가 없다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "오프라인 모임 참석 여부를 결정할 때 가장 중요하게 고려하는 요인은 무엇인가요?",
+          "options": [
+            "모임 시작 시간",
+            "모임 요일",
+            "모임 장소의 접근성",
+            "모임 콘텐츠의 흥미도",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "현재 모임이 진행되는 장소와 요일이 회원님께서 방문하기에 편리하다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "현재 오후 7시인 오프라인 모임 시작 시간이 퇴근 후 이동하기에 적절한가요?",
+          "options": [
+            "매우 적절하다",
+            "대체로 적절하다",
+            "보통이다",
+            "다소 이르다",
+            "매우 이르다"
+          ],
+          "required": true,
+          "review_note": "유도 질문 성격을 제거하고 일반적인 적절성을 묻는 단일 선택 문항으로 수정함"
+        },
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "모임 시작 시간을 오후 8시로 늦추면 오프라인 모임 참석이 어떠신가요?",
+          "options": [
+            "매우 수월해진다",
+            "대체로 수월해진다",
+            "비슷하다",
+            "오히려 어려워진다",
+            "전혀 어려워진다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "모임 시작 시간이 오후 8시로 늦춰질 경우, 귀가 시간 지연이나 다음 날 일정으로 인해 참여를 고민하게 되시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "오후 8시 이후에 시작하는 모임에 참여할 때 가장 부담되는 요소는 무엇인가요?",
+          "options": [
+            "늦은 귀가 시간",
+            "다음 날 일정을 위한 피로 누적",
+            "대중교통 막차 시간",
+            "기타 개인 일정",
+            "부담되는 요소가 없다",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "선택지에 '기타'를 추가함"
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "오프라인 모임 참석 여부를 결정할 때 가장 중요하게 고려하는 요인은 무엇인가요?",
+          "options": [
+            "모임 시작 시간",
+            "모임 요일",
+            "모임 장소의 접근성",
+            "모임 콘텐츠의 흥미도",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "현재 모임이 진행되는 장소와 요일이 회원님께서 방문하기에 편리하다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 38,
+      "ms": 5759
+    }
+  },
+  {
+    "n": 25,
+    "kind": "편향",
+    "problem": "재택근무가 생산성을 떨어뜨린다는 걸 직원 설문으로 증명해서 출근 일수를 늘리고 싶다",
+    "clarify": {
+      "ms": 1879,
+      "questions": [
+        {
+          "question": "설문 대상은 누구인가요?",
+          "options": [
+            "전체 임직원",
+            "팀장 및 관리자급",
+            "일반 실무자급"
+          ]
+        }
+      ]
+    },
+    "design": {
+      "ms": 2327,
+      "purpose": "재택근무가 업무 생산성 및 협업에 미치는 실제 영향과 직원들의 인식을 객관적으로 알아본다.",
+      "hypotheses": [
+        "재택근무 환경은 출근 환경에 비해 개인 집중 업무의 효율성을 높인다.",
+        "소통의 제약과 협업의 불편함으로 인해 팀 단위의 전체 생산성은 재택근무 시 저하된다.",
+        "업무 생산성은 근무 장소 자체보다 명확한 목표 설정과 소통 도구 활용 여부에 따라 달라진다."
+      ],
+      "audience": "전체 임직원",
+      "target_responses": 300,
+      "target_minutes": 3,
+      "intro": "안녕하세요, 임직원 여러분. 본 설문은 재택근무와 출근 환경에 따른 업무 생산성과 협업의 양상을 파악하여 더 나은 근무 환경을 만들기 위해 진행됩니다. 소요 시간은 약 3분이며, 응답 내용은 익명으로 처리되오 솔직한 의견을 남겨주세요.",
+      "share_message": "[설문 참여 요청] 더 나은 근무 환경 조성을 위한 임직원 설문입니다. 3분만 투자해 여러분의 목소리를 들려주세요!"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "재택근무 환경은 출근 환경에 비해 개인 집중 업무의 효율성을 높이나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "소통의 제약과 협업의 불편함으로 인해 팀 단위의 전체 생산성이 재택근무 시 저하되나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "업무 생산성은 근무 장소 자체보다 명확한 목표 설정과 소통 도구 활용 여부에 따라 달라지나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "재택근무 환경은 출근 환경에 비해 개인 집중 업무의 효율성에 얼마나 영향을 주나요?",
+          "options": [],
+          "required": true,
+          "review_note": "효율성을 높인다는 결과를 전제하는 유도 질문을 중립적인 표현으로 수정함."
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "재택근무 시 팀 단위의 전체 생산성은 어떠한가요?",
+          "options": [],
+          "required": true,
+          "review_note": "소통의 제약과 협업의 불편함으로 저하된다는 원인과 결과를 전제하는 유도 질문을 중립적인 표현으로 수정함."
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "업무 생산성은 근무 장소 자체보다 명확한 목표 설정과 소통 도구 활용 여부에 따라 달라지나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 15,
+      "ms": 3168
+    }
+  },
+  {
+    "n": 29,
+    "kind": "편향",
+    "problem": "동아리 회원 대부분이 MT를 1박 2일로 가고 싶어 하니까 그걸 확정하는 설문을 돌리고 싶다",
+    "clarify": {
+      "ms": 1219,
+      "questions": [
+        {
+          "question": "이번 MT의 구체적인 장소나 지역은 정해졌나요?",
+          "options": [
+            "이미 정해졌다",
+            "몇 군데 후보가 있다",
+            "아직 전혀 안 정해졌다"
+          ]
+        },
+        {
+          "question": "MT 일정은 언제로 생각하고 계시나요?",
+          "options": [
+            "다가오는 주말",
+            "특정 월말이나 연휴",
+            "아직 미정이다"
+          ]
+        }
+      ]
+    },
+    "design": {
+      "ms": 1927,
+      "purpose": "동아리 회원들의 MT 일정(1박 2일 vs 당일치기) 선호도와 그 이유를 알아본다.",
+      "hypotheses": [
+        "대다수의 회원이 1박 2일 MT를 선호한다.",
+        "일부 회원은 시간적·비용적 부담으로 인해 당일치기나 미참여를 더 선호한다."
+      ],
+      "audience": "동아리 전체 회원",
+      "target_responses": 30,
+      "target_minutes": 2,
+      "intro": "안녕하세요! 다가오는 주말 MT 일정과 선호 방식을 결정하기 위한 설문입니다. 소중한 의견을 모아 더 즐거운 시간을 만들고자 하니 잠시만 시간을 내어 답변해 주세요. 소요 시간은 약 2분입니다.",
+      "share_message": "안녕하세요! 이번 주말 MT 일정 선호도 조사를 진행합니다. 2분이면 참여할 수 있으니 꼭 의견을 남겨주세요!"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "이번 동아리 MT 일정으로 어떤 방식을 가장 선호하시나요?",
+          "options": [
+            "1박 2일",
+            "당일치기",
+            "참여하지 않음",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "multi",
+          "prompt": "1박 2일 MT 참여를 망설이게 하는 주된 이유는 무엇인가요?",
+          "options": [
+            "시간적 여유 부족",
+            "참가 비용 부담",
+            "숙박 일정 불편",
+            "개인 일정 우선",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "이번 동아리 MT 일정으로 어떤 방식을 가장 선호하시나요?",
+          "options": [
+            "1박 2일",
+            "당일치기",
+            "참여하지 않음",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "multi",
+          "prompt": "MT 참여를 망설이게 하는 주된 이유는 무엇인가요?",
+          "options": [
+            "시간적 여유 부족",
+            "참가 비용 부담",
+            "숙박 일정 불편",
+            "개인 일정 우선",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "앞선 문항의 답변(1박 2일)에 따라 응답 대상이 갈릴 수 있으므로 '1박 2일'이라는 조건을 제거하여 모든 응답자가 선택할 수 있도록 수정했습니다."
+        }
+      ],
+      "seconds": 17,
+      "ms": 3523
+    }
+  }
+]
