@@ -9,19 +9,18 @@
 ## 승인 대기
 
 ## 다음 할 일
-1. 사람 손: Supabase SMTP Password를 Gmail **앱 비밀번호**로 다시 넣기(지금 값은 Gmail이 거절 — [원인](troubleshooting/2026-10-30-gmail-smtp-app-password.md)), 메일 양식 "Confirm sign up"·"Reset password"에 `{{ .Token }}`(인증번호) 넣기
-2. 여러 사용자 [plan](../docs/plans/2026-10-30-multi-user.md) 13단계 운영 확인: 두 번째 계정 가입(인증번호) → 설문 게시 → 응답 → 리포트, 운영자로 정지·해제. 12단계(비밀번호 로그인)까지 머지됨. 운영자 계정은 비밀번호가 없어 "비밀번호를 잊었어요"로 처음 정한다
-3. 그다음: 앱 전체 디자인 다시(느낌 시안부터, apple-design — 사용자 2026-10-30 "일단 돌아가게 만들고 디자인은 다시")
-4. plan 4단계(샘플 검증): 문항 30개(Claude 판정 29/30)·리포트(3/3) 끝 — [결과](../docs/samples/2026-10-30-run.md). **사용자 판정이 남음**(기준 24/30) — 판정하면 4단계 체크. 결정 필요: 서로 반대인 가설의 중복 문항(#11) — 그대로(편집에서 지움) 또는 문항-가설 다대다 구조
-5. 결정 필요: `CONTACT_EMAIL`(Vercel에도 아직 없음) — 응답 화면·정지 안내 연락처, 앱 전체 디자인 전
-6. 운영 크론(KST 00:10) 첫 실행 결과는 다음 날 Vercel 로그에서 확인
+1. 앱 전체 디자인 다시(느낌 시안부터, apple-design — 사용자 2026-10-30 "일단 돌아가게 만들고 디자인은 다시"). 여러 사용자 plan은 13단계까지 끝([plan](../docs/plans/2026-10-30-multi-user.md))
+2. 테스트가 Supabase 로그인 한도(IP당 5분 30회)에 걸린다 — 전체 테스트를 연달아 돌리면 `Request rate limit reached`. 테스트 계정 로그인 횟수를 줄이기(파일마다 계정을 나눠 쓰는 대신 공유 등)
+3. plan 4단계(샘플 검증): 문항 30개(Claude 판정 29/30)·리포트(3/3) 끝 — [결과](../docs/samples/2026-10-30-run.md). **사용자 판정이 남음**(기준 24/30) — 판정하면 4단계 체크. 결정 필요: 서로 반대인 가설의 중복 문항(#11) — 그대로(편집에서 지움) 또는 문항-가설 다대다 구조
+4. 결정 필요: `CONTACT_EMAIL`(Vercel에도 아직 없음) — 이메일 인증 설문의 삭제 요청 연락처·정지 안내 연락처
+5. 운영 크론(KST 00:10) 첫 실행 결과는 다음 날 Vercel 로그에서 확인
 
 ## 정해 둔 것
 - 결정 사항 1~26: [spec](../docs/specs/2026-10-29-survey-pilot.md) "결정 사항", [PRD](../docs/specs/2026-10-29-survey-pilot-prd.md), ADR 0017~0019. 여러 사용자 결정: [spec](../docs/specs/2026-10-30-multi-user.md) 7장, ADR 0020
+- Supabase Auth(2026-10-30): Gmail SMTP(앱 비밀번호), 메일 양식 가입·재설정에 `{{ .Token }}`, 인증번호 6자리·180초, 최소 비밀번호 8자, 메일 시간당 30통
 - Supabase 프로젝트 생성·키 3개를 레포 루트 `.env.local`에 넣음, 두 키 동작 확인(2026-10-29). 지역 서울(ap-northeast-2) 확인, 마이그레이션용 `SUPABASE_DB_URL`도 `.env.local`에
 
 ## 답이 필요한 것 (사람 손)
-- 여러 사용자 13단계 전: Supabase SMTP 앱 비밀번호 다시, 메일 양식 `{{ .Token }}` (Rate Limits는 30통으로 됨)
 - `CONTACT_EMAIL` 정하기 → `.env.local`과 Vercel 환경변수에 넣기
 
 ## 운영

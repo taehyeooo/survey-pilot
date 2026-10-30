@@ -3,7 +3,7 @@ title: Supabase 로그인 메일이 "보내지 못했어요" — Gmail이 일반
 date: 2026-10-30
 tags: [supabase, auth, smtp, gmail]
 related: ["#71"]
-status: open
+status: resolved
 ---
 
 # Supabase 로그인 메일이 "보내지 못했어요" — Gmail이 일반 비밀번호를 거절

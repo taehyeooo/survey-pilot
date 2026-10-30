@@ -29,17 +29,17 @@ issue: "#43"
 10. [x] 탈퇴: 미리보기 → 확인 글자 → Auth 사용자까지 삭제 → 감사 기록, 운영자 탈퇴 거부 — 확인: 탈퇴 뒤 그 사용자 행 0, usage_events.user_id null (R-7)
 11. [x] 화면 디자인(`/intaeng:디자인` + apple-design 스킬): 첫 화면, 이용 안내, 탈퇴, 정지 안내, 응답자 동의 문구, `/ops` 화면들 — 확인: 390·1280px·다크 모드, 실제 빠르기로 한 번, 응답 화면 문구 테스트 (R-4, R-5)
 12. [x] 로그인을 이메일+비밀번호로(spec v2): 가입·재설정은 메일 인증번호 6자리, 인증번호 요청에 횟수 제한, Supabase 메일 양식에 `{{ .Token }}` — 확인: 인증번호로 가입 뒤 로그인·profiles 1행, 인증 전 로그인 거부, 8자 미만 거부, 재설정 뒤 새 비밀번호 로그인 (R-1)
-13. [ ] 운영 확인: 사람 손 1·2(SMTP·Rate Limits) 뒤 운영 주소에서 두 번째 계정 가입 → 설문 게시 → 응답 → 리포트, 운영자로 정지·해제 — 확인: 흐름 동작, 첫 계정에서 두 번째 계정 설문이 안 보임 (R-1, R-3, R-8, R-12)
+13. [x] 운영 확인: 사람 손 1·2(SMTP·Rate Limits) 뒤 운영 주소에서 두 번째 계정 가입 → 설문 게시 → 응답 → 리포트, 운영자로 정지·해제 — 확인: 흐름 동작, 첫 계정에서 두 번째 계정 설문이 안 보임 (R-1, R-3, R-8, R-12)
 
 ## 검증
 - 테스트: R-ID마다 "확인" 줄을 테스트로, 이름이나 주석에 `multi-user#R-n`. DB 테스트는 @example.com 테스트 계정만.
 - 건수 검증: 1단계 마이그레이션 전후 surveys·responses·answers 건수가 같다.
 
 ## 사람 손
-- [ ] Supabase SMTP에 발송 Gmail·앱 비밀번호 (13단계 전, 비밀값은 사용자가 직접) — 2026-10-30 설정했으나 Gmail이 "Application-specific password required"로 거절, 앱 비밀번호로 다시 넣어야 함
+- [x] Supabase SMTP에 발송 Gmail·앱 비밀번호 (사용자가 직접, 2026-10-30 — 처음엔 계정 비밀번호라 Gmail이 거절, 앱 비밀번호로 다시 넣음)
 - [x] Supabase Auth Rate Limits 메일 시간당 30통 — SMTP를 켜며 자동으로 30(2026-10-30 확인)
 - [ ] `CONTACT_EMAIL` (11단계 전)
 
 ## 끝나면
-- [ ] `knowledge-base/log.md`에 한 줄 추가
+- [x] `knowledge-base/log.md`에 한 줄 추가
 - [ ] 알게 된 것 → troubleshooting / concepts / ADR
