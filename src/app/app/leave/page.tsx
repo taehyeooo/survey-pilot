@@ -47,7 +47,7 @@ export default function LeavePage(props: PageProps<"/app/leave">) {
       <Link href="/app" className="inline-flex min-h-11 items-center self-start text-sm text-muted hover:underline">
         ← 내 설문
       </Link>
-      <h1 className="text-2xl font-semibold">탈퇴하기</h1>
+      <h1 className="text-2xl font-semibold tracking-[-0.01em]">탈퇴하기</h1>
       <Suspense fallback={<p className="text-muted">불러오는 중…</p>}>
         <Leave {...props} />
       </Suspense>

@@ -38,7 +38,7 @@ export function SubmitButton({
       formAction={formAction}
       disabled={pending}
       aria-busy={pending}
-      className={`min-h-11 rounded-box px-4 font-medium disabled:opacity-60 ${style}`}
+      className={`min-h-11 rounded-box px-4 font-medium disabled:opacity-60 transition-transform duration-100 active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100 ${style}`}
     >
       <span aria-live="polite">{pending ? step : children}</span>
     </button>
