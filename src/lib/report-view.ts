@@ -42,7 +42,19 @@ export function buildReportView(input: ReportViewInput) {
   const loose = groupOf(null);
   if (loose.length) groups.push({ hypothesis: null, stats: loose, top: topOf(loose) });
 
+  // 한 화면 요약(R-33): 문항마다 대표 결과 한 줄 — 고르는 문항은 최다 답, 척도는 평균. 막대 길이는 ratio(0~1).
+  const highlights = input.stats.flatMap((s) => {
+    const base = { id: s.question.id, position: s.question.position, prompt: s.question.prompt };
+    if (s.kind === "choice" && s.answered > 0) {
+      const top = s.options.reduce((best, o) => (o.count > best.count ? o : best));
+      return [{ ...base, label: top.label, value: `${Math.round(top.ratio * 100)}%`, ratio: top.ratio }];
+    }
+    if (s.kind === "scale" && s.mean !== null) return [{ ...base, label: "평균", value: `${s.mean.toFixed(1)} / 5`, ratio: s.mean / 5 }];
+    return [];
+  });
+
   return {
+    highlights,
     summary: {
       responses,
       target: input.target,

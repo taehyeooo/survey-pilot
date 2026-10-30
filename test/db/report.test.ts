@@ -8,6 +8,7 @@ const output = (count = 2) => ({
   hypotheses: Array.from({ length: count }, (_, i) => ({ index: i + 1, verdict: i === 0 ? "supported" : "unclear", evidence: "근거" })),
   answer: "저녁 7시 시작이 원인으로 보인다.",
   next_actions: ["시작 시간을 옮긴다", "한 달 뒤 다시 본다"],
+  headline: "한 줄 결론",
   key_problems: [{ title: "시간이 안 맞는다", evidence: "근거 수치" }],
   themes: [{ title: "퇴근", summary: "퇴근 직후라 어렵다", quotes: ["퇴근 시간이라 힘들어요"] }],
 });
@@ -101,9 +102,10 @@ describe.skipIf(!hasDb)("문제 답변 리포트 (실제 DB, 가짜 AI)", () => 
   });
 
   // survey-pilot#R-33 — 핵심 문제가 없는 옛 리포트는 같은 행을 다시 채운다
-  it("핵심 문제가 없는 옛 리포트는 AI를 다시 불러 같은 행을 고친다", async () => {
+  it("결론 한 줄·핵심 문제가 없는 옛 리포트는 AI를 다시 불러 같은 행을 고친다", async () => {
     const { id } = await surveyWithResponses(2);
-    const { key_problems: _drop, ...old } = output();
+    const { key_problems: _drop, headline: _h, ...old } = output();
+    void _h;
     void _drop;
     await service.from("reports").insert({ survey_id: id, kind: "interim", response_count: 2, content: old, is_tentative: true }).throwOnError();
     const ai = createFakeAi([output()]);

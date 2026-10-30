@@ -23,7 +23,8 @@ const ReportSchema = z.object({
   answer: z.string().trim().min(1),
   next_actions: z.array(z.string().trim().min(1)).min(2).max(3),
   // 결과 보고서(R-33): 응답에서 드러난 핵심 문제, 중요한 순서. 근거는 수치와 관련 문항.
-  key_problems: z.array(z.object({ title: z.string().trim().min(1), evidence: z.string().trim().min(1) })).min(1).max(3),
+  headline: z.string().trim().min(1).max(60), // 맨 위 한 줄 결론
+  key_problems: z.array(z.object({ title: z.string().trim().min(1), evidence: z.string().trim().min(1), metric: z.string().trim().min(1).max(16).optional() })).min(1).max(3),
   themes: z
     .array(z.object({ title: z.string().trim().min(1), summary: z.string().trim().min(1), quotes: z.array(z.string()).max(3), mentions: z.number().int().min(1).optional() }))
     .max(5),
@@ -57,9 +58,10 @@ export function reportPrompt(input: ReportInput) {
 2) answer: 처음 문제에 대한 답을 2~3문장. 응답 수가 적으면 단정하지 않는다.
 3) next_actions: 결과로 할 수 있는 다음 행동 2~3개.
 4) themes: 주관식 응답을 주제 3~5개로 묶는다(응답이 적으면 더 적게, 없으면 []). quotes에는 <texts>의 문장을 고치지 말고 그대로 1~3개 옮긴다. mentions는 그 주제를 말한 응답 수.
-5) key_problems: 응답에서 드러난 핵심 문제를 중요한 순서로 1~3개. title은 한 줄, evidence에는 근거 수치와 관련 문항을 쓴다(예: "모임 시간 문항 평균 2.1/5, 75%가 1~2점").
+5) key_problems: 응답에서 드러난 핵심 문제를 중요한 순서로 1~3개. title은 한 줄, evidence에는 근거 수치와 관련 문항을 쓴다(예: "모임 시간 문항 평균 2.1/5, 75%가 1~2점"). metric에는 그 근거를 대표하는 숫자 하나만 짧게(예: "75%", "2.1/5").
+6) headline: 처음 문제에 대한 결론을 한 줄로(60자 이내, 예: "출석이 떨어진 건 모임 시간이 퇴근 직후라서다"). 응답이 적으면 "~로 보인다"처럼 단정하지 않는다.
 짧은 해요체 대신 보고서체("~다")로 쓴다.
-JSON만 출력한다: {"hypotheses":[{"index":1,"verdict":"supported","evidence":"..."}],"answer":"...","next_actions":["..."],"key_problems":[{"title":"...","evidence":"..."}],"themes":[{"title":"...","summary":"...","quotes":["..."],"mentions":1}]}
+JSON만 출력한다: {"hypotheses":[{"index":1,"verdict":"supported","evidence":"..."}],"answer":"...","next_actions":["..."],"headline":"...","key_problems":[{"title":"...","evidence":"...","metric":"..."}],"themes":[{"title":"...","summary":"...","quotes":["..."],"mentions":1}]}
 
 <problem>
 ${input.problem}
@@ -124,8 +126,8 @@ export async function generateReport(db: SupabaseClient, ai: AiClient, surveyId:
   const find = () =>
     db.from("reports").select("*").eq("survey_id", surveyId).eq("kind", kind).eq("response_count", results.responseCount).maybeSingle().throwOnError();
   const { data: existing } = await find();
-  // 핵심 문제(R-33)가 생기기 전에 만든 리포트는 다시 만들어 같은 행을 고친다
-  if (existing && (existing as ReportRow).content.key_problems) return existing as ReportRow;
+  // 결론 한 줄·핵심 문제(R-33)가 생기기 전에 만든 리포트는 다시 만들어 같은 행을 고친다
+  if (existing && (existing as ReportRow).content.headline) return existing as ReportRow;
 
   const [{ data: hypotheses }, { data: links }] = await Promise.all([
     db.from("hypotheses").select("id, position, statement").eq("survey_id", surveyId).order("position").throwOnError(),

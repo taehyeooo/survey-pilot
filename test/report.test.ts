@@ -18,7 +18,8 @@ const valid = {
   ],
   answer: "저녁 7시 시작이 가장 큰 원인으로 보인다.",
   next_actions: ["시작 시간을 8시로 옮겨 본다", "한 달 뒤 출석률을 다시 본다"],
-  key_problems: [{ title: "모임 시간이 퇴근 직후다", evidence: "시간 문항 평균 2.1/5, 9명(75%)이 1~2점" }],
+  headline: "출석이 떨어진 건 모임 시간이 퇴근 직후라서다",
+  key_problems: [{ title: "모임 시간이 퇴근 직후다", evidence: "시간 문항 평균 2.1/5, 9명(75%)이 1~2점", metric: "2.1/5" }],
   themes: [{ title: "퇴근 시간과 겹침", summary: "퇴근 직후라 오기 어렵다", quotes: ["저녁 7시는 퇴근 시간이라 힘들어요"], mentions: 1 }],
 };
 
@@ -99,5 +100,15 @@ describe("리포트 입력 만들기", () => {
       input,
     );
     expect(report.themes.map((t) => t.mentions)).toEqual([input.texts.length, 1]);
+  });
+
+  // survey-pilot#R-33 — 맨 위 한 줄 결론과 핵심 문제의 큰 숫자
+  it("한 줄 결론은 필수·60자까지, 핵심 문제 숫자는 16자까지(없어도 됨)", () => {
+    const { headline: _h, ...noHeadline } = valid;
+    void _h;
+    expect(() => parseReport(noHeadline, input)).toThrow();
+    expect(() => parseReport({ ...valid, headline: "가".repeat(61) }, input)).toThrow();
+    expect(() => parseReport({ ...valid, key_problems: [{ title: "t", evidence: "e", metric: "가".repeat(17) }] }, input)).toThrow();
+    expect(parseReport({ ...valid, key_problems: [{ title: "t", evidence: "e" }] }, input).key_problems[0].metric).toBeUndefined();
   });
 });

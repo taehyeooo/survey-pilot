@@ -26,7 +26,8 @@ const report: Report = {
   ],
   answer: "답",
   next_actions: ["하나", "둘"],
-  key_problems: [{ title: "납부가 번거롭다", evidence: "평균 3.8/5" }],
+  headline: "번거로워서 늦게 낸다",
+  key_problems: [{ title: "납부가 번거롭다", evidence: "평균 3.8/5", metric: "3.8/5" }],
   themes: [
     { title: "적게 나온 것", summary: "s", quotes: ["a"], mentions: 1 },
     { title: "많이 나온 것", summary: "s", quotes: ["b"], mentions: 2 },
@@ -80,5 +81,14 @@ describe("결과 보고서 화면 데이터 (survey-pilot R-33)", () => {
   it("주관식 주제는 많이 나온 순서", () => {
     const view = buildReportView({ ...base, target: null, submittedAt: [], closedAt: null });
     expect(view.themes.map((t) => t.title)).toEqual(["많이 나온 것", "적게 나온 것"]);
+  });
+
+  // survey-pilot#R-33 — 한 화면 요약: 문항마다 대표 결과 한 줄(주관식은 표에서 따로)
+  it("고르는 문항은 최다 답과 비율, 척도는 평균(5점 만점 비율), 주관식은 뺀다", () => {
+    const view = buildReportView({ ...base, target: null, submittedAt: [], closedAt: null });
+    expect(view.highlights).toEqual([
+      { id: "q1", position: 1, prompt: "주로 어떻게 내나요?", label: "계좌이체", value: "50%", ratio: 0.5 },
+      { id: "q2", position: 2, prompt: "번거롭나요?", label: "평균", value: "3.8 / 5", ratio: 0.76 },
+    ]);
   });
 });
