@@ -34,10 +34,12 @@ export interface SurveyListItem {
   responseCount: number;
 }
 
-export async function listSurveys(db: SupabaseClient): Promise<SurveyListItem[]> {
+// 내 설문만(multi-user R-3) — RLS와 함께 쿼리 조건으로도 막는다.
+export async function listSurveys(db: SupabaseClient, ownerId: string): Promise<SurveyListItem[]> {
   const { data } = await db
     .from("surveys")
     .select("id, problem, purpose, status, archived_at, target_responses, created_at, responses(count)")
+    .eq("owner_id", ownerId)
     .order("created_at", { ascending: false })
     .throwOnError();
   return (data ?? []).map(({ responses, ...s }) => ({ ...s, responseCount: responses?.[0]?.count ?? 0 }));

@@ -110,7 +110,7 @@ export function ResultsSection({
   closesAt: string | null;
   live: boolean;
 }) {
-  // eslint-disable-next-line react-hooks/purity -- 요청마다 렌더하는 서버 컴포넌트(requireAdmin이 connection()으로 미리 렌더링을 멈춤)
+  // eslint-disable-next-line react-hooks/purity -- 요청마다 렌더하는 서버 컴포넌트(requireMember이 connection()으로 미리 렌더링을 멈춤)
   const left = live ? remaining(closesAt, Date.now()) : null;
   const ratio = target ? Math.min(responseCount / target, 1) : 0;
   return (

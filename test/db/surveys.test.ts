@@ -41,7 +41,7 @@ describe.skipIf(!hasDb)("설문 목록·보관 (실제 DB, 관리자 세션)", (
       .throwOnError();
     await users.service.from("responses").insert({ survey_id: live.id, respondent_id: respondent.id }).throwOnError();
 
-    const rows = await listSurveys(admin);
+    const rows = await listSurveys(admin, adminId);
     const { data: direct } = await users.service.from("surveys").select("status, archived_at").eq("owner_id", adminId);
     const count = (g: Record<string, unknown[]>) => Object.fromEntries(Object.entries(g).map(([k, v]) => [k, v.length]));
     expect(count(groupByTab(rows))).toEqual(count(groupByTab(direct!)));
@@ -77,7 +77,8 @@ describe.skipIf(!hasDb)("설문 목록·보관 (실제 DB, 관리자 세션)", (
   // survey-pilot#R-1, multi-user#R-3
   it("다른 사용자의 세션은 남의 설문이 목록에 없고 보관할 수 없다", async () => {
     const s = await published();
-    expect(await listSurveys(stranger)).toEqual([]);
+    expect(await listSurveys(stranger, strangerId)).toEqual([]);
+    expect(await listSurveys(users.service, strangerId)).toEqual([]); // RLS를 건너뛰는 클라이언트여도 주인 조건으로 막힌다
     await expect(archiveSurvey(users.service, strangerId, s.id)).rejects.toThrow(/찾을 수 없/);
     await expect(restoreSurvey(users.service, strangerId, s.id)).rejects.toThrow(/찾을 수 없/);
     const { data } = await users.service.from("surveys").select("archived_at").eq("id", s.id).single();

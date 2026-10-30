@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { isDemoAi } from "@/lib/ai-runtime";
-import { requireAdmin } from "@/lib/auth";
+import { requireMember } from "@/lib/auth";
 import type { Clarification } from "@/lib/design";
 import { buildShareText, canEditQuestions } from "@/lib/publish";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -322,7 +322,7 @@ function Body({
 }
 
 async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/[id]">) {
-  const { db } = await requireAdmin();
+  const { db, user } = await requireMember();
   await closeOverdue(createAdminClient()); // 마감일 지난 설문은 들어올 때 마감(R-16)
   const { id } = await params;
   const { error, moved } = await searchParams;
@@ -330,6 +330,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/admin/surveys/
     .from("surveys")
     .select("*, hypotheses(position, statement), questions(id, position, type, prompt, options, required, review_note)")
     .eq("id", id)
+    .eq("owner_id", user.id) // RLS와 함께 두 곳에서 막는다(multi-user R-3)
     .order("position", { referencedTable: "hypotheses" })
     .order("position", { referencedTable: "questions" })
     .maybeSingle();
