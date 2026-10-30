@@ -195,7 +195,7 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
             <li key={i} className={`flex flex-col gap-2 rounded-box p-5 break-inside-avoid ${PROBLEM_TINTS[i % PROBLEM_TINTS.length]}`}>
               <div className="flex items-baseline justify-between gap-3">
                 <span className="text-sm font-semibold text-accent tabular-nums">{i + 1}</span>
-                {p.metric && <span className="text-3xl font-bold tracking-display text-accent tabular-nums">{p.metric}</span>}
+                {p.metric && <span className="text-3xl font-bold tracking-display text-brand tabular-nums">{p.metric}</span>}
               </div>
               <span className="text-lg leading-7 font-semibold">{p.title}</span>
               <span className="text-sm leading-6 text-muted">{p.evidence}</span>

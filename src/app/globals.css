@@ -17,6 +17,7 @@
   --color-note-bg: var(--note-bg);
   --color-note-fg: var(--note-fg);
   --color-chart: var(--chart);
+  --color-brand: var(--brand);
   /* 설문마다 붙는 파스텔 포인트(카드 머리) — 위 글자는 fg·muted 모두 4.5:1 이상 */
   --color-tint-1: var(--tint-1);
   --color-tint-2: var(--tint-2);
@@ -44,8 +45,10 @@
   --danger-bg: #fff1ec;
   --note-bg: #fff8e6;
   --note-fg: #8a5300;
-  /* 차트 막대 — 한 계열이라 한 색(검정), 바탕 #fff·#fafafa 위 18:1 */
-  --chart: #111111;
+  /* 포인트 색(결정 34) — 제목 핵심 문구·핵심 숫자·그래프 막대에만. 버튼은 검정 그대로. 흰 바탕 7.1, 파스텔 위 6.0 */
+  --brand: #6d28d9;
+  /* 차트 막대 — 한 계열이라 한 색(포인트 색) */
+  --chart: var(--brand);
   --radius: 14px;
   /* 설문마다 붙는 파스텔 포인트 — 위 글자 fg 14:1·muted 4.9:1 이상 */
   --tint-1: #ece9fe;
@@ -257,4 +260,17 @@ details[open] > summary::after {
   details > summary::after {
     transition: none;
   }
+}
+
+/* 첫 화면 히어로 뒤 옅은 그라데이션(결정 34) — 위쪽만 따뜻하게, 아래로 흰색에 녹아든다 */
+@utility hero-glow {
+  background:
+    radial-gradient(60% 50% at 20% 0%, var(--tint-1) 0%, transparent 70%),
+    radial-gradient(50% 45% at 85% 10%, var(--tint-3) 0%, transparent 70%),
+    radial-gradient(55% 40% at 50% 35%, var(--tint-2) 0%, transparent 75%);
+}
+
+/* 포인트 색 시안(개발 서버에서만 ?variant=blue). 고르면 지운다. 진한 파랑 — 흰 바탕 6.7, 파스텔 위 5.6 */
+:root[data-variant="blue"] {
+  --brand: #1d4ed8;
 }
