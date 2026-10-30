@@ -40,7 +40,8 @@ export function createDemoAi(): AiClient {
           hypotheses: hypotheses.map((_, i) => ({ index: i + 1, verdict: i === 0 ? "supported" : "unclear", evidence: "[데모] 관련 문항 결과를 보면 이렇다" })),
           answer: "[데모] 결과로 보면 첫 번째 가설이 가장 큰 원인이다. 응답이 더 모이면 다시 확인한다.",
           next_actions: ["[데모] 첫 번째 가설부터 바꿔 본다", "[데모] 2주 뒤 다시 설문한다"],
-          themes: texts.length ? [{ title: "[데모] 자주 나온 이야기", summary: "[데모] 주관식에서 반복된 내용", quotes: texts.slice(0, 2) }] : [],
+          key_problems: [{ title: "[데모] 첫 번째 가설이 가장 큰 문제다", evidence: "[데모] 관련 문항에서 가장 많이 고른 답" }],
+          themes: texts.length ? [{ title: "[데모] 자주 나온 이야기", summary: "[데모] 주관식에서 반복된 내용", quotes: texts.slice(0, 2), mentions: Math.min(2, texts.length) }] : [],
         };
       }
       if (prompt.startsWith("[작업:문항 다시]")) {

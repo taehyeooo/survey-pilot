@@ -18,7 +18,8 @@ const valid = {
   ],
   answer: "저녁 7시 시작이 가장 큰 원인으로 보인다.",
   next_actions: ["시작 시간을 8시로 옮겨 본다", "한 달 뒤 출석률을 다시 본다"],
-  themes: [{ title: "퇴근 시간과 겹침", summary: "퇴근 직후라 오기 어렵다", quotes: ["저녁 7시는 퇴근 시간이라 힘들어요"] }],
+  key_problems: [{ title: "모임 시간이 퇴근 직후다", evidence: "시간 문항 평균 2.1/5, 9명(75%)이 1~2점" }],
+  themes: [{ title: "퇴근 시간과 겹침", summary: "퇴근 직후라 오기 어렵다", quotes: ["저녁 7시는 퇴근 시간이라 힘들어요"], mentions: 1 }],
 };
 
 describe("리포트 프롬프트", () => {
@@ -52,7 +53,7 @@ describe("리포트 출력 검사", () => {
       },
       input,
     );
-    expect(report.themes).toEqual([{ title: "퇴근", summary: "s", quotes: ["저녁 7시는 퇴근 시간이라 힘들어요"] }]);
+    expect(report.themes).toEqual([{ title: "퇴근", summary: "s", quotes: ["저녁 7시는 퇴근 시간이라 힘들어요"], mentions: 1 }]);
   });
 
   // survey-pilot#R-23
@@ -80,5 +81,23 @@ describe("리포트 입력 만들기", () => {
     ]);
     expect(input.texts.map((t) => t.length)).toEqual([500, 4]);
     expect(input).toMatchObject({ problem: "문제", purpose: "목적", hypotheses: ["가설"], responseCount: 4, target: 10 });
+  });
+
+  // survey-pilot#R-33 — 결과 보고서의 핵심 문제
+  it("핵심 문제는 1~3개, 제목과 근거가 있어야 한다", () => {
+    expect(parseReport(valid, input).key_problems).toEqual(valid.key_problems);
+    expect(() => parseReport({ ...valid, key_problems: [] }, input)).toThrow();
+    const four = Array.from({ length: 4 }, (_, i) => ({ title: `문제 ${i}`, evidence: "근거" }));
+    expect(() => parseReport({ ...valid, key_problems: four }, input)).toThrow();
+    expect(() => parseReport({ ...valid, key_problems: [{ title: "근거 없음", evidence: " " }] }, input)).toThrow();
+  });
+
+  // survey-pilot#R-33 — 주제별 언급 수는 실제 주관식 답 수를 넘지 않는다
+  it("주제 언급 수는 주관식 답 수까지로 줄이고, 없으면 인용 수로 본다", () => {
+    const report = parseReport(
+      { ...valid, themes: [{ title: "퇴근", summary: "s", quotes: ["저녁 7시는 퇴근 시간이라 힘들어요"], mentions: 99 }, { title: "교재", summary: "s", quotes: ["교재는 괜찮아요"] }] },
+      input,
+    );
+    expect(report.themes.map((t) => t.mentions)).toEqual([input.texts.length, 1]);
   });
 });

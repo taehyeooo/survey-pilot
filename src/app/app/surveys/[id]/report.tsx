@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { VERDICT_LABEL, type ReportRow } from "@/lib/report";
 import { AI_STEPS } from "../../ai-steps";
 import { SubmitButton } from "../../submit-button";
@@ -33,9 +34,17 @@ export function ReportSection({
 
   return (
     <section aria-labelledby="report-title" className="flex flex-col gap-4">
-      <h2 id="report-title" className="text-lg font-semibold">
-        문제에 대한 답
-      </h2>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 id="report-title" className="text-lg font-semibold">
+          문제에 대한 답
+        </h2>
+        {report && (
+          // 한눈에 평가하는 결과 보고서(R-33) — 요약 숫자·핵심 문제·가설별 그래프·주제 표
+          <Link href={`/app/surveys/${surveyId}/report`} className="inline-flex min-h-11 items-center rounded-box bg-accent px-4 text-sm font-medium text-on-accent">
+            결과 보고서 보기
+          </Link>
+        )}
+      </div>
       {!report ? (
         <div className="flex flex-col gap-3 rounded-box bg-surface p-4">
           <p className="text-sm text-muted">

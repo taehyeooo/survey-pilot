@@ -135,3 +135,14 @@ h2 {
 :root[data-bare] .shell-top {
   display: none;
 }
+
+/* 결과 보고서 인쇄·PDF — 메뉴 바와 버튼은 빼고, 카드가 쪽 사이에서 잘리지 않게 */
+@media print {
+  .shell-top,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+}

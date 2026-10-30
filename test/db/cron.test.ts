@@ -8,6 +8,7 @@ const report = {
   hypotheses: [{ index: 1, verdict: "unclear", evidence: "근거" }],
   answer: "답",
   next_actions: ["하나", "둘"],
+  key_problems: [{ title: "문제", evidence: "근거" }],
   themes: [],
 };
 
