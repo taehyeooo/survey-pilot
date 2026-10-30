@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { requireMember } from "@/lib/auth";
+import { requireMember, requireSignedIn } from "@/lib/auth";
+import { isOperator } from "@/lib/operator";
 import { closeOverdue } from "@/lib/submit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { groupByTab, listSurveys, type SurveyListItem, type Tab } from "@/lib/surveys";
@@ -83,16 +84,32 @@ async function SurveyList() {
   );
 }
 
+// 운영자에게만 운영 페이지로 가는 길(multi-user R-6·R-10). 운영 페이지 자체는 /ops에서 다시 확인한다.
+async function OpsLink() {
+  const { user } = await requireSignedIn();
+  if (!(await isOperator(createAdminClient(), user.email, process.env.ADMIN_EMAIL))) return null;
+  return (
+    <Link href="/ops" className="inline-flex min-h-11 items-center rounded-box px-3 text-sm text-muted hover:bg-surface">
+      운영
+    </Link>
+  );
+}
+
 export default function AdminPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-8">
       <header className="mb-6 flex items-center justify-between">
         <h1 className="text-xl font-semibold">내 설문</h1>
-        <form action={logout}>
-          <button type="submit" className="min-h-11 rounded-box px-3 text-sm text-muted hover:bg-surface">
-            로그아웃
-          </button>
-        </form>
+        <div className="flex items-center gap-1">
+          <Suspense>
+            <OpsLink />
+          </Suspense>
+          <form action={logout}>
+            <button type="submit" className="min-h-11 rounded-box px-3 text-sm text-muted hover:bg-surface">
+              로그아웃
+            </button>
+          </form>
+        </div>
       </header>
       <Suspense fallback={<p className="py-16 text-center text-muted">불러오는 중…</p>}>
         <SurveyList />
