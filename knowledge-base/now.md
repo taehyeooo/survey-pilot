@@ -9,7 +9,7 @@
 ## 승인 대기
 
 ## 다음 할 일
-1. 여러 사용자 [plan](../docs/plans/2026-10-30-multi-user.md) 1단계: 마이그레이션(profiles·login_attempts·owner cascade·RLS에서 ADMIN_EMAIL 빼기) — [spec](../docs/specs/2026-10-30-multi-user.md), ADR 0020. 화면 단계(11)는 apple-design 스킬
+1. 여러 사용자 [plan](../docs/plans/2026-10-30-multi-user.md) 2단계: 로그인 열기(링크 요청 횟수 제한, ADMIN_EMAIL 확인을 로그인한 사용자로) — 1단계(DB·RLS) 머지됨. [spec](../docs/specs/2026-10-30-multi-user.md), ADR 0020. 화면 단계(11)는 apple-design 스킬
 2. plan 4단계(샘플 검증): 문항 30개(Claude 판정 29/30)·리포트(3/3) 끝 — [결과](../docs/samples/2026-10-30-run.md). **사용자 판정이 남음**(기준 24/30) — 판정하면 4단계 체크. 결정 필요: 서로 반대인 가설의 중복 문항(#11) — 그대로(편집에서 지움) 또는 문항-가설 다대다 구조
 3. 결정 필요: `CONTACT_EMAIL`(Vercel에도 아직 없음) — 여러 사용자 11단계 전
 4. 운영 크론(KST 00:10) 첫 실행 결과는 다음 날 Vercel 로그에서 확인
