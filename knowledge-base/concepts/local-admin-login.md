@@ -31,6 +31,7 @@ sources:
    ```
 
 ## 알아 둘 것
+- DB 테스트에서 크론(`runDaily`)·`closeOverdue`처럼 **여러 설문을 한꺼번에 바꾸는 함수**는 `ownerId` 범위를 꼭 넘긴다 — 테스트 DB가 실제 프로젝트라 실제 설문을 건드린다(2026-10-30 겪을 뻔함).
 - 3000 포트(메인 체크아웃)는 실제 `ADMIN_EMAIL`로 둔다 — 하나뿐인 자원은 한 작업에서만(CLAUDE.md).
 - `GEMINI_API_KEY`가 없으면 개발 서버는 데모 AI(정해 둔 답, 문구에 `[데모]`)를 쓴다. 배포(production)에서는 쓰지 않는다(`src/lib/ai-runtime.ts`).
 - 기본 매직링크는 PKCE라 링크를 요청한 브라우저에서만 열린다. 메일 템플릿 링크를 `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`로 바꾸면 다른 기기에서도 열린다(대시보드 Authentication → Email Templates, 사람이 할 일).
