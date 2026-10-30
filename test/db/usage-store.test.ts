@@ -40,4 +40,12 @@ describe.skipIf(!url || !secretKey)("usage_events 저장소", () => {
     expect(future.count).toBe(0);
     expect(future.oldest).toBeNull();
   });
+
+  // survey-pilot#R-27 — 부르기 전에 넣은 행을 끝난 뒤 고친다
+  it("record는 행 id를 돌려주고, settle로 상태를 고친다", async () => {
+    const id = await store.record({ kind: "ai", purpose, status: "error" });
+    await store.settle(id, "ok");
+    const { data } = await db.from("usage_events").select("status").eq("id", id).single().throwOnError();
+    expect(data.status).toBe("ok");
+  });
 });
