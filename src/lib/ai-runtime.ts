@@ -10,7 +10,8 @@ export function isDemoAi() {
   return !process.env.GEMINI_API_KEY && process.env.NODE_ENV !== "production";
 }
 
-export function getAi(purpose: string): AiClient {
+// surveyId: 사용 기록에 설문과 주인을 남긴다(multi-user R-9).
+export function getAi(purpose: string, surveyId?: string): AiClient {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     if (isDemoAi()) return createDemoAi();
@@ -19,7 +20,7 @@ export function getAi(purpose: string): AiClient {
   const limits = readLimits();
   return createGuardedAi(
     createGeminiAi({ apiKey, model: process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL, timeoutMs: Number(process.env.GEMINI_TIMEOUT_MS) || undefined }),
-    createSupabaseUsageStore(createAdminClient()),
+    createSupabaseUsageStore(createAdminClient(), { surveyId }),
     { rpm: limits.geminiRpm, rpd: limits.geminiRpd },
     purpose,
   );

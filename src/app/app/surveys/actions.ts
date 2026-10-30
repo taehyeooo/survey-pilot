@@ -74,8 +74,8 @@ export async function startSurvey(_prev: StartState, formData: FormData): Promis
   try {
     const db = createAdminClient();
     const survey = await loadOwned(id);
-    const questions = await runClarify(db, getAi("clarify"), survey);
-    if (questions.length === 0) await runDesign(db, getAi("design"), await loadOwned(id));
+    const questions = await runClarify(db, getAi("clarify", id), survey);
+    if (questions.length === 0) await runDesign(db, getAi("design", id), await loadOwned(id));
   } catch (e) {
     error = messageOf(e); // 설문은 남는다 — 그 화면에서 다시 시도(R-28)
   }
@@ -92,7 +92,7 @@ export async function answerAndDesign(id: string, formData: FormData) {
   try {
     const db = createAdminClient();
     await answerClarifications(db, survey, answers);
-    await runDesign(db, getAi("design"), await loadOwned(id));
+    await runDesign(db, getAi("design", id), await loadOwned(id));
   } catch (e) {
     error = messageOf(e);
   }
@@ -103,7 +103,7 @@ export async function regenerateDesign(id: string) {
   const survey = await loadOwned(id);
   let error: string | undefined;
   try {
-    await runDesign(createAdminClient(), getAi("design"), survey);
+    await runDesign(createAdminClient(), getAi("design", id), survey);
   } catch (e) {
     error = messageOf(e);
   }
@@ -160,7 +160,7 @@ async function questionStep(id: string, step: (survey: QuestionSurvey) => Promis
 }
 
 export async function makeQuestions(id: string) {
-  await questionStep(id, (s) => generateQuestions(createAdminClient(), getAi("questions"), s));
+  await questionStep(id, (s) => generateQuestions(createAdminClient(), getAi("questions", id), s));
 }
 
 export async function saveQuestion(id: string, questionId: string, formData: FormData) {
@@ -191,7 +191,7 @@ export async function removeQuestion(id: string, questionId: string) {
 }
 
 export async function remakeQuestion(id: string, questionId: string) {
-  await questionStep(id, (s) => regenerateQuestion(createAdminClient(), getAi("question"), s, questionId));
+  await questionStep(id, (s) => regenerateQuestion(createAdminClient(), getAi("question", id), s, questionId));
 }
 
 // ── 게시(R-13)·설정(R-14, R-15) ─────────────────────────────────────────
@@ -242,7 +242,7 @@ export async function makeReport(id: string) {
   let error: string | undefined;
   try {
     if (survey.status !== "published" && survey.status !== "closed") throw new ConflictError("게시한 설문에서만 리포트를 만들 수 있어요.");
-    await generateReport(createAdminClient(), getAi("report"), id, survey.status === "closed" ? "final" : "interim");
+    await generateReport(createAdminClient(), getAi("report", id), id, survey.status === "closed" ? "final" : "interim");
   } catch (e) {
     error = messageOf(e);
   }

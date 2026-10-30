@@ -58,17 +58,19 @@ describe.skipIf(!hasDb)("하루 1회 크론 (실제 DB, 가짜 AI)", () => {
     const old = await survey({ status: "closed", closed_at: new Date(now - 31 * DAY).toISOString(), close_reason: "manual" }, ["old@example.com"]);
     const recent = await survey({ status: "closed", closed_at: new Date(now - 29 * DAY).toISOString(), close_reason: "manual" }, ["recent@example.com"]);
     await service.from("reports").insert([old, recent].map((id) => ({ survey_id: id, kind: "final", response_count: 1, content: report, is_tentative: false }))).throwOnError();
-    await runDaily(service, createFakeAi([]), now, { ownerId: adminId });
+    await runDaily(service, () => createFakeAi([]), now, { ownerId: adminId });
     expect(await emailsOf(old)).toEqual([null]);
     expect(await emailsOf(recent)).toEqual(["recent@example.com"]);
     expect((await service.from("respondents").select("email_hash").eq("survey_id", old)).data![0].email_hash).toMatch(/^h-/);
   });
 
-  // survey-pilot#R-16 survey-pilot#R-24
+  // survey-pilot#R-16 survey-pilot#R-24 multi-user#R-9(설문마다 AI를 받아 사용 기록에 설문을 남긴다)
   it("마감일 지난 진행 중 설문을 마감하고, 최종 리포트가 없으면 만든다", async () => {
     const id = await survey({ closes_at: new Date(Date.now() - 1000).toISOString() }, ["x@example.com"]);
     const ai = createFakeAi([report]);
-    const result = await runDaily(service, ai, Date.now(), { ownerId: adminId });
+    const asked: string[] = [];
+    const result = await runDaily(service, (surveyId) => (asked.push(surveyId), ai), Date.now(), { ownerId: adminId });
+    expect(asked).toContain(id);
     const { data } = await service.from("surveys").select("status, close_reason").eq("id", id).single();
     expect(data).toEqual({ status: "closed", close_reason: "deadline" });
     expect((await service.from("reports").select("kind").eq("survey_id", id)).data).toEqual([{ kind: "final" }]);
@@ -86,7 +88,7 @@ describe.skipIf(!hasDb)("하루 1회 크론 (실제 DB, 가짜 AI)", () => {
         { survey_id: id, email_hash: "b", code_hash: "c", expires_at: new Date(now - 60_000).toISOString(), sent_at: new Date(now - 11 * 60_000).toISOString() },
       ])
       .throwOnError();
-    await runDaily(service, createFakeAi([]), now, { ownerId: adminId });
+    await runDaily(service, () => createFakeAi([]), now, { ownerId: adminId });
     expect((await service.from("verifications").select("email_hash").eq("survey_id", id)).data).toEqual([{ email_hash: "b" }]);
   });
 });

@@ -79,7 +79,12 @@ export function readLimits(env: Record<string, string | undefined> = process.env
 }
 
 // 서버(service role) 클라이언트를 받는다 — usage_events는 정책이 없어 서버만 읽고 쓴다(ADR 0019).
-export function createSupabaseUsageStore(db: SupabaseClient): UsageStore {
+// scope.surveyId가 있으면 그 설문과 주인을 행에 남긴다(multi-user R-9). 한도는 지금처럼 전체 합으로 센다.
+export function createSupabaseUsageStore(db: SupabaseClient, scope: { surveyId?: string } = {}): UsageStore {
+  async function ownerOf(surveyId: string) {
+    const { data } = await db.from("surveys").select("owner_id").eq("id", surveyId).maybeSingle().throwOnError();
+    return data?.owner_id ?? null;
+  }
   return {
     async window(kind, since) {
       const { data, count } = await db
@@ -93,10 +98,10 @@ export function createSupabaseUsageStore(db: SupabaseClient): UsageStore {
         .throwOnError();
       return { count: count ?? 0, oldest: data?.[0] ? new Date(data[0].created_at) : null };
     },
-    async record({ kind, purpose, status, surveyId }) {
+    async record({ kind, purpose, status, surveyId = scope.surveyId }) {
       const { data } = await db
         .from("usage_events")
-        .insert({ kind, purpose, status, survey_id: surveyId ?? null })
+        .insert({ kind, purpose, status, survey_id: surveyId ?? null, user_id: surveyId ? await ownerOf(surveyId) : null })
         .select("id")
         .single()
         .throwOnError();
