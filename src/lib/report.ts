@@ -77,6 +77,28 @@ function summarize(stat: QuestionStat) {
 const MAX_TEXTS = 300;
 const MAX_TEXT_LENGTH = 500;
 
+// DB에서 읽은 것을 AI 입력으로 바꾼다 — 샘플 스크립트(scripts/sample_report.ts)도 이걸 써서 앱과 같은 입력을 만든다
+export function toReportInput(
+  survey: { problem: string; purpose: string | null; target_responses: number | null },
+  hypotheses: string[],
+  responseCount: number,
+  stats: QuestionStat[],
+  hypothesisNumber: (questionId: string) => number | null,
+): ReportInput {
+  return {
+    problem: survey.problem,
+    purpose: survey.purpose,
+    hypotheses,
+    responseCount,
+    target: survey.target_responses,
+    results: stats.map((s) => ({ prompt: s.question.prompt, hypothesis: hypothesisNumber(s.question.id), type: s.question.type, summary: summarize(s) })),
+    texts: stats
+      .flatMap((s) => (s.kind === "text" ? s.texts : []))
+      .slice(0, MAX_TEXTS)
+      .map((t) => t.slice(0, MAX_TEXT_LENGTH)),
+  };
+}
+
 export interface ReportRow {
   id: string;
   kind: "interim" | "final";
@@ -106,18 +128,7 @@ export async function generateReport(db: SupabaseClient, ai: AiClient, surveyId:
     const position = hypotheses?.findIndex((h) => h.id === hid) ?? -1;
     return position >= 0 ? position + 1 : null;
   };
-  const input: ReportInput = {
-    problem: survey.problem,
-    purpose: survey.purpose,
-    hypotheses: (hypotheses ?? []).map((h) => h.statement),
-    responseCount: results.responseCount,
-    target: survey.target_responses,
-    results: results.stats.map((s) => ({ prompt: s.question.prompt, hypothesis: hypothesisNumber(s.question.id), type: s.question.type, summary: summarize(s) })),
-    texts: results.stats
-      .flatMap((s) => (s.kind === "text" ? s.texts : []))
-      .slice(0, MAX_TEXTS)
-      .map((t) => t.slice(0, MAX_TEXT_LENGTH)),
-  };
+  const input = toReportInput(survey, (hypotheses ?? []).map((h) => h.statement), results.responseCount, results.stats, hypothesisNumber);
 
   const content = await generateValid(ai, reportPrompt(input), (d) => parseReport(d, input));
   const { data, error } = await db
