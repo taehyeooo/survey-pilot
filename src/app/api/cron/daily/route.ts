@@ -11,6 +11,6 @@ export async function GET(request: NextRequest) {
     return new NextResponse("unauthorized", { status: 401 });
   }
   await connection();
-  const result = await runDaily(createAdminClient(), getAi("cron-report"));
+  const result = await runDaily(createAdminClient(), (surveyId) => getAi("cron-report", surveyId));
   return NextResponse.json(result);
 }

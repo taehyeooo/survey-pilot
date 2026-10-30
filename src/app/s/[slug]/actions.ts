@@ -34,8 +34,9 @@ async function openSurvey(slug: string) {
 export async function sendCode(slug: string, _prev: CodeState, formData: FormData): Promise<CodeState> {
   const email = String(formData.get("email") ?? "");
   try {
-    await requestCode(createAdminClient(), getMailer(), hashSecret(), {
-      survey: await openSurvey(slug),
+    const survey = await openSurvey(slug);
+    await requestCode(createAdminClient(), getMailer(survey.id), hashSecret(), {
+      survey,
       email,
       consent: formData.get("consent") === "on",
       honeypot: String(formData.get("website") ?? ""),

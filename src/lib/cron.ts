@@ -18,7 +18,8 @@ export function isCronAuthorized(header: string | null, secret: string | undefin
 }
 
 // scope: 테스트가 실제 프로젝트의 다른 설문을 건드리지 않게 소유자로 좁힌다. 실제 크론은 범위 없이 전체.
-export async function runDaily(db: SupabaseClient, ai: AiClient, now = Date.now(), scope?: { ownerId: string }) {
+// aiFor: 설문마다 AI를 받는다 — 사용 기록에 설문과 주인을 남긴다(multi-user R-9).
+export async function runDaily(db: SupabaseClient, aiFor: (surveyId: string) => AiClient, now = Date.now(), scope?: { ownerId: string }) {
   await closeOverdue(db, new Date(now), scope?.ownerId);
 
   // 마감됐는데 최종 리포트가 없는 설문(응답이 있는 것만)
@@ -31,7 +32,7 @@ export async function runDaily(db: SupabaseClient, ai: AiClient, now = Date.now(
   let reports = 0;
   for (const s of pending.slice(0, REPORTS_PER_RUN)) {
     try {
-      await generateReport(db, ai, s.id, "final");
+      await generateReport(db, aiFor(s.id), s.id, "final");
       reports++;
     } catch (error) {
       console.error(`크론: 최종 리포트 실패 (${s.id})`, error); // 다음 날 다시, 또는 화면 버튼
