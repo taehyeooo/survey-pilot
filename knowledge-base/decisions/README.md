@@ -37,3 +37,4 @@
 | [0018](0018-free-tier-limit-guard.md) | 무료 한도(Gemini·Gmail)는 환경변수 + DB 카운터로 부르기 전에 막음 | active | 2026-10-29 |
 | [0019](0019-respondents-via-server-only.md) | 응답자 쪽은 DB 직접 접근 없이 서버 라우트로만, anon 정책 없음 | active | 2026-10-29 |
 | [0020](0020-multi-user-and-operator.md) | 누구나 가입하는 여러 사용자 서비스, 운영 페이지는 따로·목록과 숫자만, 탈퇴 즉시 삭제, 한도는 함께 씀 | active | 2026-10-30 |
+| [0021](0021-apple-design-skill.md) | 화면 디자인 작업에 apple-design 스킬(emilkowalski/skills, 사용자 범위 설치) | active | 2026-10-30 |
