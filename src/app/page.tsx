@@ -36,7 +36,7 @@ export default function Home() {
         <div className="rounded-box border border-line p-5">
           <LoginForm />
         </div>
-        <p className="text-sm text-muted">처음이면 이 칸으로 바로 가입돼요. 비밀번호는 없어요.</p>
+        <p className="text-sm text-muted">처음이면 &ldquo;가입하기&rdquo;에서 이메일과 비밀번호를 정하고, 메일로 받은 인증번호로 가입을 마쳐요.</p>
       </div>
     </main>
   );
