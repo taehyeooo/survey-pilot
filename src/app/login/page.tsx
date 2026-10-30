@@ -3,6 +3,7 @@ import { LoginForm } from "./login-form";
 
 const NOTICES: Record<string, string> = {
   link: "링크가 만료됐어요. 다시 받아 주세요.",
+  left: "탈퇴했어요. 그동안 써 주셔서 고마워요.",
 };
 
 async function Form({ searchParams }: { searchParams: PageProps<"/login">["searchParams"] }) {

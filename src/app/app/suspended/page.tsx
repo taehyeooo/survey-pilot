@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { requireSignedIn } from "@/lib/auth";
@@ -13,6 +14,9 @@ async function Notice() {
       <p className="leading-7 break-keep">
         지금은 설문을 만들거나 고칠 수 없고, 내 설문의 응답 링크도 응답을 받지 않아요. 궁금한 점은 운영자에게 물어봐 주세요.
       </p>
+      <Link href="/app/leave" className="inline-flex min-h-11 items-center text-sm text-muted hover:underline">
+        탈퇴하기
+      </Link>
       <form action={logout}>
         <button type="submit" className="min-h-11 rounded-box border border-line px-4 font-medium">
           로그아웃
