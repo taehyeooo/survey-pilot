@@ -72,8 +72,8 @@ export function readLimits(env: Record<string, string | undefined> = process.env
     return value;
   };
   return {
-    geminiRpm: num("GEMINI_RPM", 5),
-    geminiRpd: num("GEMINI_RPD", 20),
+    geminiRpm: num("GEMINI_RPM", 15), // gemini-3.5-flash-lite 무료 한도(AI Studio 2026-10-30 확인)
+    geminiRpd: num("GEMINI_RPD", 500),
     mailDaily: num("MAIL_DAILY_LIMIT", 100),
   };
 }

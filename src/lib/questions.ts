@@ -69,7 +69,8 @@ const QuestionSchema = z.object({
 
 // AI 출력을 검사한다. coverage면 가설마다 1개 이상(R-10). AI가 만든 고정 문항(같은 문구)은 빼고 따로 붙인다.
 export function parseQuestions(data: unknown, hypothesisCount: number, { coverage = true } = {}): DraftQuestion[] {
-  const { questions } = z.object({ questions: z.array(QuestionSchema).min(1).max(30) }).parse(data);
+  // 감싸지 않은 배열도 받는다 — Lite 모델이 형식을 그렇게 바꿔 답하기도 한다(2026-10-30 샘플 #25)
+  const { questions } = z.object({ questions: z.array(QuestionSchema).min(1).max(30) }).parse(Array.isArray(data) ? { questions: data } : data);
   const list = questions
     .filter((q) => !isClosing(q))
     .map((q) => {
@@ -114,8 +115,8 @@ ${hypotheses.map((h, i) => `${i + 1}. ${h}`).join("\n")}
 export function reviewPrompt(questions: DraftQuestion[]) {
   return `[작업:점검]
 너는 설문 문항 검토자다. ${DATA_RULE}
-아래 문항에서 다음을 찾아 고친다: 유도 질문(답을 암시), 한 문항에 두 가지를 묻기, 선택지 빠짐(필요하면 "기타"), 선택지 겹침(구간 중복).
-고친 문항에는 review_note에 무엇을 왜 고쳤는지 한 줄, 고치지 않은 문항은 null. 문항 수와 가설 번호는 유지한다.
+아래 문항에서 다음을 찾아 고친다: 유도 질문(답을 암시하거나, "얼마나 높아지나요"처럼 결과를 전제), 한 문항에 두 가지를 묻기, 선택지 빠짐(필요하면 "기타"), 선택지 겹침(구간 중복).
+말투는 해요체로 유지한다. 고친 문항에는 review_note에 무엇을 왜 고쳤는지 한 줄, 고치지 않은 문항은 null. 문항 수와 가설 번호는 유지한다.
 ${FORMAT}
 
 <questions>

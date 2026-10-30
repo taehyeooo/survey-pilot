@@ -76,8 +76,9 @@ export function designPrompt(problem: string, clarifications: Clarification[]) {
   return `[작업:설계]
 너는 설문 조사 설계자다. ${DATA_RULE}
 문제에 답하기 위한 조사를 설계한다.
-- purpose: 조사 목적 한 줄
-- hypotheses: 설문으로 확인할 가설 2~4개(서로 겹치지 않게, 응답으로 지지·기각을 판단할 수 있게)
+문제에 이미 결론이나 가정("~라는 걸 확인하고 싶다", "~때문인 것 같다")이 있으면 그것을 증명하려 하지 말고 맞는지 알아보는 조사로 바꾼다.
+- purpose: 조사 목적 한 줄("확인·증명"이 아니라 "알아본다")
+- hypotheses: 설문으로 확인할 가설 2~4개(서로 겹치지 않게, 응답으로 지지·기각을 판단할 수 있게). 문제에 가정이 있으면 그 가정과 다른 설명(다른 원인·반대 결과)도 1개 이상 넣는다
 - audience: 응답 대상
 - target_responses: 결론을 내기에 충분하면서 현실적으로 모을 수 있는 응답 수(정수)
 - target_minutes: 응답 소요 시간(분, 정수). 짧을수록 좋다
