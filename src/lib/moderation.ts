@@ -22,7 +22,7 @@ async function audit(db: SupabaseClient, row: { actorEmail: string; action: stri
 // ── 정지·해제(R-12) ─────────────────────────────────────────
 
 // 운영자 계정은 정지할 수 없다(자신 포함, ADR 0020) — ADMIN_EMAIL이거나 admins 표에 있으면.
-async function isProtected(db: SupabaseClient, email: string, adminEmail: string | undefined) {
+export async function isProtected(db: SupabaseClient, email: string, adminEmail: string | undefined) {
   if (isAdminEmail(email, adminEmail)) return true;
   const { data } = await db.from("admins").select("email").eq("email", normalizeEmail(email)).maybeSingle().throwOnError();
   return Boolean(data);

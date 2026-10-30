@@ -97,6 +97,11 @@ export default function AdminPage() {
       <Suspense fallback={<p className="py-16 text-center text-muted">불러오는 중…</p>}>
         <SurveyList />
       </Suspense>
+      <footer className="mt-16 border-t border-line pt-4">
+        <Link href="/app/leave" className="inline-flex min-h-11 items-center text-sm text-muted hover:underline">
+          탈퇴하기
+        </Link>
+      </footer>
     </main>
   );
 }
