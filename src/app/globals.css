@@ -82,3 +82,51 @@ h1 {
     animation: none;
   }
 }
+
+/* apple-design §1 — 누르는 순간 반응한다(손을 뗄 때가 아니라). 모든 버튼·버튼 같은 링크에 한 곳에서. */
+button:not(:disabled),
+a[class*="rounded-box"] {
+  transition: transform 100ms ease-out;
+}
+button:not(:disabled):active,
+a[class*="rounded-box"]:active {
+  transform: scale(0.97);
+}
+
+/* apple-design §15 — 자간은 크기마다: 큰 제목은 좁게, 중간 제목은 조금, 작은 글자는 살짝 넓게 */
+h2 {
+  letter-spacing: -0.01em;
+}
+.text-xs,
+.text-sm {
+  letter-spacing: 0.005em;
+}
+
+/* apple-design §12 — 위쪽 머리줄은 반투명 재질: 내용이 아래로 지나가며 비친다(불투명 띠가 자리를 먹지 않게) */
+@utility chrome-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgb(255 255 255 / 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* apple-design §14 — 움직임·투명 줄이기 설정을 따른다 */
+@media (prefers-reduced-motion: reduce) {
+  button:not(:disabled),
+  a[class*="rounded-box"] {
+    transition: none;
+  }
+  button:not(:disabled):active,
+  a[class*="rounded-box"]:active {
+    transform: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .chrome-bar {
+    background: var(--bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}

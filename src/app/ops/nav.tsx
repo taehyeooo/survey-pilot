@@ -12,7 +12,7 @@ export function OpsNav({ current }: { current: "overview" | "users" | "surveys" 
     </Link>
   );
   return (
-    <header className="mb-6 flex flex-wrap items-center justify-between gap-2">
+    <header className="chrome-bar -mx-4 mb-6 flex flex-wrap items-center justify-between gap-2 px-4 py-2">
       <h1 className="text-xl font-semibold">운영</h1>
       <nav className="flex items-center gap-1">
         {item("overview", "/ops", "개요")}

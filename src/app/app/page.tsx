@@ -98,7 +98,7 @@ async function OpsLink() {
 export default function AdminPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-8">
-      <header className="mb-6 flex items-center justify-between">
+      <header className="chrome-bar -mx-4 mb-6 flex items-center justify-between px-4 py-2">
         <h1 className="text-xl font-semibold">내 설문</h1>
         <div className="flex items-center gap-1">
           <Suspense>
