@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { isDemoAi } from "@/lib/ai-runtime";
-import { requireAdmin } from "@/lib/auth";
+import { requireMember } from "@/lib/auth";
 import { DemoNotice } from "../demo-notice";
 import { StageBar } from "../stage-bar";
 import { ProblemForm } from "./problem-form";
 
 // 새 설문(디자인 결정 27 C 단계형): 화면 가운데 큰 질문 하나.
 async function NewSurvey() {
-  await requireAdmin();
+  await requireMember();
   return (
     <>
       {isDemoAi() && <DemoNotice />}

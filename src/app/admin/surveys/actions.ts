@@ -5,7 +5,8 @@ import { after } from "next/server";
 import { finalReportQuietly } from "@/lib/report-runtime";
 import { notFound, redirect } from "next/navigation";
 import { getAi } from "@/lib/ai-runtime";
-import { requireAdmin } from "@/lib/auth";
+import { requireMember } from "@/lib/auth";
+import { ownedSurvey } from "@/lib/members";
 import {
   aiErrorMessage,
   answerClarifications,
@@ -34,16 +35,12 @@ import { hashSecret } from "@/lib/mailer-runtime";
 import { generateReport } from "@/lib/report";
 import { closeSurvey } from "@/lib/submit";
 
-// 소유 확인은 관리자 세션(RLS)으로, 쓰기는 서버 클라이언트로(ADR 0019).
+// 주인 확인은 세션(RLS)과 쿼리 조건 두 곳에서, 쓰기는 서버 클라이언트로(multi-user R-3, ADR 0019 v2).
 async function loadOwned(id: string) {
-  const { db } = await requireAdmin();
-  const { data } = await db
-    .from("surveys")
-    .select("id, status, problem, clarifications, purpose, closes_at, audience, target_minutes")
-    .eq("id", id)
-    .maybeSingle();
+  const { db, user } = await requireMember();
+  const data = await ownedSurvey<SurveyRow & QuestionSurvey>(db, user.id, id, "id, status, problem, clarifications, purpose, closes_at, audience, target_minutes");
   if (!data) notFound();
-  return data as SurveyRow & QuestionSurvey;
+  return data;
 }
 
 function messageOf(error: unknown) {
@@ -63,7 +60,7 @@ export type StartState = { error?: string; problem?: string };
 
 // 문제 입력(R-6) → 되묻기(R-7) → 빠진 게 없으면 바로 설계(R-8)
 export async function startSurvey(_prev: StartState, formData: FormData): Promise<StartState> {
-  const { user } = await requireAdmin();
+  const { user } = await requireMember();
   const text = String(formData.get("problem") ?? "");
   let id: string;
   try {
@@ -271,7 +268,7 @@ export async function findForDeletion(id: string, _prev: DeletionState, formData
 }
 
 export async function deleteForRequest(id: string, respondentId: string, _prev: DeletionState, formData: FormData): Promise<DeletionState> {
-  const { user } = await requireAdmin();
+  const { user } = await requireMember();
   await loadOwned(id);
   if (formData.get("confirm") !== "on") return { step: "confirm", error: "되돌릴 수 없다는 것을 확인해 주세요." };
   try {
