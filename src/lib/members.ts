@@ -1,16 +1,21 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-// 사용자 상태(multi-user R-2). profiles 행은 가입 때 트리거가 만든다.
-export type Member = { agreed_at: string | null };
+// 사용자 상태(multi-user R-2, R-8). profiles 행은 가입 때 트리거가 만든다.
+export type Member = { agreed_at: string | null; suspended_at: string | null };
 
 export async function loadMember(db: SupabaseClient, userId: string): Promise<Member | null> {
-  const { data } = await db.from("profiles").select("agreed_at").eq("id", userId).maybeSingle().throwOnError();
+  const { data } = await db.from("profiles").select("agreed_at, suspended_at").eq("id", userId).maybeSingle().throwOnError();
   return data;
 }
 
 // 이용 안내에 동의하기 전에는 만들기·AI·게시를 받지 않는다. 행이 없어도 동의 전으로 본다.
-export function needsAgreement(member: Member | null) {
+export function needsAgreement(member: Pick<Member, "agreed_at"> | null) {
   return !member?.agreed_at;
+}
+
+// 정지된 사용자는 만들기·AI·게시·수정을 하지 못한다(R-8). 사유는 본인에게 보이지 않는다.
+export function isSuspended(member: Pick<Member, "suspended_at"> | null) {
+  return Boolean(member?.suspended_at);
 }
 
 // 처음 동의한 시각을 남긴다 — 다시 눌러도 바꾸지 않는다.

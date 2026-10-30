@@ -1,5 +1,5 @@
 import { connection, NextResponse, type NextRequest } from "next/server";
-import { loadMember, needsAgreement, ownedSurvey } from "@/lib/members";
+import { isSuspended, loadMember, needsAgreement, ownedSurvey } from "@/lib/members";
 import { loadResults, toCsv } from "@/lib/results";
 import { createSessionClient } from "@/lib/supabase/server";
 
@@ -11,7 +11,9 @@ export async function GET(_request: NextRequest, { params }: RouteContext<"/app/
     data: { user },
   } = await db.auth.getUser();
   if (!user) return new NextResponse("로그인한 뒤 받을 수 있어요.", { status: 401 });
-  if (needsAgreement(await loadMember(db, user.id))) return new NextResponse("이용 안내에 동의한 뒤 받을 수 있어요.", { status: 403 });
+  const member = await loadMember(db, user.id);
+  if (isSuspended(member)) return new NextResponse("이용이 정지됐어요.", { status: 403 });
+  if (needsAgreement(member)) return new NextResponse("이용 안내에 동의한 뒤 받을 수 있어요.", { status: 403 });
 
   const { id } = await params;
   if (!(await ownedSurvey(db, user.id, id, "id"))) return new NextResponse("설문을 찾을 수 없어요.", { status: 404 });

@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { agreeToTerms, loadMember, needsAgreement, ownedSurvey } from "../../src/lib/members";
+import { agreeToTerms, isSuspended, loadMember, needsAgreement, ownedSurvey } from "../../src/lib/members";
 import { hasDb, testUsers, type Db } from "./helpers";
 
 describe("이용 안내 동의 (multi-user R-2)", () => {
@@ -8,6 +8,15 @@ describe("이용 안내 동의 (multi-user R-2)", () => {
     expect(needsAgreement(null)).toBe(true);
     expect(needsAgreement({ agreed_at: null })).toBe(true);
     expect(needsAgreement({ agreed_at: "2026-10-30T00:00:00Z" })).toBe(false);
+  });
+});
+
+describe("정지 (multi-user R-8)", () => {
+  // multi-user#R-8
+  it("suspended_at이 있으면 정지", () => {
+    expect(isSuspended(null)).toBe(false);
+    expect(isSuspended({ suspended_at: null })).toBe(false);
+    expect(isSuspended({ suspended_at: "2026-10-30T00:00:00Z" })).toBe(true);
   });
 });
 
@@ -27,9 +36,9 @@ describe.skipIf(!hasDb)("동의와 주인 확인 (실제 DB)", () => {
   it("새 사용자는 동의 전, 동의하면 시각이 남고 다시 동의해도 바뀌지 않는다", async () => {
     expect(needsAgreement(await loadMember(a.client, a.id))).toBe(true);
     await agreeToTerms(users.service, a.id, new Date("2026-10-30T01:00:00Z"));
-    expect(await loadMember(a.client, a.id)).toEqual({ agreed_at: "2026-10-30T01:00:00+00:00" });
+    expect(await loadMember(a.client, a.id)).toEqual({ agreed_at: "2026-10-30T01:00:00+00:00", suspended_at: null });
     await agreeToTerms(users.service, a.id, new Date("2026-10-31T01:00:00Z"));
-    expect(await loadMember(a.client, a.id)).toEqual({ agreed_at: "2026-10-30T01:00:00+00:00" });
+    expect(await loadMember(a.client, a.id)).toEqual({ agreed_at: "2026-10-30T01:00:00+00:00", suspended_at: null });
   });
 
   // multi-user#R-2 — 남의 동의 상태는 읽을 수 없다(profiles_self_select)

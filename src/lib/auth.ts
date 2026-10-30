@@ -1,7 +1,7 @@
 import "server-only";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
-import { loadMember, needsAgreement } from "@/lib/members";
+import { isSuspended, loadMember, needsAgreement } from "@/lib/members";
 import { createSessionClient } from "@/lib/supabase/server";
 
 // 로그인 확인(multi-user R-1). 로그인 안 했으면 로그인으로.
@@ -17,9 +17,11 @@ export async function requireSignedIn() {
   return { db, user };
 }
 
-// 사용자 화면 입구(multi-user R-2). 이용 안내에 동의하기 전이면 안내 화면으로.
+// 사용자 화면 입구. 정지됐으면 정지 안내로(multi-user R-8), 이용 안내에 동의하기 전이면 동의 화면으로(R-2).
 export async function requireMember() {
   const session = await requireSignedIn();
-  if (needsAgreement(await loadMember(session.db, session.user.id))) redirect("/app/welcome");
+  const member = await loadMember(session.db, session.user.id);
+  if (isSuspended(member)) redirect("/app/suspended");
+  if (needsAgreement(member)) redirect("/app/welcome");
   return session;
 }
