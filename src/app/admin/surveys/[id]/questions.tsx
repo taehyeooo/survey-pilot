@@ -45,7 +45,6 @@ function Preview({ question }: { question: Question }) {
 
 function QuestionCard({ surveyId, question, index, last, editable }: { surveyId: string; question: Question; index: number; last: boolean; editable: boolean }) {
   const fixed = isClosing(question);
-  const choice = question.type === "single" || question.type === "multi";
   return (
     <li className="flex flex-col gap-3 rounded-box border border-line p-4">
       <div className="flex items-baseline justify-between gap-3">
@@ -86,12 +85,20 @@ function QuestionCard({ surveyId, question, index, last, editable }: { surveyId:
                 <span className="text-sm font-medium">문항</span>
                 <textarea name="prompt" rows={2} required defaultValue={question.prompt} className="field py-2" />
               </label>
-              {choice && (
-                <label className="flex flex-col gap-2">
-                  <span className="text-sm font-medium">선택지 (한 줄에 하나, 2개 이상)</span>
-                  <textarea name="options" rows={Math.max(3, question.options.length)} required defaultValue={question.options.map((o) => o.label).join("\n")} className="field py-2" />
-                </label>
-              )}
+              <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium">종류</span>
+                <select name="type" defaultValue={question.type} className="field bg-surface">
+                  {(Object.keys(TYPE_LABEL) as QuestionType[]).map((t) => (
+                    <option key={t} value={t}>
+                      {TYPE_LABEL[t]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium">선택지 (고르기 문항만, 한 줄에 하나, 2개 이상)</span>
+                <textarea name="options" rows={Math.max(3, question.options.length)} defaultValue={question.options.map((o) => o.label).join("\n")} className="field py-2" />
+              </label>
               <label className="flex min-h-11 items-center gap-2 text-sm">
                 <input type="checkbox" name="required" defaultChecked={question.required} className="size-4" />
                 꼭 답해야 하는 문항

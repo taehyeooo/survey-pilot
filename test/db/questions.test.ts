@@ -93,6 +93,16 @@ describe.skipIf(!hasDb)("문항 생성·점검·편집 (실제 DB, 가짜 AI)", 
     saved = await questions(survey.id);
     expect(saved[0]).toMatchObject({ prompt: "고친 첫", required: false, options: [{ id: "o1", label: "가" }, { id: "o2", label: "나" }, { id: "o3", label: "다" }] });
 
+    // 종류 바꾸기: 하나 고르기 → 여러 개 고르기, 척도로 바꾸면 선택지를 비운다
+    await updateQuestion(service, survey.id, saved[0].id, { prompt: "고친 첫", options: ["가", "나", "다"], required: false, type: "multi" });
+    expect((await questions(survey.id))[0]).toMatchObject({ type: "multi", options: [{ id: "o1", label: "가" }, { id: "o2", label: "나" }, { id: "o3", label: "다" }] });
+    await updateQuestion(service, survey.id, saved[1].id, { prompt: "둘", options: ["예", "아니요"], required: true, type: "scale" });
+    expect((await questions(survey.id))[1]).toMatchObject({ type: "scale", options: [] });
+    await expect(updateQuestion(service, survey.id, saved[1].id, { prompt: "둘", options: [""], required: true, type: "single" })).rejects.toBeInstanceOf(RangeError);
+    await expect(updateQuestion(service, survey.id, saved[1].id, { prompt: "둘", options: [], required: true, type: "toString" })).rejects.toBeInstanceOf(RangeError);
+    await updateQuestion(service, survey.id, saved[1].id, { prompt: "둘", options: ["예", "아니요"], required: true, type: "single" });
+    saved = await questions(survey.id);
+
     await moveQuestion(service, survey.id, saved[1].id, -1);
     expect((await questions(survey.id)).map((q) => q.prompt)).toEqual(["둘", "고친 첫", CLOSING_PROMPT]);
 
