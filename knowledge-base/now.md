@@ -11,7 +11,7 @@
 ## 다음 할 일
 1. 사용자: Vercel 가입·`taehyeooo/survey-pilot` Import·환경변수(.env.local에서 SUPABASE_DB_URL 빼고, HASH_SECRET·CRON_SECRET은 로컬과 같은 값) → 배포 주소 알려 주기. 15단계까지 머지됨
 2. plan 16단계: 배포 뒤 Supabase Auth Site URL·Redirect URL에 배포 주소, 실제 로그인·응답·크론 확인
-3. plan 4단계(샘플 검증): 30개 실행·4차 재실행 끝([결과](../docs/samples/2026-10-30-run.md), Claude 판정 28/30) — **사용자 판정 필요**(기준 24/30), 남은 것: 리포트·주관식·주입 문장 검증(가짜 응답 25건), 거울상 가설(#11)·두 가지 묻기(#25)
+3. plan 4단계(샘플 검증): 문항 30개(Claude 판정 28/30)·리포트(가짜 응답 25건, 3/3) 끝 — [결과](../docs/samples/2026-10-30-run.md). **사용자 판정이 남음**(기준 24/30) — 판정하면 4단계 체크. 남은 문제: 거울상 가설(#11)·두 가지 묻기(#25)
 4. 결정 필요: `CONTACT_EMAIL`. 디자인 작업 때 apple-design 스킬 설치 여부
 
 ## 정해 둔 것

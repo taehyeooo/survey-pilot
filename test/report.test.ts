@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { parseReport, reportPrompt, type ReportInput } from "../src/lib/report";
+import { parseReport, reportPrompt, toReportInput, type ReportInput } from "../src/lib/report";
+import type { QuestionStat } from "../src/lib/results";
 
 const input: ReportInput = {
   problem: "스터디 출석률이 왜 떨어질까",
@@ -58,5 +59,26 @@ describe("리포트 출력 검사", () => {
   it("주제는 5개까지", () => {
     const theme = valid.themes[0];
     expect(() => parseReport({ ...valid, themes: Array(6).fill(theme) }, input)).toThrow();
+  });
+});
+
+describe("리포트 입력 만들기", () => {
+  const question = (id: string, type: "single" | "scale" | "text") => ({ id, position: 1, type, prompt: `문항 ${id}`, options: [] });
+  const stats: QuestionStat[] = [
+    { kind: "choice", question: question("a", "single"), answered: 4, options: [{ id: "o1", label: "예", count: 3, ratio: 0.75 }, { id: "o2", label: "아니요", count: 1, ratio: 0.25 }] },
+    { kind: "scale", question: question("b", "scale"), answered: 2, mean: 4.5, distribution: [0, 0, 0, 1, 1] },
+    { kind: "text", question: question("c", "text"), answered: 2, texts: ["가".repeat(600), "짧은 답"] },
+  ];
+
+  // survey-pilot#R-24 survey-pilot#R-23 — 앱(generateReport)과 샘플 스크립트가 같은 입력을 쓴다
+  it("집계를 요약 문장으로 바꾸고, 가설 번호를 붙이고, 주관식은 500자로 자른다", () => {
+    const input = toReportInput({ problem: "문제", purpose: "목적", target_responses: 10 }, ["가설"], 4, stats, (id) => (id === "a" ? 1 : null));
+    expect(input.results).toEqual([
+      { prompt: "문항 a", hypothesis: 1, type: "single", summary: "예 3명(75%), 아니요 1명(25%) / 답 4명" },
+      { prompt: "문항 b", hypothesis: null, type: "scale", summary: "평균 4.5 (1점 0명, 2점 0명, 3점 0명, 4점 1명, 5점 1명)" },
+      { prompt: "문항 c", hypothesis: null, type: "text", summary: "주관식 답 2개(아래 texts)" },
+    ]);
+    expect(input.texts.map((t) => t.length)).toEqual([500, 4]);
+    expect(input).toMatchObject({ problem: "문제", purpose: "목적", hypotheses: ["가설"], responseCount: 4, target: 10 });
   });
 });
