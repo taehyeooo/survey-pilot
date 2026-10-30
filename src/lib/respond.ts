@@ -54,7 +54,10 @@ export interface OpenSurvey {
   archived_at: string | null;
   closes_at: string | null;
   paused?: boolean; // 설문 주인이 정지됨(multi-user R-8)
+  require_email?: boolean; // 한 사람 한 번만(이메일 인증). false면 바로 응답(ADR 0017 v2). 모르면 인증으로 본다
 }
+
+const BROWSER_LIMIT = 20; // 바로 응답 시작, 같은 IP 1시간
 
 export const PAUSED = "지금은 응답을 받지 않아요.";
 
@@ -84,6 +87,7 @@ export async function requestCode(
   if (!input.consent) throw new RespondError("개인정보 수집·이용에 동의해야 응답할 수 있어요.", "consent");
   if (isClosed(input.survey, now)) throw new RespondError("마감된 설문이에요.", "closed");
   if (input.survey.paused) throw new RespondError(PAUSED, "closed");
+  if (input.survey.require_email === false) throw new RespondError("이 설문은 이메일 없이 바로 응답해요. 새로고침해 주세요.", "email");
   const email = normalizeEmail(input.email);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new RespondError("이메일 주소를 다시 확인해 주세요.", "email");
 
@@ -184,4 +188,43 @@ export async function verifyCode(
     respondentId = data.id as string;
   }
   return makeToken(secret, respondentId, now);
+}
+
+// 바로 응답(ADR 0017 v2): 이메일 대신 브라우저 표시(clientId, 쿠키)로 구별한다 — 같은 브라우저는 한 번만.
+// 응답자 행을 만들고 이메일 인증과 같은 토큰을 돌려준다(제출은 submitResponse 그대로). 봇이면 null.
+export async function startAnonymous(
+  db: SupabaseClient,
+  secret: string,
+  input: { survey: OpenSurvey; clientId: string; consent: boolean; honeypot: string; ip: string },
+  now = Date.now(),
+) {
+  if (input.honeypot.trim()) return null; // 봇에게는 성공처럼(R-4)
+  if (!input.consent) throw new RespondError("안내에 동의해야 응답할 수 있어요.", "consent");
+  if (isClosed(input.survey, now)) throw new RespondError("마감된 설문이에요.", "closed");
+  if (input.survey.paused) throw new RespondError(PAUSED, "closed");
+  if (input.survey.require_email !== false) throw new RespondError("이 설문은 이메일 인증 뒤에 응답해요. 새로고침해 주세요.", "email");
+
+  const key = hmac(secret, `browser:${input.clientId}`);
+  if (await hasResponded(db, input.survey.id, key)) throw new RespondError("이미 응답하셨어요. 참여해 주셔서 고마워요.", "done");
+  const { data: existing } = await db.from("respondents").select("id").eq("survey_id", input.survey.id).eq("email_hash", key).maybeSingle().throwOnError();
+  if (existing) return makeToken(secret, existing.id, now); // 시작만 하고 내지 않았던 같은 브라우저
+
+  const ipHash = ipHashOf(secret, input.ip);
+  const { count } = await db
+    .from("respondents")
+    .select("id", { count: "exact", head: true })
+    .eq("ip_hash", ipHash)
+    .eq("via", "browser")
+    .gt("created_at", new Date(now - HOUR_MS).toISOString())
+    .throwOnError();
+  if ((count ?? 0) >= BROWSER_LIMIT) throw new RespondError("요청이 많아요. 잠시 후 다시 시도해 주세요.", "ip");
+
+  const at = new Date(now).toISOString();
+  const { data } = await db
+    .from("respondents")
+    .insert({ survey_id: input.survey.id, email_hash: key, via: "browser", consented_at: at, verified_at: at, ip_hash: ipHash })
+    .select("id")
+    .single()
+    .throwOnError();
+  return makeToken(secret, data.id, now);
 }

@@ -28,7 +28,7 @@ import {
   updateQuestion,
   type QuestionSurvey,
 } from "@/lib/questions";
-import { canEditQuestions, publishSurvey, updateSettings } from "@/lib/publish";
+import { canEditQuestions, publishSurvey, setRequireEmail, updateSettings } from "@/lib/publish";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { deleteOwnRespondent, findRespondent } from "@/lib/deletion";
 import { hashSecret } from "@/lib/mailer-runtime";
@@ -216,6 +216,18 @@ export async function saveSettings(id: string, formData: FormData) {
       closesAt: new Date(`${text("closes_at")}:00+09:00`), // 입력은 KST
       targetResponses: Number(text("target_responses")),
     });
+  } catch (e) {
+    error = messageOf(e);
+  }
+  if (error) redirect(`/app/surveys/${id}?error=${encodeURIComponent(error)}`);
+  revalidatePath(`/app/surveys/${id}`);
+}
+
+// 응답 방식(ADR 0017 v2) — 한 사람 한 번만(이메일 인증) 켜기·끄기
+export async function saveResponseMode(id: string, formData: FormData) {
+  let error: string | undefined;
+  try {
+    await setRequireEmail(createAdminClient(), await loadOwned(id), formData.get("require_email") === "on");
   } catch (e) {
     error = messageOf(e);
   }

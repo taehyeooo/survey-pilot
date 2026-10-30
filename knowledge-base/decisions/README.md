@@ -33,7 +33,7 @@
 | [0014](0014-requirement-trace.md) | spec 요구사항 ID(R-번호)를 plan과 테스트가 인용하고 CI가 검사 | active | 2026-10-28 |
 | [0015](0015-now-md-handoff.md) | 지금 상태는 now.md 하나에 고쳐 쓰는 인계 메모 | active | 2026-10-28 |
 | [0016](0016-autonomous-mode-permission-bundle.md) | 자율 모드 — 시작할 때 받은 권한 묶음 안에서는 묻지 않고 진행, 밖은 승인 대기 | active | 2026-10-28 |
-| [0017](0017-respondent-privacy.md) | 응답자 이메일은 인증·중복 확인에만, 해시로 확인, 마감 30일 후 원문 삭제, Gemini 처리 고지 | active | 2026-10-29 |
+| [0017](0017-respondent-privacy.md) | 응답 방식은 설문마다(기본 바로 응답·1브라우저 1응답, 켜면 이메일 인증), 이메일은 인증·중복 확인에만·해시·마감 30일 후 원문 삭제, Gemini 처리 고지 | active | 2026-10-30 |
 | [0018](0018-free-tier-limit-guard.md) | 무료 한도(Gemini·Gmail)는 환경변수 + DB 카운터로 부르기 전에 막음 | active | 2026-10-29 |
 | [0019](0019-respondents-via-server-only.md) | 응답자 쪽은 DB 직접 접근 없이 서버 라우트로만, anon 정책 없음 | active | 2026-10-29 |
 | [0020](0020-multi-user-and-operator.md) | 누구나 가입하는 여러 사용자 서비스, 운영 페이지는 따로·목록과 숫자만, 탈퇴 즉시 삭제, 한도는 함께 씀 | active | 2026-10-30 |

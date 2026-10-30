@@ -40,7 +40,7 @@ export async function findPublicSurvey(db: SupabaseClient, slug: string) {
   if (!/^[A-Za-z0-9]{12}$/.test(slug)) return null;
   const { data } = await db
     .from("surveys")
-    .select("id, status, intro, target_minutes, closes_at, archived_at, taken_down_at, owner:profiles(suspended_at), questions(id, position, type, prompt, options, required)")
+    .select("id, status, intro, target_minutes, closes_at, archived_at, taken_down_at, require_email, owner:profiles(suspended_at), questions(id, position, type, prompt, options, required)")
     .order("position", { referencedTable: "questions" })
     .eq("slug", slug)
     .in("status", ["published", "closed"])
@@ -79,4 +79,10 @@ export async function updateSettings(
     .update({ intro, share_message: edit.share_message.trim(), closes_at: edit.closesAt.toISOString(), target_responses: edit.targetResponses })
     .eq("id", survey.id)
     .throwOnError();
+}
+
+// 응답 방식(ADR 0017 v2): true면 한 사람 한 번만(이메일 인증), false면 바로 응답. 게시 전·진행 중에만 바꾼다.
+export async function setRequireEmail(db: SupabaseClient, survey: { id: string; status: string }, requireEmail: boolean) {
+  if (survey.status !== "reviewing" && survey.status !== "published") throw new ConflictError("마감된 설문은 고칠 수 없어요.");
+  await db.from("surveys").update({ require_email: requireEmail }).eq("id", survey.id).throwOnError();
 }

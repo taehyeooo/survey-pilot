@@ -28,7 +28,7 @@ async function PublicSurvey({ params }: PageProps<"/s/[slug]">) {
           {PAUSED}
         </p>
       ) : (
-        <RespondFlow slug={slug} questions={(survey.questions ?? []) as PublicQuestion[]} contact={process.env.CONTACT_EMAIL || null} />
+        <RespondFlow slug={slug} questions={(survey.questions ?? []) as PublicQuestion[]} contact={process.env.CONTACT_EMAIL || null} requireEmail={survey.require_email} />
       )}
     </>
   );
