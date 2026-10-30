@@ -9,14 +9,14 @@ function ConfirmStep({ state }: { state: OpsDeletionState }) {
   const [result, action, pending] = useActionState<OpsDeletionState, FormData>(deleteOpsDeletion, state);
   if (result.step === "done") {
     return (
-      <p role="status" className="rounded-box bg-surface p-3 text-sm">
+      <p role="status" className="card p-3 text-sm">
         응답 {result.deleted}건을 지우고 설문마다 기록을 남겼어요.
       </p>
     );
   }
   return (
     <form action={action} className="flex flex-col gap-3">
-      <div className="rounded-box bg-surface p-3 text-sm">
+      <div className="card p-3 text-sm">
         <p className="break-all">
           <span className="text-muted">이메일</span> {state.email}
         </p>
@@ -46,7 +46,7 @@ function ConfirmStep({ state }: { state: OpsDeletionState }) {
         <button type="submit" disabled={pending} className="min-h-11 rounded-box border border-danger px-4 text-sm font-medium text-danger disabled:opacity-60">
           {pending ? "지우는 중…" : "응답 지우기"}
         </button>
-        <button type="button" onClick={() => location.reload()} className="min-h-11 rounded-box px-4 text-sm text-muted hover:bg-surface">
+        <button type="button" onClick={() => location.reload()} className="min-h-11 rounded-box px-4 text-sm text-muted hover:bg-line/50">
           취소
         </button>
       </div>
@@ -68,7 +68,7 @@ export function OpsDeletionForm() {
           {state.error}
         </p>
       )}
-      <button type="submit" disabled={pending} className="min-h-11 self-start rounded-box border border-line px-4 text-sm font-medium hover:bg-surface disabled:opacity-60">
+      <button type="submit" disabled={pending} className="min-h-11 self-start rounded-box border border-line px-4 text-sm font-medium hover:bg-line/50 disabled:opacity-60">
         {pending ? "찾는 중…" : "응답 찾기"}
       </button>
     </form>

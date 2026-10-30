@@ -11,6 +11,9 @@ import { latestReport, type ReportRow } from "@/lib/report";
 import { loadResults, type QuestionStat } from "@/lib/results";
 import { closeOverdue } from "@/lib/submit";
 import { DemoNotice } from "../../demo-notice";
+import { Confetti } from "../../../confetti";
+import { IconSparkle } from "../../../icons";
+import { PageSkeleton } from "../../skeleton";
 import { StageBar, stageOf } from "../../stage-bar";
 import { AI_STEPS } from "../../ai-steps";
 import { SubmitButton } from "../../submit-button";
@@ -43,6 +46,14 @@ interface Survey {
   questions: Question[];
 }
 
+const STATUS_LABEL: Record<string, string> = { designing: "설계 중", reviewing: "문항 확인 중", published: "응답 받는 중", closed: "마감" };
+const STATUS_TONE: Record<string, string> = {
+  designing: "bg-surface text-muted",
+  reviewing: "bg-surface text-muted",
+  published: "bg-accent text-on-accent",
+  closed: "bg-fg text-bg",
+};
+
 const KST_MS = 9 * 60 * 60 * 1000;
 const toKstInput = (iso: string) => new Date(new Date(iso).getTime() + KST_MS).toISOString().slice(0, 16);
 const kstFormat = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", dateStyle: "medium", timeStyle: "short" });
@@ -70,8 +81,8 @@ function ClarifyForm({ survey }: { survey: Survey }) {
 
 function Card({ index, title, children }: { index: number; title: string; children: React.ReactNode }) {
   return (
-    <section aria-labelledby={`group-${index}`} className="flex flex-col gap-4 rounded-box bg-surface p-5">
-      <h2 id={`group-${index}`} className="text-sm font-medium text-muted">
+    <section aria-labelledby={`group-${index}`} className="flex flex-col gap-4 card p-5">
+      <h2 id={`group-${index}`} className="text-eyebrow">
         {index}. {title}
       </h2>
       {children}
@@ -153,7 +164,7 @@ function DesignForm({ survey }: { survey: Survey }) {
 function ConfirmedSummary({ survey }: { survey: Survey }) {
   return (
     <section className="flex flex-col gap-4">
-      <p role="status" className="rounded-box bg-surface p-4">
+      <p role="status" className="card p-4">
         설계를 확인했어요.
       </p>
       <dl className="grid gap-3 text-sm">
@@ -185,7 +196,7 @@ function ConfirmedSummary({ survey }: { survey: Survey }) {
 // 게시 뒤에도 고칠 수 있는 칸(R-14, R-15)
 function SettingsForm({ survey }: { survey: Survey }) {
   return (
-    <details className="rounded-box bg-surface p-4">
+    <details className="card p-4">
       <summary className="flex min-h-11 cursor-pointer items-center font-medium">소개글·공유 메시지·마감·목표 바꾸기</summary>
       <form action={saveSettings.bind(null, survey.id)} className="mt-3 flex flex-col gap-4">
         <label className="flex flex-col gap-2">
@@ -222,7 +233,7 @@ function SettingsForm({ survey }: { survey: Survey }) {
 // 응답 방식(ADR 0017 v2): 기본은 이메일 없이 바로 응답, 켜면 한 사람 한 번만(이메일 인증).
 function ResponseModeForm({ survey }: { survey: Survey }) {
   return (
-    <form action={saveResponseMode.bind(null, survey.id)} className="flex flex-col gap-3 rounded-box bg-surface p-4">
+    <form action={saveResponseMode.bind(null, survey.id)} className="flex flex-col gap-3 card p-4">
       <label className="flex min-h-11 items-start gap-3">
         <input type="checkbox" name="require_email" defaultChecked={survey.require_email} className="mt-1 size-5" />
         <span className="flex flex-col gap-1">
@@ -241,7 +252,7 @@ function ResponseModeForm({ survey }: { survey: Survey }) {
 
 function DesignDetails({ survey }: { survey: Survey }) {
   return (
-    <details className="rounded-box bg-surface p-4">
+    <details className="card p-4">
       <summary className="flex min-h-11 cursor-pointer items-center font-medium">확인한 설계 보기</summary>
       <div className="mt-3">
         <ConfirmedSummary survey={survey} />
@@ -328,7 +339,7 @@ function Body({
     const reason = { target: "목표 응답 수에 닿아", deadline: "마감일이 지나", manual: "직접", archive: "보관하면서" }[survey.close_reason ?? ""] ?? "";
     return (
       <div className="flex flex-col gap-8">
-        <p role="status" className="rounded-box bg-surface p-4">
+        <p role="status" className="card p-4">
           {reason} 마감했어요. 응답 {responses}개.
         </p>
         {reportSection}
@@ -354,7 +365,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
   const { db, user } = await requireMember();
   await closeOverdue(createAdminClient()); // 마감일 지난 설문은 들어올 때 마감(R-16)
   const { id } = await params;
-  const { error, moved } = await searchParams;
+  const { error, moved, celebrate } = await searchParams;
   const { data } = await db
     .from("surveys")
     .select("*, hypotheses(position, statement), questions(id, position, type, prompt, options, required, review_note)")
@@ -375,9 +386,24 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
 
   return (
     <>
-      <StageBar current={stageOf(survey)} animate={moved === "1"} className="mb-8" />
+      {/* 머리: 지금 상태와 설문 제목(문제), 단계 막대 — 어디에 있는지 먼저 보이게(apple-design 길 찾기) */}
+      <header className="mb-8 flex flex-col gap-3">
+        <span className={`self-start rounded-full px-2.5 py-0.5 text-sm font-medium ${STATUS_TONE[survey.status] ?? "bg-surface text-muted"}`}>
+          {STATUS_LABEL[survey.status] ?? survey.status}
+        </span>
+        <h1 className="text-headline">{survey.problem}</h1>
+        <StageBar current={stageOf(survey)} animate={moved === "1"} className="mt-2" />
+      </header>
+      {celebrate === "1" && survey.status === "published" && (
+        <>
+          <Confetti />
+          <p role="status" className="mb-6 flex items-center gap-2 rounded-box bg-tint-2 p-4 font-medium">
+            <IconSparkle className="size-5 text-brand" />
+            게시했어요! 이제 링크를 공유하고 응답을 기다려요.
+          </p>
+        </>
+      )}
       {isDemoAi() && <DemoNotice />}
-      <p className="mb-6 rounded-box bg-surface p-4 leading-7">{survey.problem}</p>
       {survey.taken_down_at && (
         // 운영자가 내린 설문(multi-user R-14) — 주인은 되돌릴 수 없다. 사유는 보이지 않는다.
         <p role="status" className="mb-6 rounded-box bg-danger-bg p-3 text-sm text-danger">
@@ -400,7 +426,7 @@ export default function SurveyPage(props: PageProps<"/app/surveys/[id]">) {
       <Link href="/app" className="mb-4 inline-flex min-h-11 items-center text-sm text-muted hover:underline">
         ← 내 설문
       </Link>
-      <Suspense fallback={<p className="text-muted">불러오는 중…</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <SurveyDesign {...props} />
       </Suspense>
     </main>

@@ -31,14 +31,14 @@ export function SubmitButton({
 }) {
   const { pending } = useFormStatus();
   const step = usePendingStep(pending, pendingSteps);
-  const style = { primary: "bg-accent text-on-accent", secondary: "border border-line", ghost: "text-sm text-muted hover:bg-surface" }[variant];
+  const style = { primary: "btn-primary", secondary: "btn-secondary", ghost: "btn-ghost text-sm" }[variant];
   return (
     <button
       type="submit"
       formAction={formAction}
       disabled={pending}
       aria-busy={pending}
-      className={`min-h-11 rounded-box px-4 font-medium disabled:opacity-60 ${style}`}
+      className={`btn ${style}`}
     >
       <span aria-live="polite">{pending ? step : children}</span>
     </button>

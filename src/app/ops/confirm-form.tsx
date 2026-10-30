@@ -3,7 +3,7 @@ import { SubmitButton } from "@/app/app/submit-button";
 // 운영 조치의 사유·확인 칸(ADR 0012). 미리보기는 이 폼 위에 화면이 그린다.
 export function ConfirmForm({ action, label, danger }: { action: (formData: FormData) => Promise<void>; label: string; danger?: boolean }) {
   return (
-    <form action={action} className="flex flex-col gap-3 rounded-box bg-surface p-4">
+    <form action={action} className="flex flex-col gap-3 card p-4">
       <label htmlFor="reason" className="text-sm font-medium">
         사유
       </label>
@@ -28,7 +28,7 @@ export function Result({ done, error }: { done?: string | string[]; error?: stri
     );
   if (done === "1")
     return (
-      <p role="status" className="rounded-box bg-surface p-3 text-sm">
+      <p role="status" className="card p-3 text-sm">
         처리했어요. 감사 기록에 남겼어요.
       </p>
     );

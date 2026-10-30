@@ -22,7 +22,7 @@ export function NavLinks({ operator }: { operator: boolean }) {
           key={item.href}
           href={item.href}
           aria-current={item.active ? "page" : undefined}
-          className="inline-flex min-h-11 items-center rounded-box px-3 text-sm text-muted hover:bg-surface hover:text-fg aria-[current=page]:bg-surface aria-[current=page]:font-medium aria-[current=page]:text-fg"
+          className="inline-flex min-h-11 items-center rounded-box px-3 text-sm text-muted hover:bg-line/50 hover:text-fg aria-[current=page]:bg-line aria-[current=page]:font-medium aria-[current=page]:text-fg"
         >
           {item.label}
         </Link>

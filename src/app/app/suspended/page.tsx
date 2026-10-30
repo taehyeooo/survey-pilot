@@ -19,7 +19,7 @@ async function Notice() {
         탈퇴하기
       </Link>
       <form action={logout}>
-        <button type="submit" className="min-h-11 rounded-box border border-line px-4 font-medium">
+        <button type="submit" className="btn btn-secondary">
           로그아웃
         </button>
       </form>
@@ -30,7 +30,7 @@ async function Notice() {
 export default function SuspendedPage() {
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 py-16">
-      <h1 className="text-2xl font-semibold tracking-[-0.01em]">이용이 정지됐어요</h1>
+      <h1 className="text-headline">이용이 정지됐어요</h1>
       <Suspense fallback={<p className="text-muted">불러오는 중…</p>}>
         <Notice />
       </Suspense>

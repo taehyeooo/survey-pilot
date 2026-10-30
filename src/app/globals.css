@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
-/* 디자인 토큰(2026-10-31 디자인 2단계 시안 B "애플 회색·파랑", 밝은 모드만 — spec 결정 29, ADR 0021 apple-design).
-   이전: 세트 1 청록·차분, 밝은·어두운 모드(결정 28).
+/* 디자인 토큰(2026-10-31 느낌 시안 T2 "화이트·블랙(Tally 쪽)" — spec 결정 32, 밝은 모드만 결정 29).
+   이전: B 애플 회색·파랑(결정 29), 세트 1 청록·차분(결정 28).
    화면은 역할 이름(bg-bg·bg-surface·text-fg·text-muted·border-line·bg-accent·text-on-accent·text-danger·bg-danger-bg·bg-note-bg·text-note-fg·rounded-box)만 쓴다.
-   대비 4.5:1 이상(최저 4.66 — 옅은 회색 면 위 muted). 카드는 테두리 대신 면(bg-surface)으로 묶는다. */
+   대비 4.5:1 이상(최저 4.9 — 파스텔 위 muted). 묶음은 `card`(하얀 면+얇은 선), 설문마다 파스텔 포인트(bg-tint-n). */
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -17,39 +17,127 @@
   --color-note-bg: var(--note-bg);
   --color-note-fg: var(--note-fg);
   --color-chart: var(--chart);
+  --color-brand: var(--brand);
+  /* 설문마다 붙는 파스텔 포인트(카드 머리) — 위 글자는 fg·muted 모두 4.5:1 이상 */
+  --color-tint-1: var(--tint-1);
+  --color-tint-2: var(--tint-2);
+  --color-tint-3: var(--tint-3);
+  --color-tint-4: var(--tint-4);
+  --color-tint-5: var(--tint-5);
   --radius-box: var(--radius);
+  /* 글자 간격(apple-design §15 — 크기별): 큰 제목 display, 중간 제목 title, 인증번호처럼 한 글자씩 읽는 칸 code */
+  --tracking-display: -0.02em;
+  --tracking-title: -0.01em;
+  --tracking-code: 0.3em;
   --font-sans: var(--font-body), system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
 
 :root {
-  color-scheme: light; /* 밝은 모드만(2026-10-31 사용자 결정) — 입력 칸·스크롤바도 밝게 */
+  color-scheme: light; /* 밝은 모드만(결정 29) — 입력 칸·스크롤바도 밝게 */
   --bg: #ffffff;
-  --surface: #f5f5f7;
-  --fg: #1d1d1f;
-  --muted: #6e6e73;
-  --line: #d2d2d7; /* 회색 면 위에서도 보이는 구분선·막대 바탕 */
-  --accent: #0066cc;
+  --surface: #fafafa;
+  --fg: #111111;
+  --muted: #666666;
+  --line: #e6e6e6;
+  --accent: #111111;
   --on-accent: #ffffff;
-  --danger: #c41e3a;
-  --danger-bg: #fff1f2;
+  --danger: #c4320a;
+  --danger-bg: #fff1ec;
   --note-bg: #fff8e6;
   --note-fg: #8a5300;
-  /* 차트 막대 — 흰 면 기준 */
-  --chart: #0071e3;
-  --radius: 18px;
+  /* 포인트 색(결정 34, 진한 파랑 선택) — 제목 핵심 문구·핵심 숫자·그래프 막대·아이콘에만. 버튼은 검정 그대로. 흰 바탕 6.7, 파스텔 위 5.6 이상 */
+  --brand: #1d4ed8;
+  /* 차트 막대 — 한 계열이라 한 색(포인트 색) */
+  --chart: var(--brand);
+  --radius: 14px;
+  /* 설문마다 붙는 파스텔 포인트 — 위 글자 fg 14:1·muted 4.9:1 이상 */
+  --tint-1: #ece9fe;
+  --tint-2: #e1f3ea;
+  --tint-3: #fde8dc;
+  --tint-4: #e0ecfd;
+  --tint-5: #fbf1cf;
+  /* 카드 — 하얀 면에 얇은 선과 아주 옅은 그림자 */
+  --card-bg: #ffffff;
+  --card-line: #e6e6e6;
+  --card-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
 }
 
 body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);
-  line-height: 1.6;
+  font-size: 1.0625rem; /* 17px — 애플 본문 크기 */
+  line-height: 1.47;
   word-break: keep-all;
+}
+
+/* 글자 체계(애플 홈페이지 느낌, 결정 33) — 화면 제목·칸 제목은 이것만 쓴다. 클수록 자간을 좁히고 줄 간격을 줄인다(apple-design §15) */
+@utility text-display {
+  font-size: clamp(2.5rem, 5vw, 3.5rem); /* 40~56px */
+  line-height: 1.07;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+@utility text-headline {
+  font-size: 2.5rem; /* 40px */
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+@utility text-title {
+  font-size: 1.5rem; /* 24px */
+  line-height: 1.17;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+@utility text-eyebrow {
+  font-size: 0.875rem;
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* 버튼 — 알약 모양 세 가지(애플). 누르는 것은 44px 이상 */
+@utility btn {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  padding-inline: 1.25rem;
+  font-weight: 500;
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+@utility btn-primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+@utility btn-secondary {
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+}
+@utility btn-ghost {
+  color: var(--muted);
+  &:hover {
+    background: color-mix(in srgb, var(--line) 50%, transparent);
+    color: var(--fg);
+  }
 }
 
 /* 큰 제목은 자간을 좁힌다(apple-design §15 — 글자가 클수록 음수 자간) */
 h1 {
   letter-spacing: -0.02em;
+}
+/* 카드 — 면·선·그림자를 토큰으로 */
+@utility card {
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  border: 1px solid var(--card-line);
+  box-shadow: var(--card-shadow);
 }
 
 /* 입력 칸 — 누르는 높이 44px 이상, 키보드 포커스가 보이게 */
@@ -85,10 +173,12 @@ h1 {
 
 /* apple-design §1 — 누르는 순간 반응한다(손을 뗄 때가 아니라). 모든 버튼·버튼 같은 링크에 한 곳에서. */
 button:not(:disabled),
+a[class*="btn"],
 a[class*="rounded-box"] {
   transition: transform 100ms ease-out;
 }
 button:not(:disabled):active,
+a[class*="btn"]:active,
 a[class*="rounded-box"]:active {
   transform: scale(0.97);
 }
@@ -145,4 +235,37 @@ h2 {
   body {
     background: #fff;
   }
+}
+
+/* 접히는 칸 — 열 수 있다는 표시(오른쪽 화살표)가 열면 아래로 돈다. 브라우저 기본 삼각형은 숨긴다(emil-design-eng: 상태를 움직임으로 보여 준다) */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+details > summary::after {
+  content: "›";
+  margin-left: auto;
+  padding-left: 0.75rem;
+  color: var(--muted);
+  font-size: 1.25em;
+  line-height: 1;
+  transition: transform 150ms ease-out;
+}
+details[open] > summary::after {
+  transform: rotate(90deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  details > summary::after {
+    transition: none;
+  }
+}
+
+/* 첫 화면 히어로 뒤 옅은 그라데이션(결정 34) — 위쪽만 따뜻하게, 아래로 흰색에 녹아든다 */
+@utility hero-glow {
+  background:
+    radial-gradient(60% 50% at 20% 0%, var(--tint-1) 0%, transparent 70%),
+    radial-gradient(50% 45% at 85% 10%, var(--tint-3) 0%, transparent 70%),
+    radial-gradient(55% 40% at 50% 35%, var(--tint-2) 0%, transparent 75%);
 }

@@ -13,7 +13,7 @@ async function Leave({ searchParams }: PageProps<"/app/leave">) {
   const { error } = await searchParams;
   const preview = await previewLeave(createAdminClient(), user.id, process.env.ADMIN_EMAIL);
   if (!preview) notFound();
-  if (preview.protected) return <p className="rounded-box bg-surface p-4">운영자 계정은 탈퇴할 수 없어요.</p>;
+  if (preview.protected) return <p className="card p-4">운영자 계정은 탈퇴할 수 없어요.</p>;
   return (
     <>
       <ul className="flex list-disc flex-col gap-3 pl-5 leading-7 break-keep">
@@ -23,7 +23,7 @@ async function Leave({ searchParams }: PageProps<"/app/leave">) {
         <li>진행 중인 설문의 응답 링크도 바로 열리지 않아요.</li>
         <li>필요한 결과는 먼저 설문 화면에서 CSV로 받아 두세요.</li>
       </ul>
-      <form action={leave} className="flex flex-col gap-3 rounded-box bg-surface p-4">
+      <form action={leave} className="flex flex-col gap-3 card p-4">
         <label htmlFor="confirm" className="text-sm font-medium">
           확인을 위해 &ldquo;{LEAVE_WORD}&rdquo;를 적어 주세요
         </label>
@@ -47,7 +47,7 @@ export default function LeavePage(props: PageProps<"/app/leave">) {
       <Link href="/app" className="inline-flex min-h-11 items-center self-start text-sm text-muted hover:underline">
         ← 내 설문
       </Link>
-      <h1 className="text-2xl font-semibold tracking-[-0.01em]">탈퇴하기</h1>
+      <h1 className="text-headline">탈퇴하기</h1>
       <Suspense fallback={<p className="text-muted">불러오는 중…</p>}>
         <Leave {...props} />
       </Suspense>

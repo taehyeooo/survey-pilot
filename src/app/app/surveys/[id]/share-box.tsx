@@ -13,19 +13,19 @@ export function ShareBox({ link, shareText }: { link: string; shareText: string 
       setCopied("실패");
     }
   }
-  const base = "min-h-11 rounded-box px-4 text-sm font-medium";
+  const base = "btn text-sm";
   return (
-    <section aria-labelledby="share-title" className="flex flex-col gap-3 rounded-box border border-accent p-5">
-      <h2 id="share-title" className="font-semibold">
+    <section aria-labelledby="share-title" className="card flex flex-col gap-3 p-6">
+      <h2 id="share-title" className="text-lg font-semibold">
         응답 받는 중 — 링크를 공유하세요
       </h2>
-      <p className="rounded-box bg-surface px-3 py-2 text-sm break-all">{link}</p>
-      <pre className="rounded-box bg-surface px-3 py-2 font-sans text-sm whitespace-pre-wrap">{shareText}</pre>
+      <p className="card px-3 py-2 text-sm break-all">{link}</p>
+      <pre className="card px-3 py-2 font-sans text-sm whitespace-pre-wrap">{shareText}</pre>
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={() => copy("링크", link)} className={`${base} border border-line hover:bg-surface`}>
+        <button type="button" onClick={() => copy("링크", link)} className={`${base} btn-secondary`}>
           링크 복사
         </button>
-        <button type="button" onClick={() => copy("공유 메시지", shareText)} className={`${base} bg-accent text-on-accent hover:opacity-90`}>
+        <button type="button" onClick={() => copy("공유 메시지", shareText)} className={`${base} btn-primary`}>
           공유 메시지 복사
         </button>
       </div>

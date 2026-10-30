@@ -35,18 +35,18 @@ export function ReportSection({
   return (
     <section aria-labelledby="report-title" className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id="report-title" className="text-lg font-semibold">
+        <h2 id="report-title" className="text-title">
           문제에 대한 답
         </h2>
-        {report && (
-          // 한눈에 평가하는 결과 보고서(R-33) — 요약 숫자·핵심 문제·가설별 그래프·주제 표
-          <Link href={`/app/surveys/${surveyId}/report`} className="inline-flex min-h-11 items-center rounded-box bg-accent px-4 text-sm font-medium text-on-accent">
+        {report?.content.headline && (
+          // 한눈에 평가하는 결과 보고서(R-33) — 결론·핵심 문제·가설 판정·문항별 대표 결과
+          <Link href={`/app/surveys/${surveyId}/report`} className="btn btn-primary text-sm">
             결과 보고서 보기
           </Link>
         )}
       </div>
       {!report ? (
-        <div className="flex flex-col gap-3 rounded-box bg-surface p-4">
+        <div className="flex flex-col gap-3 card p-4">
           <p className="text-sm text-muted">
             {responseCount === 0
               ? "응답이 들어오면 AI가 가설마다 판정하고 문제에 대한 답을 정리해요."
@@ -57,7 +57,8 @@ export function ReportSection({
           {responseCount > 0 && button}
         </div>
       ) : (
-        <article className="flex flex-col gap-5 rounded-box bg-surface p-5">
+        // 설문 화면에서는 결론과 판정 수만 — 자세한 것은 결과 보고서(R-33)에서 한 장으로 본다
+        <article className="flex flex-col gap-4 card p-5">
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
             <span className="rounded-full bg-bg px-2 py-1 font-medium text-fg">{report.kind === "final" ? "최종" : "중간"}</span>
             {report.is_tentative && (
@@ -69,50 +70,26 @@ export function ReportSection({
               응답 {report.response_count}명 기준 · {kstFormat.format(new Date(report.created_at))}
             </span>
           </div>
-          <p className="text-lg leading-8 font-medium">{report.content.answer}</p>
-          <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium text-muted">가설 판정</h3>
-            <ul className="flex flex-col gap-2">
-              {report.content.hypotheses.map((h) => (
-                <li key={h.index} className={`rounded-box border-l-4 bg-bg p-3 ${VERDICT_STYLE[h.verdict]}`}>
-                  <p className="text-sm">
-                    <span className="font-semibold">{VERDICT_LABEL[h.verdict]}</span> · {hypotheses[h.index - 1] ?? `가설 ${h.index}`}
-                  </p>
-                  <p className="mt-1 text-sm text-muted">{h.evidence}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium text-muted">다음 행동</h3>
-            <ol className="list-decimal pl-5 text-sm leading-7">
-              {report.content.next_actions.map((a, i) => (
-                <li key={i}>{a}</li>
-              ))}
-            </ol>
-          </div>
-          {report.content.themes.length > 0 && (
-            <div className="flex flex-col gap-2">
-              <h3 className="text-sm font-medium text-muted">주관식에서 나온 이야기</h3>
-              <ul className="flex flex-col gap-3">
-                {report.content.themes.map((t, i) => (
-                  <li key={i} className="flex flex-col gap-1">
-                    <p className="text-sm font-medium">{t.title}</p>
-                    <p className="text-sm text-muted">{t.summary}</p>
-                    {t.quotes.map((q, j) => (
-                      <blockquote key={j} className="border-l-2 border-line pl-3 text-sm">
-                        “{q}”
-                      </blockquote>
-                    ))}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <p className="text-xs text-muted">AI가 만든 해석이에요. 수치는 아래 결과에서 확인하세요.</p>
-          {(stale || (closed && report.kind !== "final")) && (
+          <p className="text-xl leading-8 font-semibold">{report.content.headline ?? report.content.answer}</p>
+          {report.content.headline && <p className="leading-7 text-muted">{report.content.answer}</p>}
+          <ul className="flex flex-wrap gap-2 text-sm" aria-label="가설 판정">
+            {report.content.hypotheses.map((h) => (
+              <li key={h.index} className={`rounded-box border-l-4 bg-bg px-3 py-2 ${VERDICT_STYLE[h.verdict]}`}>
+                <span className="font-semibold">{VERDICT_LABEL[h.verdict]}</span> · {hypotheses[h.index - 1] ?? `가설 ${h.index}`}
+              </li>
+            ))}
+          </ul>
+          {!report.content.headline && <p className="text-sm text-muted">결과 보고서는 리포트를 새로 만들면 볼 수 있어요.</p>}
+          <p className="text-xs text-muted">AI가 만든 해석이에요. 수치는 결과에서 확인하세요.</p>
+          {(stale || (closed && report.kind !== "final") || !report.content.headline) && (
             <div className="flex flex-col gap-2 border-t border-line pt-4">
-              <p className="text-sm text-muted">{closed && report.kind !== "final" ? "마감됐어요. 최종 리포트를 만들 수 있어요." : `그 뒤로 응답이 ${responseCount - report.response_count}개 늘었어요.`}</p>
+              <p className="text-sm text-muted">
+                {closed && report.kind !== "final"
+                  ? "마감됐어요. 최종 리포트를 만들 수 있어요."
+                  : stale
+                    ? `그 뒤로 응답이 ${responseCount - report.response_count}개 늘었어요.`
+                    : "새 형식(한 줄 결론·핵심 문제)으로 다시 만들 수 있어요."}
+              </p>
               {button}
             </div>
           )}
