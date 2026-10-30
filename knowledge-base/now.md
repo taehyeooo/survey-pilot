@@ -2,7 +2,7 @@
 
 새 세션은 이 파일부터 읽는다. **고쳐 쓰는 문서**다 — 끝난 일은 지우고, 자세한 내용은 [log.md](log.md)·PR·plan에 둔다(ADR 0015).
 
-마지막 갱신: 2026-10-29
+마지막 갱신: 2026-10-30
 
 ## 진행 중
 
@@ -10,7 +10,7 @@
 
 ## 다음 할 일
 1. plan 15단계: 크론(KST 00:10, CRON_SECRET) — 마감일 마감 + 최종 리포트, 마감 30일 지난 이메일 원문 정리, 만료 인증번호 삭제(R-30, R-16). 14단계까지 머지됨
-2. plan 4단계(샘플 검증): **막힘 — 사용자 샘플 문제 10개**
+2. plan 4단계(샘플 검증): Gemini 무료 하루 20회를 2026-10-30에 다 씀(KST 16시 리셋). 호출 하나가 약 2분 걸려 45초 시간 제한(#32)에 모두 끊김 — 리셋 뒤 생각 단계(thinkingLevel)를 낮춰 1회로 확인
 3. plan 16단계: Vercel 배포(사람 손: 가입·연결·환경변수, Supabase Auth URL)
 4. 결정 필요: `CONTACT_EMAIL`. 디자인 작업 때 apple-design 스킬 설치 여부
 
@@ -19,4 +19,4 @@
 - Supabase 프로젝트 생성·키 3개를 레포 루트 `.env.local`에 넣음, 두 키 동작 확인(2026-10-29). 지역 서울(ap-northeast-2) 확인, 마이그레이션용 `SUPABASE_DB_URL`도 `.env.local`에
 
 ## 답이 필요한 것 (사람 손)
-- Gemini 키·AI Studio 실제 한도(4단계 전), 샘플 문제 10개(4단계 전), `CONTACT_EMAIL`(9단계 전), 배포 때 Supabase Auth Site URL·Redirect URL에 배포 주소 추가(16단계), , Vercel 연결과 환경변수(16단계 전, `HASH_SECRET`은 로컬과 **같은 값**이어야 함 — 바꾸면 기존 해시와 안 맞음)
+- `CONTACT_EMAIL`(9단계 전), 배포 때 Supabase Auth Site URL·Redirect URL에 배포 주소 추가(16단계), Vercel 연결과 환경변수(16단계 전, `HASH_SECRET`은 로컬과 **같은 값**이어야 함 — 바꾸면 기존 해시와 안 맞음)
