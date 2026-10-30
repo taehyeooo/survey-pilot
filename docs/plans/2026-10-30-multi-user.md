@@ -17,7 +17,7 @@ issue: "#43"
 
 ## 단계
 <!-- 데이터 모델 → 로그인·분리(서버) → 정지·기록 → 운영 페이지 → 탈퇴 → 화면 디자인 → 운영 확인. 단계 하나 = PR 하나. -->
-1. [ ] 마이그레이션: profiles·login_attempts, surveys.owner_id → profiles(cascade)·taken_down_at, usage_events.user_id, RLS에서 ADMIN_EMAIL 조건 빼기, 기존 Auth 사용자 profiles 채우기 — 확인: dry-run 뒤 적용, 전후 surveys·responses 건수 같음, A 세션으로 B 설문 0행 (R-3, R-17)
+1. [x] 마이그레이션: profiles·login_attempts, surveys.owner_id → profiles(cascade)·taken_down_at, usage_events.user_id, RLS에서 ADMIN_EMAIL 조건 빼기, 기존 Auth 사용자 profiles 채우기 — 확인: dry-run 뒤 적용, 전후 surveys·responses 건수 같음, A 세션으로 B 설문 0행 (R-3, R-17)
 2. [ ] 로그인: 로그인 링크 요청 횟수 제한, 처음 로그인 때 profiles 만들기, 관리자 확인을 "로그인한 사용자"로 — 확인: 두 번째 테스트 계정 로그인 뒤 profiles 1행, 같은 IP 6번째 거부 (R-1)
 3. [ ] 이용 안내 동의와 소유자 확인 전수: 동의 전 만들기·AI·게시 거부, 모든 액션·CSV·리포트에 owner 확인 — 확인: 동의 전 403, A가 B의 설문 액션·CSV 404 (R-2, R-3)
 4. [ ] 경로 `/admin` → `/app` 이전과 첫 화면 동작(로그인 상태면 `/app`) — 확인: 옛 주소 리다이렉트, `/` 분기 (R-5, R-6)

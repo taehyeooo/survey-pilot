@@ -21,6 +21,8 @@ const TABLES = [
   "reports",
   "usage_events",
   "audit_logs",
+  "profiles",
+  "login_attempts",
 ];
 
 const noSession = { auth: { persistSession: false, autoRefreshToken: false } };
@@ -94,8 +96,8 @@ describe.skipIf(!hasDb)("DB 스키마와 접근 권한", () => {
     expect(write.error).not.toBeNull();
   });
 
-  // survey-pilot#R-31 — 관리자가 아닌 로그인 사용자도 막힌다(누구나 가입할 수 있으므로).
-  it("관리자가 아니면 설문을 만들지도 남의 설문을 보지도 못한다", async () => {
+  // survey-pilot#R-31, multi-user#R-3 — 누구나 가입하므로 로그인 사용자도 직접 쓰지 못하고 남의 설문은 못 본다.
+  it("로그인 사용자는 설문을 직접 만들지 못하고 남의 설문을 보지 못한다", async () => {
     await publishedSurveyWithResponse();
     const strangerId = userIds[1];
     const insert = await stranger.from("surveys").insert({ owner_id: strangerId, problem: "관리자가 아닌 사람의 설문" });
@@ -105,15 +107,15 @@ describe.skipIf(!hasDb)("DB 스키마와 접근 권한", () => {
   });
 
   // survey-pilot#R-31
-  it("관리자는 자기 설문과 하위 행을 읽고, 설문을 만들 수 있지만 지우지는 못한다", async () => {
+  it("주인은 자기 설문과 하위 행을 읽기만 하고, 만들기·지우기·하위 쓰기는 서버만 한다", async () => {
     const { survey } = await publishedSurveyWithResponse();
     const { data: own } = await admin.from("surveys").select("id").eq("id", survey.id);
     expect(own).toHaveLength(1);
     const { data: questions } = await admin.from("questions").select("id").eq("survey_id", survey.id);
     expect(questions).toHaveLength(1);
 
-    const created = await admin.from("surveys").insert({ owner_id: adminId, problem: "관리자가 만든 새 문제 정의" }).select().single();
-    expect(created.error).toBeNull();
+    const created = await admin.from("surveys").insert({ owner_id: adminId, problem: "주인이 직접 만든 새 문제 정의" }).select().single();
+    expect(created.error).not.toBeNull();
 
     await admin.from("surveys").delete().eq("id", survey.id);
     const { data: still } = await service.from("surveys").select("id").eq("id", survey.id);

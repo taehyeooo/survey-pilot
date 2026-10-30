@@ -18,3 +18,4 @@
 | 2026-10-29 | [서버 컴포넌트에서 "use client" 파일의 상수가 undefined](2026-10-29-client-module-value-undefined.md) | Next.js·RSC |
 | 2026-10-29 | [로그인 뒤 다른 호스트로 이동](2026-10-29-redirect-host-localhost.md) | 인증·쿠키 |
 | 2026-10-30 | [한도 가드는 여유인데 Gemini 429](2026-10-30-usage-guard-undercount.md) | 외부 API 한도 |
+| 2026-10-30 | [Auth 사용자 삭제가 "Database error deleting user"](2026-10-30-auth-delete-user-trigger-permission.md) | Supabase·트리거 권한 |
