@@ -9,14 +9,18 @@
 ## 승인 대기
 
 ## 다음 할 일
-1. 사용자: Vercel 가입·`taehyeooo/survey-pilot` Import·환경변수(.env.local에서 SUPABASE_DB_URL 빼고, HASH_SECRET·CRON_SECRET은 로컬과 같은 값) → 배포 주소 알려 주기. 15단계까지 머지됨
-2. plan 16단계: 배포 뒤 Supabase Auth Site URL·Redirect URL에 배포 주소, 실제 로그인·응답·크론 확인
-3. plan 4단계(샘플 검증): 문항 30개(Claude 판정 29/30)·리포트(3/3) 끝 — [결과](../docs/samples/2026-10-30-run.md). **사용자 판정이 남음**(기준 24/30) — 판정하면 4단계 체크. 결정 필요: 서로 반대인 가설의 중복 문항(#11) — 그대로(편집에서 지움) 또는 문항-가설 다대다 구조
-4. 결정 필요: `CONTACT_EMAIL`. 디자인 작업 때 apple-design 스킬 설치 여부
+1. 여러 사용자 [plan](../docs/plans/2026-10-30-multi-user.md) 1단계: 마이그레이션(profiles·login_attempts·owner cascade·RLS에서 ADMIN_EMAIL 빼기) — [spec](../docs/specs/2026-10-30-multi-user.md), ADR 0020. 화면 단계(11)는 apple-design 스킬
+2. plan 4단계(샘플 검증): 문항 30개(Claude 판정 29/30)·리포트(3/3) 끝 — [결과](../docs/samples/2026-10-30-run.md). **사용자 판정이 남음**(기준 24/30) — 판정하면 4단계 체크. 결정 필요: 서로 반대인 가설의 중복 문항(#11) — 그대로(편집에서 지움) 또는 문항-가설 다대다 구조
+3. 결정 필요: `CONTACT_EMAIL`(Vercel에도 아직 없음) — 여러 사용자 11단계 전
+4. 운영 크론(KST 00:10) 첫 실행 결과는 다음 날 Vercel 로그에서 확인
 
 ## 정해 둔 것
-- 결정 사항 1~26: [spec](../docs/specs/2026-10-29-survey-pilot.md) "결정 사항", [PRD](../docs/specs/2026-10-29-survey-pilot-prd.md), ADR 0017~0019
+- 결정 사항 1~26: [spec](../docs/specs/2026-10-29-survey-pilot.md) "결정 사항", [PRD](../docs/specs/2026-10-29-survey-pilot-prd.md), ADR 0017~0019. 여러 사용자 결정: [spec](../docs/specs/2026-10-30-multi-user.md) 7장, ADR 0020
 - Supabase 프로젝트 생성·키 3개를 레포 루트 `.env.local`에 넣음, 두 키 동작 확인(2026-10-29). 지역 서울(ap-northeast-2) 확인, 마이그레이션용 `SUPABASE_DB_URL`도 `.env.local`에
 
 ## 답이 필요한 것 (사람 손)
-- `CONTACT_EMAIL`(9단계 전), 배포 때 Supabase Auth Site URL·Redirect URL에 배포 주소 추가(16단계), Vercel 연결과 환경변수(16단계 전, `HASH_SECRET`은 로컬과 **같은 값**이어야 함 — 바꾸면 기존 해시와 안 맞음)
+- 여러 사용자 12단계 전: Supabase SMTP에 Gmail·앱 비밀번호, Auth Rate Limits 로그인 메일 시간당 30통
+- `CONTACT_EMAIL` 정하기 → `.env.local`과 Vercel 환경변수에 넣기
+
+## 운영
+- 주소 https://survey-pilot-gilt.vercel.app (Vercel Hobby, 서울 icn1). Supabase Auth Site URL은 운영 주소, Redirect URL은 운영·localhost 둘 다(2026-10-30)
