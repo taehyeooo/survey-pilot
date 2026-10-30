@@ -3,6 +3,10 @@ import type { AiClient } from "@/lib/ai";
 // Gemini REST(generateContent). 키는 주소가 아니라 헤더로 보낸다 — 주소는 로그에 남기 쉽다.
 // 모델 이름과 무료 한도는 바뀔 수 있어 환경변수로 받는다(ADR 0018). 실제 품질 검증은 plan 4단계.
 // 시간 제한: 응답이 없으면 timeoutMs 뒤 끊는다 — 없으면 요청 하나가 몇 시간씩 멈춘다(2026-10-30 9시간 실측).
+// 2026-10-29 실측: gemini-2.5-flash는 새 사용자에게 404("no longer available to new users").
+// 2026-10-30 실측: gemini-3.8-flash는 무료 하루 20회·호출당 약 2분, gemini-3.5-flash-lite는 하루 500회·약 2초 → Lite(ADR 0018).
+export const DEFAULT_GEMINI_MODEL = "gemini-3.5-flash-lite";
+
 export function createGeminiAi({
   apiKey,
   model,

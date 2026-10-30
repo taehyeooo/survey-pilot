@@ -7,8 +7,8 @@ import { createFakeAi, createFakeMailer, createMemoryUsageStore } from "./fakes"
 const MINUTE = 60_000;
 
 describe("readLimits", () => {
-  it("비어 있으면 보수적인 기본값(5·20·100)", () => {
-    expect(readLimits({})).toEqual({ geminiRpm: 5, geminiRpd: 20, mailDaily: 100 });
+  it("비어 있으면 무료 한도 기본값(15·500·100)", () => {
+    expect(readLimits({})).toEqual({ geminiRpm: 15, geminiRpd: 500, mailDaily: 100 });
   });
 
   it("환경변수 값을 쓴다", () => {
