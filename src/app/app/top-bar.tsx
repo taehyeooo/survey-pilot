@@ -35,7 +35,7 @@ export function TopBar() {
   return (
     <header className="shell-top chrome-bar border-b border-line">
       <div className="mx-auto flex min-h-[3.75rem] max-w-6xl items-center gap-6 px-6">
-        <Link href="/app" className="inline-flex min-h-11 items-center text-base font-semibold tracking-[-0.01em]">
+        <Link href="/app" className="inline-flex min-h-11 items-center text-base font-semibold tracking-title">
           서베이 파일럿
         </Link>
         <Suspense>

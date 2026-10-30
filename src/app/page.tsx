@@ -25,7 +25,7 @@ export default function Home() {
       </Suspense>
       <div className="flex flex-col gap-5">
         <p className="text-sm font-medium text-accent">서베이 파일럿</p>
-        <h1 className="text-4xl leading-tight font-bold tracking-[-0.02em]">설문 만들다 막히는 곳, 대신 풀어 드려요</h1>
+        <h1 className="text-4xl leading-tight font-bold tracking-display">설문 만들다 막히는 곳, 대신 풀어 드려요</h1>
         <ul className="flex flex-col gap-2 text-lg leading-8 text-muted">
           <li>뭘 물어야 할지 고민하고, 문항을 몇 번씩 다시 쓰고, 말을 맞추느라 시간이 가죠.</li>
           <li>문제 한 줄만 적으면 조사 목적·가설·문항까지 AI가 먼저 짜 드려요.</li>

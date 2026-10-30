@@ -43,6 +43,14 @@ interface Survey {
   questions: Question[];
 }
 
+const STATUS_LABEL: Record<string, string> = { designing: "설계 중", reviewing: "문항 확인 중", published: "응답 받는 중", closed: "마감" };
+const STATUS_TONE: Record<string, string> = {
+  designing: "bg-surface text-muted",
+  reviewing: "bg-surface text-muted",
+  published: "bg-accent text-on-accent",
+  closed: "bg-fg text-bg",
+};
+
 const KST_MS = 9 * 60 * 60 * 1000;
 const toKstInput = (iso: string) => new Date(new Date(iso).getTime() + KST_MS).toISOString().slice(0, 16);
 const kstFormat = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", dateStyle: "medium", timeStyle: "short" });
@@ -375,9 +383,15 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
 
   return (
     <>
-      <StageBar current={stageOf(survey)} animate={moved === "1"} className="mb-8" />
+      {/* 머리: 지금 상태와 설문 제목(문제), 단계 막대 — 어디에 있는지 먼저 보이게(apple-design 길 찾기) */}
+      <header className="mb-8 flex flex-col gap-3">
+        <span className={`self-start rounded-full px-2.5 py-0.5 text-sm font-medium ${STATUS_TONE[survey.status] ?? "bg-surface text-muted"}`}>
+          {STATUS_LABEL[survey.status] ?? survey.status}
+        </span>
+        <h1 className="text-3xl leading-tight font-bold">{survey.problem}</h1>
+        <StageBar current={stageOf(survey)} animate={moved === "1"} className="mt-2" />
+      </header>
       {isDemoAi() && <DemoNotice />}
-      <p className="mb-6 rounded-box bg-surface p-4 leading-7">{survey.problem}</p>
       {survey.taken_down_at && (
         // 운영자가 내린 설문(multi-user R-14) — 주인은 되돌릴 수 없다. 사유는 보이지 않는다.
         <p role="status" className="mb-6 rounded-box bg-danger-bg p-3 text-sm text-danger">

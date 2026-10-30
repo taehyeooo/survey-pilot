@@ -5,10 +5,9 @@ import { closeOverdue } from "@/lib/submit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { groupByTab, listSurveys, type SurveyListItem, type Tab } from "@/lib/surveys";
 import { archive, restore } from "./actions";
-import { ProblemForm } from "./new/problem-form";
 import { StageBar, stageOf } from "./stage-bar";
 
-// 관리자 목록(디자인 결정 27 C 단계형): 맨 위에서 바로 문제 입력, 설문마다 단계 진행.
+// 내 설문 목록: 제목 옆 "새 설문 만들기"(상단 메뉴의 새 설문과 같은 곳), 묶음별 카드에 단계 진행(결정 27·30).
 const SECTIONS: { key: Tab; label: string }[] = [
   { key: "active", label: "진행 중" },
   { key: "designing", label: "만드는 중" },
@@ -33,7 +32,7 @@ function CardGrid({ items }: { items: SurveyListItem[] }) {
       {items.map((s) => (
         <li key={s.id} className="flex flex-col rounded-box bg-surface p-4">
           <div className="flex items-start justify-between gap-2">
-            <Link href={`/app/surveys/${s.id}`} className="line-clamp-2 py-2 font-medium hover:underline">
+            <Link href={`/app/surveys/${s.id}`} className="line-clamp-2 py-2 font-semibold hover:underline">
               {s.problem}
             </Link>
             <ToggleArchive survey={s} />
@@ -57,10 +56,15 @@ async function SurveyList() {
 
   return (
     <div className="flex flex-col gap-10">
-      <section aria-label="새 설문 시작" className="rounded-box bg-surface p-5">
-        <ProblemForm />
-      </section>
-      {empty && <p className="text-center text-muted">아직 설문이 없어요. 위에 첫 문제를 적어 보세요.</p>}
+      {empty && (
+        <div className="flex flex-col items-center gap-4 rounded-box bg-surface px-6 py-16 text-center">
+          <p className="text-lg font-semibold">아직 설문이 없어요</p>
+          <p className="text-muted">풀고 싶은 문제 한 줄이면 AI가 조사 설계와 문항을 먼저 짜 드려요.</p>
+          <Link href="/app/new" className="inline-flex min-h-11 items-center rounded-box bg-accent px-5 font-medium text-on-accent">
+            첫 설문 만들기
+          </Link>
+        </div>
+      )}
       {SECTIONS.map(({ key, label }) =>
         groups[key].length === 0 ? null : (
           <section key={key} aria-labelledby={`sec-${key}`}>
@@ -86,7 +90,12 @@ async function SurveyList() {
 export default function AdminPage() {
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-10">
-      <h1 className="mb-8 text-3xl font-bold">내 설문</h1>
+      <div className="mb-8 flex items-center justify-between gap-4">
+        <h1 className="text-3xl font-bold">내 설문</h1>
+        <Link href="/app/new" className="inline-flex min-h-11 items-center rounded-box bg-accent px-5 font-medium text-on-accent">
+          새 설문 만들기
+        </Link>
+      </div>
       <Suspense fallback={<p className="py-16 text-center text-muted">불러오는 중…</p>}>
         <SurveyList />
       </Suspense>

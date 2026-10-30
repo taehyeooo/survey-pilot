@@ -16,7 +16,7 @@ async function Form({ searchParams }: { searchParams: PageProps<"/login">["searc
 export default function LoginPage({ searchParams }: PageProps<"/login">) {
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-4 py-16">
-      <h1 className="text-2xl font-semibold tracking-[-0.01em]">서베이 파일럿</h1>
+      <h1 className="text-2xl font-semibold tracking-title">서베이 파일럿</h1>
       <Suspense>
         <Form searchParams={searchParams} />
       </Suspense>

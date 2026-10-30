@@ -52,7 +52,7 @@ export function LoginForm({ notice, info }: { notice?: string; info?: string }) 
   return (
     <form action={action} className="flex flex-col gap-3">
       <input type="hidden" name="intent" value={mode} />
-      <h2 className="text-lg font-semibold tracking-[-0.01em]">{TITLES[mode]}</h2>
+      <h2 className="text-lg font-semibold tracking-title">{TITLES[mode]}</h2>
       {message && (
         <p role="status" className="rounded-box bg-surface p-3 text-sm">
           {message}
@@ -84,7 +84,7 @@ export function LoginForm({ notice, info }: { notice?: string; info?: string }) 
               </span>
             )}
           </div>
-          <input id="code" name="code" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} required className="field tracking-[0.3em]" />
+          <input id="code" name="code" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} required className="field tracking-code" />
         </>
       )}
       {(mode === "login" || mode === "signup" || mode === "reset") && (

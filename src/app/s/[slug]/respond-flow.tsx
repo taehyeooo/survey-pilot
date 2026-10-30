@@ -108,7 +108,7 @@ function CodeStep({ email, state, action, pending, resend }: { email: string; st
           maxLength={6}
           required
           autoFocus
-          className="field text-center text-lg tracking-[0.5em]"
+          className="field text-center text-lg tracking-code"
         />
       </label>
       {state.error && (
