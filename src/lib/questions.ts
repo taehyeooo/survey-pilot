@@ -67,6 +67,8 @@ const QuestionSchema = z.object({
   review_note: z.string().trim().min(1).nullable().default(null),
 });
 
+const FORMAL_ENDING = /(니까|니다)\s*[?.!]?\s*$/;
+
 // AI 출력을 검사한다. coverage면 가설마다 1개 이상(R-10). AI가 만든 고정 문항(같은 문구)은 빼고 따로 붙인다.
 export function parseQuestions(data: unknown, hypothesisCount: number, { coverage = true } = {}): DraftQuestion[] {
   // 감싸지 않은 배열도 받는다 — Lite 모델이 형식을 그렇게 바꿔 답하기도 한다(2026-10-30 샘플 #25)
@@ -75,6 +77,8 @@ export function parseQuestions(data: unknown, hypothesisCount: number, { coverag
     .filter((q) => !isClosing(q))
     .map((q) => {
       if (q.hypothesis !== null && q.hypothesis > hypothesisCount) throw new RangeError(`없는 가설 번호 ${q.hypothesis}`);
+      // 프롬프트의 해요체 규칙을 Lite 모델이 자주 어긴다(샘플 #8·#21) — 형식 오류로 보고 한 번 다시 부른다(R-28)
+      if (FORMAL_ENDING.test(q.prompt)) throw new RangeError(`해요체가 아님: "${q.prompt}"`);
       if (q.type === "single" || q.type === "multi") {
         if (q.options.length < 2 || q.options.length > 8) throw new RangeError(`객관식 선택지는 2~8개: "${q.prompt}"`);
         return q;
@@ -95,6 +99,9 @@ const FORMAT = `JSON만 출력한다: {"questions":[{"hypothesis":1,"type":"sing
 - hypothesis: 확인하는 가설 번호(1부터), 어느 가설과도 무관하면 null
 - type: single(하나 고르기)·multi(여러 개 고르기)·scale(1~5 척도)·text(주관식)
 - options: single·multi만 2~8개, scale·text는 []
+- 말투는 해요체: "~인가요?", "~하나요?", "~골라 주세요" (O) / "~입니까?", "~하십니까?", "~했습니다." (X)
+- scale은 한 가지의 정도를 묻는 질문(1~5로 답할 수 있게). 두 가지 중 어느 쪽인지 묻는다면 single
+- 선택지는 그 문항을 받는 모든 응답자가 고를 수 있어야 한다(앞 문항 답에 따라 맞는 사람이 갈리면 안 된다)
 - 마지막 "더 하고 싶은 말" 문항은 만들지 않는다(따로 붙인다)`;
 
 export function generatePrompt(design: Pick<QuestionSurvey, "problem" | "purpose" | "audience" | "target_minutes">, hypotheses: string[]) {
@@ -115,8 +122,9 @@ ${hypotheses.map((h, i) => `${i + 1}. ${h}`).join("\n")}
 export function reviewPrompt(questions: DraftQuestion[]) {
   return `[작업:점검]
 너는 설문 문항 검토자다. ${DATA_RULE}
-아래 문항에서 다음을 찾아 고친다: 유도 질문(답을 암시하거나, "얼마나 높아지나요"처럼 결과를 전제), 한 문항에 두 가지를 묻기, 선택지 빠짐(필요하면 "기타"), 선택지 겹침(구간 중복).
-말투는 해요체로 유지한다. 고친 문항에는 review_note에 무엇을 왜 고쳤는지 한 줄, 고치지 않은 문항은 null. 문항 수와 가설 번호는 유지한다.
+아래 문항에서 다음을 찾아 고친다: 유도 질문(답을 암시하거나, "얼마나 높아지나요"처럼 결과를 전제), 한 문항에 두 가지를 묻기("A나 B", "A와 B" — 하나만 남긴다), 선택지 빠짐(필요하면 "기타"), 선택지 겹침(구간 중복), 아래 형식 규칙 위반(말투·scale·선택지).
+review_note에 적은 문제는 고친 문항에서 실제로 없어져야 한다.
+고친 문항에는 review_note에 무엇을 왜 고쳤는지 한 줄, 고치지 않은 문항은 null. 문항 수와 가설 번호는 유지한다.
 ${FORMAT}
 
 <questions>

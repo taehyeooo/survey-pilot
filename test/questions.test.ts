@@ -58,6 +58,14 @@ describe("AI 출력 검사", () => {
     expect(() => parseQuestions({ questions: [q(1), q(1)] }, 2)).toThrow(/가설 2/);
   });
 
+  // survey-pilot#R-10 — 2026-10-30 샘플 #8·#21: 해요체 규칙이 있는데도 Lite 모델이 "~십니까?"로 씀
+  it("합쇼체 문항(~니까?, ~니다.)은 거부해 다시 부르게 한다", () => {
+    expect(() => parseQuestions({ questions: [q(1, "single", "가장 큰 이유는 무엇입니까?")] }, 1)).toThrow(/해요체/);
+    expect(() => parseQuestions({ questions: [q(1, "scale", "기간이 충분했습니다.")] }, 1)).toThrow(/해요체/);
+    expect(() => parseQuestions({ questions: [q(1, "single", "가장 큰 이유는 무엇인가요?")] }, 1)).not.toThrow();
+    expect(() => parseQuestions({ questions: [q(1, "scale", "얼마나 만족하세요?")] }, 1)).not.toThrow();
+  });
+
   // survey-pilot#R-10 — 2026-10-30 gemini-3.5-flash-lite가 {"questions":[…]} 대신 배열만 두 번 연속 돌려줌
   it("questions로 감싸지 않은 배열도 받는다", () => {
     expect(parseQuestions(ok.questions, 2)).toEqual(parseQuestions(ok, 2));
