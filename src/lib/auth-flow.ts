@@ -5,7 +5,10 @@ import type { AuthError, SupabaseClient } from "@supabase/supabase-js";
 // 함수는 문제가 없으면 null, 있으면 화면에 보일 문구를 돌려준다.
 
 export const WRONG_LOGIN = "이메일이나 비밀번호가 맞지 않아요."; // 어느 쪽이 틀렸는지 알리지 않는다
-const WRONG_CODE = "인증번호가 맞지 않거나 3분이 지났어요. 다시 받아 주세요.";
+const WRONG_CODE = "인증번호가 맞지 않거나 시간이 지났어요. 다시 받아 주세요.";
+
+// 인증번호 유효 시간 — Supabase 설정 Email OTP expiration(180초)과 같아야 한다. 화면 타이머가 쓴다.
+export const CODE_TTL_SECONDS = 180;
 const TOO_MANY = "요청이 많아요. 잠시 후 다시 시도해 주세요.";
 
 export function passwordProblem(password: string) {

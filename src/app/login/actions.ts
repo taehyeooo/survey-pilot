@@ -12,7 +12,8 @@ import { createSessionClient } from "@/lib/supabase/server";
 // 로그인·가입·비밀번호 재설정(multi-user R-1, spec v2). 화면 단계(mode)는 서버가 정해 돌려준다.
 // email은 다음 단계와 오류 뒤 입력 칸을 다시 채우는 데 쓴다(폼 액션은 제출 뒤 폼을 비운다).
 export type AuthMode = "login" | "signup" | "verify" | "forgot" | "reset";
-export type AuthState = { mode: AuthMode; email?: string; error?: string; info?: string };
+// codeSentAt: 인증번호를 보낸 서버 시각(ms) — 화면이 남은 시간 타이머를 그린다.
+export type AuthState = { mode: AuthMode; email?: string; error?: string; info?: string; codeSentAt?: number };
 
 const field = (formData: FormData, name: string) => String(formData.get(name) ?? "");
 
@@ -45,27 +46,27 @@ export async function authAction(prev: AuthState, formData: FormData): Promise<A
   if (intent === "signup") {
     if (!(await allowMail(email))) return { mode: "signup", email, error: tooMany };
     const error = await startSignup(db, email, field(formData, "password"));
-    return error ? { mode: "signup", email, error } : { mode: "verify", email, info: `${email}로 인증번호 6자리를 보냈어요. 3분 안에 넣어 주세요. 메일이 안 보이면 스팸함도 확인해 주세요.` };
+    return error ? { mode: "signup", email, error } : { mode: "verify", email, info: `${email}로 인증번호 6자리를 보냈어요. 메일이 안 보이면 스팸함도 확인해 주세요.`, codeSentAt: Date.now() };
   }
   if (intent === "resend") {
-    if (!(await allowMail(email))) return { mode: "verify", email, error: tooMany };
+    if (!(await allowMail(email))) return { mode: "verify", email, error: tooMany, codeSentAt: prev.codeSentAt };
     const error = await resendSignupCode(db, email);
-    return error ? { mode: "verify", email, error } : { mode: "verify", email, info: "인증번호를 다시 보냈어요. 3분 안에 넣어 주세요. 메일이 안 보이면 스팸함도 확인해 주세요." };
+    return error ? { mode: "verify", email, error, codeSentAt: prev.codeSentAt } : { mode: "verify", email, info: "인증번호를 다시 보냈어요. 메일이 안 보이면 스팸함도 확인해 주세요.", codeSentAt: Date.now() };
   }
   if (intent === "verify") {
     const error = await confirmSignup(db, email, field(formData, "code"));
-    if (error) return { mode: "verify", email, error };
+    if (error) return { mode: "verify", email, error, codeSentAt: prev.codeSentAt };
     await syncOperator(email);
     redirect("/app"); // 처음이면 이용 안내 동의(/app/welcome)로 이어진다
   }
   if (intent === "forgot") {
     if (!(await allowMail(email))) return { mode: "forgot", email, error: tooMany };
     const error = await requestReset(db, email);
-    return error ? { mode: "forgot", email, error } : { mode: "reset", email, info: `${email}로 인증번호 6자리를 보냈어요. 3분 안에 넣어 주세요. 메일이 안 보이면 스팸함도 확인해 주세요.` };
+    return error ? { mode: "forgot", email, error } : { mode: "reset", email, info: `${email}로 인증번호 6자리를 보냈어요. 메일이 안 보이면 스팸함도 확인해 주세요.`, codeSentAt: Date.now() };
   }
   if (intent === "reset") {
     const error = await resetWithCode(db, email, field(formData, "code"), field(formData, "password"));
-    if (error) return { mode: "reset", email, error };
+    if (error) return { mode: "reset", email, error, codeSentAt: prev.codeSentAt };
     await syncOperator(email);
     redirect("/app");
   }

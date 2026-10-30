@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { CODE_TTL_SECONDS } from "@/lib/auth-flow";
 import { authAction, type AuthMode, type AuthState } from "./actions";
 
 // 로그인·가입·인증번호·비밀번호 재설정(multi-user R-1). 단계는 서버 응답(state.mode)을 따르고,
@@ -23,6 +24,18 @@ const SUBMITS: Record<AuthMode, [string, string]> = {
 const press = "transition-transform duration-100 active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100";
 const linkButton = "inline-flex min-h-11 items-center text-sm text-muted underline-offset-4 hover:underline";
 
+// 인증번호 남은 시간(1초마다). 0이 되면 확인 버튼을 막고 다시 받게 한다.
+function useSecondsLeft(sentAt: number | undefined) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!sentAt) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [sentAt]);
+  if (!sentAt) return null;
+  return Math.max(0, CODE_TTL_SECONDS - Math.floor((Math.max(now, sentAt) - sentAt) / 1000));
+}
+
 export function LoginForm({ notice, info }: { notice?: string; info?: string }) {
   const [state, action, pending] = useActionState<AuthState, FormData>(authAction, { mode: "login" });
   const [picked, setPicked] = useState<{ mode: AuthMode; from: AuthState } | null>(null);
@@ -33,6 +46,8 @@ export function LoginForm({ notice, info }: { notice?: string; info?: string }) 
   const error = fresh ? undefined : (state.error ?? (mode === "login" ? notice : undefined));
   const message = fresh ? undefined : (state.info ?? (mode === "login" ? info : undefined));
   const codeStep = mode === "verify" || mode === "reset";
+  const secondsLeft = useSecondsLeft(codeStep && !fresh ? state.codeSentAt : undefined);
+  const expired = secondsLeft === 0;
 
   return (
     <form action={action} className="flex flex-col gap-3">
@@ -59,9 +74,16 @@ export function LoginForm({ notice, info }: { notice?: string; info?: string }) 
       />
       {codeStep && (
         <>
-          <label htmlFor="code" className="text-sm font-medium">
-            메일로 받은 인증번호 6자리(3분 안에)
-          </label>
+          <div className="flex items-baseline justify-between gap-2">
+            <label htmlFor="code" className="text-sm font-medium">
+              메일로 받은 인증번호 6자리
+            </label>
+            {secondsLeft !== null && (
+              <span className={`text-sm tabular-nums ${expired ? "text-danger" : "text-muted"}`} aria-live={secondsLeft <= 30 ? "polite" : "off"}>
+                {expired ? "시간이 지났어요" : `남은 시간 ${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, "0")}`}
+              </span>
+            )}
+          </div>
           <input id="code" name="code" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} required className="field tracking-[0.3em]" />
         </>
       )}
@@ -92,7 +114,12 @@ export function LoginForm({ notice, info }: { notice?: string; info?: string }) 
           {error}
         </p>
       )}
-      <button type="submit" disabled={pending} className={`h-11 rounded-box bg-accent font-medium text-on-accent disabled:opacity-50 ${press}`}>
+      {expired && (
+        <p role="alert" className="text-sm text-danger">
+          인증번호 시간이 지났어요. 아래 &ldquo;인증번호 다시 받기&rdquo;를 눌러 주세요.
+        </p>
+      )}
+      <button type="submit" disabled={pending || expired} className={`h-11 rounded-box bg-accent font-medium text-on-accent disabled:opacity-50 ${press}`}>
         {pending ? SUBMITS[mode][1] : SUBMITS[mode][0]}
       </button>
       <div className="flex flex-wrap gap-x-4">
@@ -106,8 +133,8 @@ export function LoginForm({ notice, info }: { notice?: string; info?: string }) 
             </button>
           </>
         )}
-        {mode === "verify" && (
-          <button type="submit" name="intent" value="resend" formNoValidate className={linkButton}>
+        {codeStep && (
+          <button type="submit" name="intent" value={mode === "verify" ? "resend" : "forgot"} formNoValidate className={linkButton}>
             인증번호 다시 받기
           </button>
         )}
