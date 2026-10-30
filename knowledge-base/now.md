@@ -9,16 +9,17 @@
 ## 승인 대기
 
 ## 다음 할 일
-1. 여러 사용자로 바꾸기 [#43](https://github.com/taehyeooo/survey-pilot/issues/43): 누구나 가입, 한도는 먼저 쓰는 사람 몫, 관리자 페이지는 사용자 화면과 따로 — 기획(spec·ADR 0019 개정)부터
+1. 여러 사용자 [plan](../docs/plans/2026-10-30-multi-user.md) 1단계: 마이그레이션(profiles·login_attempts·owner cascade·RLS에서 ADMIN_EMAIL 빼기) — [spec](../docs/specs/2026-10-30-multi-user.md), ADR 0020. 화면 단계(11)는 apple-design 스킬
 2. plan 4단계(샘플 검증): 문항 30개(Claude 판정 29/30)·리포트(3/3) 끝 — [결과](../docs/samples/2026-10-30-run.md). **사용자 판정이 남음**(기준 24/30) — 판정하면 4단계 체크. 결정 필요: 서로 반대인 가설의 중복 문항(#11) — 그대로(편집에서 지움) 또는 문항-가설 다대다 구조
-3. 결정 필요: `CONTACT_EMAIL`(Vercel에도 아직 없음). 디자인 작업 때 apple-design 스킬 설치 여부
+3. 결정 필요: `CONTACT_EMAIL`(Vercel에도 아직 없음) — 여러 사용자 11단계 전
 4. 운영 크론(KST 00:10) 첫 실행 결과는 다음 날 Vercel 로그에서 확인
 
 ## 정해 둔 것
-- 결정 사항 1~26: [spec](../docs/specs/2026-10-29-survey-pilot.md) "결정 사항", [PRD](../docs/specs/2026-10-29-survey-pilot-prd.md), ADR 0017~0019
+- 결정 사항 1~26: [spec](../docs/specs/2026-10-29-survey-pilot.md) "결정 사항", [PRD](../docs/specs/2026-10-29-survey-pilot-prd.md), ADR 0017~0019. 여러 사용자 결정: [spec](../docs/specs/2026-10-30-multi-user.md) 7장, ADR 0020
 - Supabase 프로젝트 생성·키 3개를 레포 루트 `.env.local`에 넣음, 두 키 동작 확인(2026-10-29). 지역 서울(ap-northeast-2) 확인, 마이그레이션용 `SUPABASE_DB_URL`도 `.env.local`에
 
 ## 답이 필요한 것 (사람 손)
+- 여러 사용자 12단계 전: Supabase SMTP에 Gmail·앱 비밀번호, Auth Rate Limits 로그인 메일 시간당 30통
 - `CONTACT_EMAIL` 정하기 → `.env.local`과 Vercel 환경변수에 넣기
 
 ## 운영

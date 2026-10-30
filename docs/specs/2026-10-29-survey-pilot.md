@@ -1,6 +1,6 @@
 ---
 title: 서베이 파일럿
-version: 5
+version: 6
 status: active
 updated: 2026-10-30
 owner: taehyeooo
@@ -8,6 +8,8 @@ related: [docs/specs/2026-10-29-survey-pilot-prd.md, knowledge-base/decisions/00
 ---
 
 # 서베이 파일럿 설계
+
+> 2026-10-30부터 여러 사용자 서비스로 바뀐다 — R-1·R-2·R-3·R-26·R-27·R-29·R-31은 [여러 사용자 spec](2026-10-30-multi-user.md)이 바꾼 대로 읽는다(ADR 0020).
 
 ## 배경
 
@@ -225,6 +227,7 @@ erDiagram
 
 ## 변경 이력
 
+- v6 (2026-10-30): 여러 사용자 spec이 바꾸는 요구사항 안내(#43)
 - v1 (2026-10-29): 최초 작성
 - v4 (2026-10-29): 결정 28 느낌·UX 디테일, R-2를 C 구조(묶음·보관함 접기)에 맞춤
 - v3 (2026-10-29): 결정 27 관리자 화면 구조(C 단계형)

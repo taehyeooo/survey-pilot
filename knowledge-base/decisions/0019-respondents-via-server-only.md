@@ -1,21 +1,23 @@
 ---
 id: "0019"
 title: 응답자 쪽은 DB에 직접 접근하지 않고 서버 라우트로만 읽고 쓴다
-version: 1
+version: 2
 status: active
 superseded_by:
 date: 2026-10-29
 sources:
   - 2026-10-29 기획 인터뷰 사용자 답(ADR로 남기기 선택)
   - ../../docs/specs/2026-10-29-survey-pilot.md
+  - v2: 2026-10-30 여러 사용자 전환(#43, ../../docs/specs/2026-10-30-multi-user.md)
 ---
 
 # 0019 응답자 쪽은 DB에 직접 접근하지 않고 서버 라우트로만 읽고 쓴다
 
 ## 결정
 - anon 키에는 어떤 테이블의 RLS 정책도 주지 않는다. 공개 설문 읽기·인증번호·제출은 모두 Next.js 서버 라우트가 service role로 처리한다.
-- 관리자는 RLS로 자기 설문(`owner_id = auth.uid()` + JWT 이메일 = `ADMIN_EMAIL`)과 그 하위 행만 읽는다. 하위 테이블 쓰기는 서버만 한다.
-- `verifications`·`usage_events`·`audit_logs`는 정책 없음(서버만).
+- 로그인한 사용자는 RLS로 자기 설문(`owner_id = auth.uid()`)과 그 하위 행, 자기 `profiles` 행만 읽는다. 하위 테이블 쓰기는 서버만 한다. (v1은 `ADMIN_EMAIL` 조건도 걸었다 — 여러 사용자로 바꾸며 뺐다, [0020](0020-multi-user-and-operator.md))
+- 운영 페이지는 운영자 확인 뒤 서버(service role)가 읽는다. 운영자에게 RLS로 남의 행을 열지 않는다.
+- `verifications`·`usage_events`·`audit_logs`·`login_attempts`는 정책 없음(서버만).
 - service role 키는 서버 코드에서만 쓰고 클라이언트 번들에 넣지 않는다.
 
 ## 확인 방법
