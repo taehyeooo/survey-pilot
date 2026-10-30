@@ -1,0 +1,1043 @@
+[
+  {
+    "n": 4,
+    "kind": "명확",
+    "problem": "사내 점심 배달 서비스를 3개월째 쓰고 있는데 직원 만족도가 낮다는 이야기가 있다. 직원 60명에게 무엇이 불만인지 물어 업체를 바꿀지 정하고 싶다",
+    "clarify": {
+      "ms": 1193,
+      "questions": []
+    },
+    "design": {
+      "ms": 2143,
+      "purpose": "사내 점심 배달 서비스에 대한 직원들의 실제 만족도와 주요 불만족 요인을 파악한다.",
+      "hypotheses": [
+        "메뉴의 다양성과 맛이 부족하여 불만이 높을 것이다.",
+        "배달 지연이나 일정한 시간이 지켜지지 않는 점이 주요 불만 원인일 것이다.",
+        "가격 대비 양이나 품질(가성비)이 기대에 못 미쳐 만족도가 낮을 것이다.",
+        "배달 서비스의 문제라기보다는 구내식당 등 다른 대안이 없는 사내 식사 환경 자체에 대한 불만일 것이다."
+      ],
+      "audience": "사내 점심 배달 서비스를 이용하는 직원",
+      "target_responses": 50,
+      "target_minutes": 3,
+      "intro": "안녕하세요, 사내 점심 배달 서비스 이용 경험을 점검하고 더 나은 점심 시간을 만들기 위해 의견을 묻습니다. 솔직한 의견을 남겨주시면 서비스 개선에 큰 도움이 됩니다. 소요 시간은 약 3분입니다.",
+      "share_message": "점심 배달 서비스 만족도 조사 참여 부탁드립니다! 3분이면 충분하니 소중한 의견을 들려주세요."
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "현재 점심 배달 서비스의 메뉴 다양성과 맛에 대해 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 1,
+          "type": "multi",
+          "prompt": "점심 배달 서비스 이용 시 주로 아쉽다고 느낀 점은 무엇인가요?",
+          "options": [
+            "메뉴 종류가 너무 적음",
+            "음식의 맛이 부족함",
+            "신선도가 떨어짐",
+            "특정 메뉴로 편중됨"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "점심 배달 서비스의 배달 시간 준수율에 대해 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "multi",
+          "prompt": "배달 서비스 이용 중 겪었던 가장 큰 불편함은 무엇인가요?",
+          "options": [
+            "지정된 시간보다 늦게 도착함",
+            "배달 시간 예측이 어려움",
+            "음식이 쏟아지거나 식어서 옴",
+            "배달 관련 소통이 원활하지 않음"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "현재 점심 배달 서비스의 가격 대비 양과 품질(가성비)에 대해 어떻게 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "scale",
+          "prompt": "현재 사내의 전반적인 점심 식사 환경에 대해 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "single",
+          "prompt": "점심 배달 서비스 외에 사내 식사 환경 개선을 위해 가장 필요한 것은 무엇이라고 생각하시나요?",
+          "options": [
+            "구내식당 설치 또는 운영",
+            "사내 식대 지원금 인상",
+            "외부 식당 이용을 위한 자율 시간 보장",
+            "기타 식사 지원 대책 마련"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "현재 점심 배달 서비스의 메뉴 다양성에 대해 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": "한 문항에 두 가지(메뉴 다양성과 맛)를 묻고 있어 메뉴 다양성만 묻도록 수정함"
+        },
+        {
+          "hypothesis": 1,
+          "type": "multi",
+          "prompt": "점심 배달 서비스 이용 시 주로 아쉽다고 느낀 점은 무엇인가요?",
+          "options": [
+            "메뉴 종류가 너무 적음",
+            "음식의 맛이 부족함",
+            "신선도가 떨어짐",
+            "특정 메뉴로 편중됨",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "기타 선택지가 누락되어 추가함"
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "점심 배달 서비스의 배달 시간 준수율에 대해 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "multi",
+          "prompt": "배달 서비스 이용 중 겪었던 가장 큰 불편함은 무엇인가요?",
+          "options": [
+            "지정된 시간보다 늦게 도착함",
+            "배달 시간 예측이 어려움",
+            "음식이 쏟아지거나 식어서 옴",
+            "배달 관련 소통이 원활하지 않음",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "기타 선택지가 누락되어 추가함"
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "현재 점심 배달 서비스의 가격 대비 양과 품질(가성비)에 대해 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": "scale 척도 문항에 어울리도록 '어떻게 생각하시나요?'를 '얼마나 만족하시나요?'로 수정함"
+        },
+        {
+          "hypothesis": 4,
+          "type": "scale",
+          "prompt": "현재 사내의 전반적인 점심 식사 환경에 대해 얼마나 만족하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "single",
+          "prompt": "점심 배달 서비스 외에 사내 식사 환경 개선을 위해 가장 필요한 것은 무엇이라고 생각하시나요?",
+          "options": [
+            "구내식당 설치 또는 운영",
+            "사내 식대 지원금 인상",
+            "외부 식당 이용을 위한 자율 시간 보장",
+            "기타 식사 지원 대책 마련"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 47,
+      "ms": 5179
+    }
+  },
+  {
+    "n": 8,
+    "kind": "명확",
+    "problem": "회사 신입사원 온보딩 프로그램(2주)을 마친 직원 30명에게 무엇이 도움이 됐고 무엇이 부족했는지 물어 다음 기수 프로그램을 고치고 싶다",
+    "clarify": {
+      "ms": 967,
+      "questions": []
+    },
+    "design": {
+      "ms": 2664,
+      "purpose": "2주간의 신입사원 온보딩 프로그램이 실무 적응에 미친 실제 영향과 개선이 필요한 영역을 알아본다.",
+      "hypotheses": [
+        "동료와의 네트워킹 프로그램이 직무 교육보다 신입사원의 조기 조직 적응에 더 큰 도움이 되었다.",
+        "이론 중심의 강의식 교육보다 실무 섀도잉 및 툴 실습 교육이 현업 투입에 실질적인 도움이 되었다.",
+        "온보딩 기간이 2주로 너무 짧아 방대한 회사 제도를 소화하기에 벅찼다.",
+        "프로그램의 문제점은 내용 자체의 부실함이 아니라, 부서 배치 후 현업 멘토링과의 연계 부족에서 기인한다."
+      ],
+      "audience": "최근 1년 이내 입사하여 2주간의 온보딩 프로그램을 수료한 신입사원",
+      "target_responses": 30,
+      "target_minutes": 3,
+      "intro": "안녕하세요! 신입사원 온보딩 프로그램을 수료하신 여러분의 솔직한 경험과 의견을 듣고자 합니다. 남겨주신 소중한 피드백은 다음 기수 프로그램을 더 알차게 개선하는 데 활용됩니다. 소요 시간은 약 3분입니다.",
+      "share_message": "[설문] 더 나은 온보딩을 위한 3분 설문 참여 부탁드려요! 여러분의 경험이 다음 기수에 큰 도움이 됩니다."
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "동료와의 네트워킹 프로그램이 조기 조직 적응에 얼마나 도움이 되었나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "실무 섀도잉 및 툴 실습 교육이 현업 투입에 얼마나 실질적인 도움이 되었나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "2주간의 온보딩 기간이 방대한 회사 제도를 소화하기에 충분했나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "scale",
+          "prompt": "부서 배치 이후 현업 멘토링이 온보딩 교육 내용과 잘 연계되었나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": null,
+          "type": "single",
+          "prompt": "온보딩 프로그램 전체 과정 중 가장 도움이 되었던 영역은 무엇인가요?",
+          "options": [
+            "동료 네트워킹 프로그램",
+            "직무 이론 강의",
+            "실무 섀도잉 및 툴 실습",
+            "회사 제도 및 문화 교육"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "동료와의 네트워킹 프로그램은 조기 조직 적응에 도움이 되었나요?",
+          "options": [],
+          "required": true,
+          "review_note": "결과를 전제하는 표현('얼마나')을 수정하여 중립적인 질문으로 변경함"
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "실무 섀도잉 및 툴 실습 교육은 현업 투입에 실질적인 도움이 되었나요?",
+          "options": [],
+          "required": true,
+          "review_note": "결과를 전제하는 표현('얼마나')을 수정하여 중립적인 질문으로 변경함"
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "2주간의 온보딩 기간은 방대한 회사 제도를 소화하기에 충분했나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "scale",
+          "prompt": "부서 배치 이후 현업 멘토링은 온보딩 교육 내용과 잘 연계되었나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": null,
+          "type": "single",
+          "prompt": "온보딩 프로그램 전체 과정 중 가장 도움이 되었던 영역은 무엇인가요?",
+          "options": [
+            "동료 네트워킹 프로그램",
+            "직무 이론 강의",
+            "실무 섀도잉 및 툴 실습",
+            "회사 제도 및 문화 교육"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 27,
+      "ms": 3890
+    }
+  },
+  {
+    "n": 11,
+    "kind": "명확",
+    "problem": "사내 해커톤(작년 참가자 50명)을 올해도 열지, 연다면 1박 2일과 평일 하루 중 어느 형식이 좋은지 작년 참가자에게 물어 정하고 싶다",
+    "clarify": {
+      "ms": 887,
+      "questions": []
+    },
+    "design": {
+      "ms": 1866,
+      "purpose": "사내 해커톤 개최 여부와 최적의 진행 형식을 알아본다.",
+      "hypotheses": [
+        "작년 참가자의 대다수는 올해도 해커톤 개최를 희망한다.",
+        "업무 집중도를 유지하기 위해 1박 2일보다 평일 하루 형식을 더 선호한다.",
+        "충분한 개발 시간을 확보하기 위해 평일 하루보다 1박 2일 형식을 더 선호한다.",
+        "올해 해커톤 개최 여부나 형식과 관계없이 사내 네트워킹 행사가 더 필요하다고 생각한다."
+      ],
+      "audience": "작년 사내 해커톤 참가자 50명",
+      "target_responses": 45,
+      "target_minutes": 3,
+      "intro": "안녕하세요! 작년에 이어 올해 사내 해커톤을 더 알차게 준비하기 위해 참가자 여러분의 의견을 묻고자 합니다. 솔직한 답변은 더 나은 행사 운영에 큰 도움이 되며, 약 3분이 소요됩니다.",
+      "share_message": "[사설] 올해 사내 해커톤 개최 여부 및 형식 선호도 조사 (소요 시간: 3분)"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "올해에도 사내 해커톤을 개최하는 것에 대해 어떻게 생각하시나요?",
+          "options": [
+            "매우 희망해요",
+            "대체로 희망해요",
+            "보통이에요",
+            "대체로 희망하지 않아요",
+            "전혀 희망하지 않아요"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "해커톤 진행 시 업무 집중도를 고려할 때, 선호하는 진행 형식은 무엇인가요?",
+          "options": [
+            "평일 하루 형식이 더 좋아요",
+            "1박 2일 형식이 더 좋아요",
+            "상관없어요"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "충분한 개발 시간 확보 측면에서, 더 선호하는 해커톤 진행 형식은 무엇인가요?",
+          "options": [
+            "1박 2일 형식이 더 좋아요",
+            "평일 하루 형식이 더 좋아요",
+            "상관없어요"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "scale",
+          "prompt": "해커톤 개최 여부와 관계없이 별도의 사내 네트워킹 행사가 필요하다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "올해 사내 해커톤 개최에 대해 어떻게 생각하시나요?",
+          "options": [
+            "매우 희망해요",
+            "대체로 희망해요",
+            "보통이에요",
+            "대체로 희망하지 않아요",
+            "전혀 희망하지 않아요"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "해커톤 진행 시 선호하는 형식은 무엇인가요?",
+          "options": [
+            "평일 하루 형식",
+            "1박 2일 형식",
+            "상관없어요"
+          ],
+          "required": true,
+          "review_note": "가설 2와 가설 3의 질문 내용과 선택지 구성이 중복되므로, 선호하는 형식을 묻는 하나의 문항으로 통합하고 중복 표현을 수정했습니다."
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "충분한 개발 시간 확보 측면에서, 해커톤 진행 시 더 선호하는 형식은 무엇인가요?",
+          "options": [
+            "1박 2일 형식",
+            "평일 하루 형식",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "선택지의 어색한 표현을 간결하게 다듬고 '기타' 선택지를 추가했습니다."
+        },
+        {
+          "hypothesis": 4,
+          "type": "scale",
+          "prompt": "해커톤 개최 여부와 관계없이 별도의 사내 네트워킹 행사가 필요하다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 26,
+      "ms": 3748
+    }
+  },
+  {
+    "n": 20,
+    "kind": "모호",
+    "problem": "모임 날짜 정하기",
+    "clarify": {
+      "ms": 1533,
+      "questions": [
+        {
+          "question": "이번 모임의 주요 대상은 누구인가요?",
+          "options": [
+            "직장 동료",
+            "친구 및 지인",
+            "스터디/동호회원",
+            "가족 및 친척"
+          ]
+        },
+        {
+          "question": "모임 날짜를 정할 때 어떤 점을 결정하려 하시나요?",
+          "options": [
+            "가장 많은 사람이 모일 수 있는 날짜",
+            "특정 주말이나 공휴일",
+            "퇴근 시간 이후 평일 저녁"
+          ]
+        }
+      ]
+    },
+    "design": {
+      "ms": 2065,
+      "purpose": "직장 동료 모임의 참석률을 극대화하기 위해 요일 및 시간대별 선호도와 방해 요인을 알아본다.",
+      "hypotheses": [
+        "주중 저녁보다는 주말이 더 많은 인원의 참석을 유도할 수 있다.",
+        "사내 모임의 경우 평일 퇴근 직후 시간대가 주말보다 참석률이 높다.",
+        "참석을 방해하는 가장 큰 요인은 사전 약속이나 개인 일정보다 업무 연장(야근)이다."
+      ],
+      "audience": "함께 모임을 진행할 직장 동료들",
+      "target_responses": 20,
+      "target_minutes": 2,
+      "intro": "안녕하세요! 이번 직장 동료 모임의 가장 알맞은 날짜와 시간을 정하기 위한 간단한 설문입니다. 가장 편하게 참여하실 수 있는 일정을 파악하기 위함이니 솔직한 답변을 부탁드립니다. 소요 시간은 약 2분입니다.",
+      "share_message": "[모임 일정 조율 설문] 모두가 함께 모일 수 있는 날짜를 정하기 위해 의견을 모으고 있습니다! 2분만 투자해 편하신 일정을 골라주세요."
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "동료 모임에 가장 선호하는 요일은 언제인가요?",
+          "options": [
+            "평일 (월~목요일)",
+            "금요일 저녁",
+            "주말 (토~일요일)"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "평일에 모임을 진행한다면 가장 선호하는 시간대는 언제인가요?",
+          "options": [
+            "퇴근 직후",
+            "저녁 식사 이후 (오후 7시 이후)",
+            "기타 시간"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "동료 모임 참석을 가장 크게 방해하는 요인은 무엇인가요?",
+          "options": [
+            "업무 연장 및 야근",
+            "사전 약속 및 개인 일정",
+            "체력적 부담 및 피로",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "동료 모임에 가장 선호하는 요일은 언제인가요?",
+          "options": [
+            "평일 (월~목요일)",
+            "금요일 저녁",
+            "주말 (토~일요일)"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "single",
+          "prompt": "모임을 진행한다면 가장 선호하는 시간대는 언제인가요?",
+          "options": [
+            "퇴근 직후",
+            "저녁 식사 이후 (오후 7시 이후)",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "평일 참여자로 제한되었던 조건을 삭제하여 모든 응답자가 답변할 수 있도록 수정함"
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "동료 모임 참석을 가장 크게 방해하는 요인은 무엇인가요?",
+          "options": [
+            "업무 연장 및 야근",
+            "사전 약속 및 개인 일정",
+            "체력적 부담 및 피로",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 21,
+      "ms": 3293
+    }
+  },
+  {
+    "n": 21,
+    "kind": "모호",
+    "problem": "직원들이 회사를 왜 떠나는지 궁금함",
+    "clarify": {
+      "ms": 2143,
+      "questions": [
+        {
+          "question": "설문 대상은 누구인가요?",
+          "options": [
+            "최근 퇴사한 전직 직원",
+            "현재 근무 중인 재직 직원",
+            "퇴사 예정인 직원",
+            "모든 임직원"
+          ]
+        },
+        {
+          "question": "설문을 진행하는 주된 상황이나 시점은 언제인가요?",
+          "options": [
+            "정기적인 연말/분기별 만족도 조사 때",
+            "퇴사 인터뷰(Exit Interview)를 할 때",
+            "최근 퇴사율이 급증했을 때",
+            "특별한 계기 없이 상시 진행"
+          ]
+        },
+        {
+          "question": "이 설문을 통해 최종적으로 무엇을 결정하려 하나요?",
+          "options": [
+            "급여 및 복리후생 제도 개선",
+            "조직문화 및 리더십 문제 파악",
+            "이탈 원인 분석 및 종합 Retention 전략 수립",
+            "업무량 및 근무 환경 조정"
+          ]
+        }
+      ]
+    },
+    "design": {
+      "ms": 3815,
+      "purpose": "최근 퇴사한 전직 직원들의 실제 퇴사 사유와 조직 불만족 요인을 알아본다.",
+      "hypotheses": [
+        "퇴사 결정에 가장 큰 영향을 미친 주된 원인은 급여 수준 및 복리후생의 부족이다.",
+        "급여 외에도 직무 성장 기회 부족과 커리어 비전 부재가 주요 퇴사 요인이다.",
+        "상사와의 관계 및 조직 문화의 경직성이 퇴사를 결심하게 만든 결정적 계기이다."
+      ],
+      "audience": "최근 1년 이내에 퇴사한 전직 직원",
+      "target_responses": 100,
+      "target_minutes": 5,
+      "intro": "안녕하세요. 회사는 더 나은 일터를 만들기 위해 최근 퇴사하신 분들의 솔직한 의견을 듣고자 합니다. 설문은 약 5분 정도 소요되며, 응답 내용은 익명으로 철저히 보호되니 편하게 말씀해 주세요.",
+      "share_message": "안녕하세요! 회사의 더 나은 문화를 위해 최근 퇴사하신 분들의 소중한 의견을 듣는 설문입니다. 5분만 시간을 내어 솔직한 생각을 나눠주세요."
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "퇴사 결정을 내리게 된 가장 주된 원인은 무엇인가요?",
+          "options": [
+            "급여 수준 불만",
+            "복리후생 부족",
+            "업무량 과다",
+            "근무 환경 불만",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "재직 당시 회사에서 제공한 급여와 복리후생 수준에 만족하셨나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "현재 직무에서 지속적인 성장과 커리어 개발 기회가 충분히 제공되었다고 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "multi",
+          "prompt": "퇴사 전 경험한 조직 내 한계나 부족했던 점은 무엇인가요? (여러 개 선택 가능)",
+          "options": [
+            "직무 전문성 향상 기회 부족",
+            "불분명한 장기 커리어 비전",
+            "역량에 비해 부족한 보상",
+            "반복적이고 단조로운 업무 구조",
+            "교육 및 훈련 지원 부족"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "직속 상사와의 소통 및 관계에 만족하셨나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "재직 당시 소속 부서나 회사의 조직 문화는 어땠나요?",
+          "options": [
+            "매우 수평적이고 유연함",
+            "대체로 유연함",
+            "보통임",
+            "다소 경직되고 보수적임",
+            "매우 경직되고 권위적임"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "퇴사 결정을 내리게 된 가장 주된 원인은 무엇인가요?",
+          "options": [
+            "급여 수준 불만",
+            "복리후생 부족",
+            "업무량 과다",
+            "근무 환경 불만",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "재직 당시 회사에서 제공한 급여와 복리후생 수준에 만족하셨나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "현재 직무에서 지속적인 성장과 커리어 개발 기회가 충분히 제공되었다고 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "multi",
+          "prompt": "퇴사 전 경험한 조직 내 한계나 부족했던 점은 무엇인가요?",
+          "options": [
+            "직무 전문성 향상 기회 부족",
+            "불분명한 장기 커리어 비전",
+            "역량에 비해 부족한 보상",
+            "반복적이고 단조로운 업무 구조",
+            "교육 및 훈련 지원 부족",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "선택지가 누락되어 '기타'를 추가하고 문항 내 괄호 안내 문구를 제거함"
+        },
+        {
+          "hypothesis": 3,
+          "type": "scale",
+          "prompt": "직속 상사와의 소통 및 관계에 만족하셨나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "재직 당시 소속 부서나 회사의 조직 문화는 어땠나요?",
+          "options": [
+            "매우 수평적이고 유연함",
+            "대체로 유연함",
+            "보통임",
+            "다소 경직되고 보수적임",
+            "매우 경직되고 권위적임"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "seconds": 39,
+      "ms": 6033
+    }
+  },
+  {
+    "n": 22,
+    "kind": "모호",
+    "problem": "가격을 올려도 될까?",
+    "clarify": {
+      "ms": 2003,
+      "questions": [
+        {
+          "question": "어떤 제품이나 서비스의 가격을 올리려고 하시나요?",
+          "options": [
+            "음식 및 식음료",
+            "소프트웨어 및 디지털 서비스",
+            "제조 및 유통 상품",
+            "전문 서비스 및 컨설팅"
+          ]
+        },
+        {
+          "question": "가격 인상을 고민하게 된 주된 상황은 무엇인가요?",
+          "options": [
+            "원재료 및 인건비 상승",
+            "브랜드 가치 및 품질 향상",
+            "경쟁사 가격 인상",
+            "수요 증가에 따른 수익 개선"
+          ]
+        },
+        {
+          "question": "이번 설문을 통해 가장 알고 싶은 것은 무엇인가요?",
+          "options": [
+            "고객의 가격 수용 한계선",
+            "가격 인상 시 예상되는 이탈률",
+            "프리미엄 전환 시 반응",
+            "기존 고객의 만족도 변화"
+          ]
+        }
+      ]
+    },
+    "design": {
+      "ms": 2020,
+      "purpose": "음식 및 식음료 제품의 원재료 및 In건비 상승에 따른 적정 가격 인상선을 알아본다.",
+      "hypotheses": [
+        "고객은 5% 미만의 소폭 가격 인상에는 이탈하지 않고 수용할 것이다.",
+        "가격 인상 시 메뉴 품질 향상이나 서비스 개선이 동반되면 저항감이 낮아질 것이다.",
+        "원재료비 상승 폭과 상관없이 고객이 심리적으로 마지노선으로 여기는 특정 가격 한계선이 존재한다.",
+        "가격 인상 시 고객 이탈은 가격 자체의 문제보다 대안재로의 전환 가능성 때문에 발생한다."
+      ],
+      "audience": "해당 음식 및 식음료 매장을 최근 3개월 이내에 이용한 경험이 있는 고객",
+      "target_responses": 200,
+      "target_minutes": 3,
+      "intro": "안녕하세요! 저희 매장은 더 나은 맛과 서비스를 제공하기 위해 최근의 비용 변화에 따른 가격 정책을 고민하고 있습니다. 솔직한 의견을 들려주시면 서비스 개선에 큰 도움이 됩니다. 소요 시간은 약 3분입니다.",
+      "share_message": "안녕하세요! 저희 매장의 메뉴 가격 및 서비스에 대한 소중한 의견을 듣고자 설문을 진행합니다. 3분만 투자해 주세요. 감사합니다!"
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "자주 이용하는 음식이나 식음료의 가격이 5% 미만으로 오를 경우, 앞으로의 이용 의향은 어떠하신가요?",
+          "options": [
+            "기존처럼 계속 이용할 것이다",
+            "이용 횟수를 줄일 것이다",
+            "다른 매장이나 대체재를 이용할 것이다",
+            "잘 모르겠다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "가격 인상과 함께 메뉴의 품질이나 서비스가 향상된다면, 가격 인상에 대한 거부감이 낮아지시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "평소 즐겨 찾는 음식이나 식음료의 경우, 심리적으로 '이 가격을 넘으면 절대 사 먹지 않겠다'고 생각하시는 마지노선 가격대가 있으신가요?",
+          "options": [
+            "그렇다 (마지노선 가격대가 명확히 있다)",
+            "보통이다 (어느 정도 생각은 있으나 유동적이다)",
+            "아니다 (가격 마지노선을 따로 두지 않는다)"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "multi",
+          "prompt": "음식 및 식음료 매장의 가격이 인상될 때, 이용을 중단하고 다른 대안을 찾게 되는 가장 주된 이유는 무엇인가요? (중복 선택 가능)",
+          "options": [
+            "인상된 가격 자체가 너무 부담스러워서",
+            "비슷한 가격대에 더 나은 대체 메뉴나 매장이 있어서",
+            "가격 대비 품질이나 양이 불만족스러워서",
+            "인상에 비해 서비스나 매장 환경이 부족해서",
+            "기타"
+          ],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "single",
+          "prompt": "자주 이용하는 음식이나 식음료의 가격이 5% 미만으로 오를 경우, 앞으로의 이용 의향은 어떠하신가요?",
+          "options": [
+            "기존처럼 계속 이용할 것이다",
+            "이용 횟수를 줄일 것이다",
+            "다른 매장이나 대체재를 이용할 것이다",
+            "잘 모르겠다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "가격 인상과 함께 메뉴의 품질이나 서비스가 향상된다면, 가격 인상에 대한 거부감이 낮아지나요?",
+          "options": [],
+          "required": true,
+          "review_note": "해요체 규칙에 맞춰 어미를 '~낮아지나요?'로 수정했습니다."
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "평소 즐겨 찾는 음식이나 식음료의 경우, 심리적으로 가격 마지노선이 있으신가요?",
+          "options": [
+            "그렇다 (마지노선 가격대가 명확히 있다)",
+            "보통이다 (어느 정도 생각은 있으나 유동적이다)",
+            "아니다 (가격 마지노선을 따로 두지 않는다)"
+          ],
+          "required": true,
+          "review_note": "프롬프트 내 불필요하게 긴 인용구와 수식어를 간결하게 정리했습니다."
+        },
+        {
+          "hypothesis": 4,
+          "type": "multi",
+          "prompt": "음식 및 식음료 매장의 가격이 인상될 때, 이용을 중단하고 다른 대안을 찾게 되는 주된 이유는 무엇인가요?",
+          "options": [
+            "인상된 가격 자체가 너무 부담스러워서",
+            "비슷한 가격대에 더 나은 대체 메뉴나 매장이 있어서",
+            "가격 대비 품질이나 양이 불만족스러워서",
+            "인상에 비해 서비스나 매장 환경이 부족해서",
+            "기타"
+          ],
+          "required": true,
+          "review_note": "유도성 표현을 줄이기 위해 '가장'이라는 수식어를 삭제했습니다."
+        }
+      ],
+      "seconds": 29,
+      "ms": 4665
+    }
+  },
+  {
+    "n": 25,
+    "kind": "편향",
+    "problem": "재택근무가 생산성을 떨어뜨린다는 걸 직원 설문으로 증명해서 출근 일수를 늘리고 싶다",
+    "clarify": {
+      "ms": 1154,
+      "questions": [
+        {
+          "question": "설문 대상은 누구인가요?",
+          "options": [
+            "전체 직원",
+            "팀장 및 관리자급",
+            "재택근무 중인 직원",
+            "인사/경영진"
+          ]
+        }
+      ]
+    },
+    "design": {
+      "ms": 3654,
+      "purpose": "재택근무와 사무실 근무가 직원들의 업무 생산성과 협업에 미치는 실제 영향을 알아본다.",
+      "hypotheses": [
+        "재택근무 시 집중 근무 시간이 늘어나 개인 업무 생산성이 향상된다.",
+        "사무실 근무 시 동료와의 소통과 협업이 원활해져 업무 효율이 높아진다.",
+        "근무 장소(재택 vs 사무실)와 개인의 업무 생산성 사이에는 유의미한 차이가 없다.",
+        "업무 생산성의 차이는 근무 장소 자체보다 업무 프로세스와 커뮤니티 도구의 완성도에 의해 좌우된다."
+      ],
+      "audience": "전체 직원",
+      "target_responses": 200,
+      "target_minutes": 3,
+      "intro": "안녕하세요, 임직원 여러분. 우리 회사의 더 나은 근무 환경과 효율적인 협업 방안을 마련하고자 설문을 진행합니다. 솔직한 의견을 부탁드리며, 소요 시간은 약 3분입니다.",
+      "share_message": "여러분의 근무 경험과 생각을 들려주세요! 3분이면 참여할 수 있는 근무 환경 설문입니다."
+    },
+    "questions": {
+      "generated": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "재택근무를 할 때 사무실에 비해 방해받지 않고 집중할 수 있는 시간이 늘어나나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "재택근무 시 개인 업무 생산성이 향상된다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "사무실에서 근무할 때 동료와의 소통과 협업이 더 원활하게 이루어지나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "사무실 근무 환경이 전반적인 업무 효율을 높이는 데 도움이 되나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "본인의 경험상 재택근무와 사무실 근무 중 어느 쪽이 개인 업무 생산성에 더 유리하다고 생각하시나요?",
+          "options": [
+            "재택근무가 훨씬 유리하다",
+            "재택근무가 약간 유리하다",
+            "두 근무 방식의 생산성 차이가 거의 없다",
+            "사무실 근무가 약간 유리하다",
+            "사무실 근무가 훨씬 유리하다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "scale",
+          "prompt": "현재 사용 중인 협업 도구와 업무 프로세스가 생산성에 큰 영향을 미친다고 생각하시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        }
+      ],
+      "reviewed": [
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "재택근무 시 사무실에 비해 집중할 수 있는 시간에 변화가 있나요?",
+          "options": [],
+          "required": true,
+          "review_note": "결과를 전제하는 유도 질문 형태를 중립적인 표현으로 수정함."
+        },
+        {
+          "hypothesis": 1,
+          "type": "scale",
+          "prompt": "재택근무 시 개인 업무 생산성이 향상된다고 느끼시나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "사무실 근무 시 동료와의 소통과 협업이 원활하게 이루어지나요?",
+          "options": [],
+          "required": true,
+          "review_note": "결과를 전제하는 유도 질문 형태를 수정함."
+        },
+        {
+          "hypothesis": 2,
+          "type": "scale",
+          "prompt": "사무실 근무 환경이 전반적인 업무 효율을 높이는 데 도움이 되나요?",
+          "options": [],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 3,
+          "type": "single",
+          "prompt": "본인의 경험상 재택근무와 사무실 근무 중 어느 쪽이 개인 업무 생산성에 더 유리하다고 생각하시나요?",
+          "options": [
+            "재택근무가 훨씬 유리하다",
+            "재택근무가 약간 유리하다",
+            "두 근무 방식의 생산성 차이가 거의 없다",
+            "사무실 근무가 약간 유리하다",
+            "사무실 근무가 훨씬 유리하다"
+          ],
+          "required": true,
+          "review_note": null
+        },
+        {
+          "hypothesis": 4,
+          "type": "scale",
+          "prompt": "현재 사용 중인 협업 도구와 업무 프로세스가 생산성에 영향을 미치나요?",
+          "options": [],
+          "required": true,
+          "review_note": "질문의 의미를 명확히 하고 중립적인 척도 질문으로 수정함."
+        }
+      ],
+      "seconds": 32,
+      "ms": 4498
+    }
+  }
+]
