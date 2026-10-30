@@ -66,16 +66,25 @@ describe.skipIf(!hasDb)("운영 페이지 데이터 (실제 DB)", () => {
       { kind: "mail", purpose, status: "error", user_id: op.id },
       { kind: "ai", purpose, status: "ok", user_id: op.id },
     ]).throwOnError();
+    // 다른 테스트 파일이 동시에 사용 기록을 넣고 지운다 — 집계 직전·직후 값 사이에 있으면 같은 것으로 본다
     const now = Date.now();
-    const summary = await usageSummary(service, now);
     const since = new Date(now - 24 * 3_600_000).toISOString();
-    const counted = async (kind: string) =>
-      (await service.from("usage_events").select("id", { count: "exact", head: true }).eq("kind", kind).neq("status", "blocked").gte("created_at", since).throwOnError()).count;
-    expect(summary.ai.used).toBe(await counted("ai"));
-    expect(summary.mail.used).toBe(await counted("mail"));
+    const counts = async () => {
+      const count = async (kind: string | null) => {
+        let q = service.from("usage_events").select("id", { count: "exact", head: true }).neq("status", "blocked").gte("created_at", since);
+        q = kind ? q.eq("kind", kind) : q.is("user_id", null);
+        return (await q.throwOnError()).count!;
+      };
+      return { ai: await count("ai"), mail: await count("mail"), unattributed: await count(null) };
+    };
+    const before = await counts();
+    const summary = await usageSummary(service, now);
+    const after = await counts();
+    const between = (value: number, a: number, b: number) => expect(value >= Math.min(a, b) && value <= Math.max(a, b), `${value} ∉ [${a}, ${b}]`).toBe(true);
+    between(summary.ai.used, before.ai, after.ai);
+    between(summary.mail.used, before.mail, after.mail);
+    between(summary.unattributed, before.unattributed, after.unattributed);
     expect(summary.ai.limit).toBeGreaterThan(0);
-    const unattributed = (await service.from("usage_events").select("id", { count: "exact", head: true }).is("user_id", null).neq("status", "blocked").gte("created_at", since).throwOnError()).count;
-    expect(summary.unattributed).toBe(unattributed);
     expect(summary.ranking.find((r) => r.userId === op.id)).toMatchObject({ email: op.email, ai: 1, mail: 2 });
     const totals = summary.ranking.map((r) => r.ai + r.mail);
     expect(totals).toEqual([...totals].sort((a, b) => b - a));
