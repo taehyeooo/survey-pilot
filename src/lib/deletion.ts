@@ -41,3 +41,39 @@ export async function deleteRespondent(
   // 응답자 행을 지우면 응답·답이 함께 지워진다(on delete cascade)
   await db.from("respondents").delete().eq("id", target.id).throwOnError();
 }
+
+// 설문 주인의 삭제(multi-user R-16): 자기 설문에서만. 화면이 먼저 확인하지만 여기서 한 번 더 막는다.
+export async function deleteOwnRespondent(
+  db: SupabaseClient,
+  ownerId: string,
+  input: { surveyId: string; respondentId: string; reason: string; actorEmail: string },
+) {
+  const { data } = await db.from("surveys").select("id").eq("id", input.surveyId).eq("owner_id", ownerId).maybeSingle().throwOnError();
+  if (!data) throw new RangeError("지울 응답을 찾을 수 없어요.");
+  await deleteRespondent(db, input);
+}
+
+// 운영자의 삭제(multi-user R-15): 모든 사용자의 설문에서 이메일 해시로 찾는다. 운영자는 설문 제목과 건수만 본다 —
+// 제출 시각·답은 고르지 않는다(ADR 0020). 제출하지 않은(인증만 한) 사람은 지울 응답이 없다.
+export async function findResponsesByEmail(db: SupabaseClient, secret: string, email: string) {
+  const { data } = await db
+    .from("respondents")
+    .select("id, survey_id, surveys(problem), responses!inner(id)")
+    .eq("email_hash", emailHashOf(secret, email))
+    .throwOnError();
+  return (data ?? []).map((r) => ({
+    respondentId: r.id as string,
+    surveyId: r.survey_id as string,
+    problem: (r.surveys as unknown as { problem: string } | null)?.problem ?? "",
+  }));
+}
+
+// 미리보기에서 본 건수와 다르면(그 사이 응답이 들어오거나 지워짐) 지우지 않고 다시 찾게 한다.
+export async function deleteResponsesByEmail(db: SupabaseClient, secret: string, input: { email: string; expected: number; reason: string; actorEmail: string }) {
+  const found = await findResponsesByEmail(db, secret, input.email);
+  if (found.length === 0) throw new RangeError("이 이메일로 낸 응답이 없어요.");
+  if (found.length !== input.expected) throw new RangeError("그 사이 응답이 바뀌었어요. 다시 찾아 주세요.");
+  // 설문마다 deleteRespondent — 사유를 확인하고(없으면 첫 건에서 막혀 아무것도 지우지 않음), 감사 기록이 설문마다 1행씩 남는다
+  for (const f of found) await deleteRespondent(db, { surveyId: f.surveyId, respondentId: f.respondentId, reason: input.reason, actorEmail: input.actorEmail });
+  return found.length;
+}
