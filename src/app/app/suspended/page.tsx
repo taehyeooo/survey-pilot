@@ -12,7 +12,8 @@ async function Notice() {
   return (
     <>
       <p className="leading-7 break-keep">
-        지금은 설문을 만들거나 고칠 수 없고, 내 설문의 응답 링크도 응답을 받지 않아요. 궁금한 점은 운영자에게 물어봐 주세요.
+        지금은 설문을 만들거나 고칠 수 없고, 내 설문의 응답 링크도 응답을 받지 않아요.{" "}
+        {process.env.CONTACT_EMAIL ? `궁금한 점은 ${process.env.CONTACT_EMAIL}로 물어봐 주세요.` : "궁금한 점은 운영자에게 물어봐 주세요."}
       </p>
       <Link href="/app/leave" className="inline-flex min-h-11 items-center text-sm text-muted hover:underline">
         탈퇴하기
@@ -29,7 +30,7 @@ async function Notice() {
 export default function SuspendedPage() {
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 py-16">
-      <h1 className="text-2xl font-semibold">이용이 정지됐어요</h1>
+      <h1 className="text-2xl font-semibold tracking-[-0.01em]">이용이 정지됐어요</h1>
       <Suspense fallback={<p className="text-muted">불러오는 중…</p>}>
         <Notice />
       </Suspense>

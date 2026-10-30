@@ -1,6 +1,7 @@
 "use client";
 
 import { startTransition, useActionState, useState } from "react";
+import { consentNotes } from "@/lib/consent-copy";
 import { checkCode, sendCode, submitAnswers, type CodeState, type SubmitState, type VerifyState } from "./actions";
 
 // 응답 흐름(R-17): 동의·이메일(R-3) → 인증번호(R-18) → 문항 → 제출(R-19).
@@ -23,8 +24,9 @@ function EmailStep({ slug, contact, state, action, pending }: { slug: string; co
         <p>
           <strong>수집 항목</strong> 이메일 · <strong>목적</strong> 한 사람이 한 번만 응답하도록 확인 · <strong>보관</strong> 설문 마감 30일 뒤 삭제
         </p>
-        <p>응답은 분석을 위해 Google Gemini로 처리돼요. 주관식에는 이름·연락처 같은 개인정보를 적지 말아 주세요. 이메일은 AI에 보내지 않아요.</p>
-        <p>{contact ? `응답 삭제 요청: ${contact}` : "응답 삭제는 설문을 보낸 사람에게 요청해 주세요."}</p>
+        {consentNotes(contact).map((note) => (
+          <p key={note}>{note}</p>
+        ))}
         <label className="mt-1 flex min-h-11 items-center gap-3 font-medium">
           <input type="checkbox" name="consent" required className="size-5" />
           위 내용에 동의해요

@@ -27,3 +27,4 @@ intaeng 플러그인 명령(`/plugin install intaeng@taeng-marketplace`):
 
 | 상황 | 스킬 | 어디 | 근거 |
 |---|---|---|---|
+| 화면을 만들거나 다듬을 때(디자인 2~4단계) — 누름 피드백·움직임 줄이기·자간·단순함 | `apple-design` | `~/.claude/skills/apple-design` (emilkowalski/skills) | [ADR 0021](../../knowledge-base/decisions/0021-apple-design-skill.md) |
