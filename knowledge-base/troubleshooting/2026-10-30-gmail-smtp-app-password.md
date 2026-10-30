@@ -1,7 +1,7 @@
 ---
 title: Supabase 로그인 메일이 "보내지 못했어요" — Gmail이 일반 비밀번호를 거절
 version: 1
-status: active
+status: open
 updated: 2026-10-30
 sources:
   - 2026-10-30 Supabase Auth Logs(/otp 500)
