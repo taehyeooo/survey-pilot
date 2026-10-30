@@ -30,7 +30,7 @@ import {
 } from "@/lib/questions";
 import { canEditQuestions, publishSurvey, updateSettings } from "@/lib/publish";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { deleteRespondent, findRespondent } from "@/lib/deletion";
+import { deleteOwnRespondent, findRespondent } from "@/lib/deletion";
 import { hashSecret } from "@/lib/mailer-runtime";
 import { generateReport } from "@/lib/report";
 import { closeSurvey } from "@/lib/submit";
@@ -272,7 +272,7 @@ export async function deleteForRequest(id: string, respondentId: string, _prev: 
   await loadOwned(id);
   if (formData.get("confirm") !== "on") return { step: "confirm", error: "되돌릴 수 없다는 것을 확인해 주세요." };
   try {
-    await deleteRespondent(createAdminClient(), { surveyId: id, respondentId, reason: String(formData.get("reason") ?? ""), actorEmail: user.email ?? "" });
+    await deleteOwnRespondent(createAdminClient(), user.id, { surveyId: id, respondentId, reason: String(formData.get("reason") ?? ""), actorEmail: user.email ?? "" });
   } catch (e) {
     return { step: "confirm", error: messageOf(e) };
   }

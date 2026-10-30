@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { deleteRespondent, findRespondent } from "../../src/lib/deletion";
+import { deleteOwnRespondent, deleteRespondent, deleteResponsesByEmail, findRespondent, findResponsesByEmail } from "../../src/lib/deletion";
 import { emailHashOf } from "../../src/lib/respond";
 import { hasDb, testUsers, type Db } from "./helpers";
 
@@ -9,11 +9,12 @@ describe.skipIf(!hasDb)("응답 삭제 요청 (실제 DB)", () => {
   let users: ReturnType<typeof testUsers>;
   let service: Db;
   let adminId: string;
+  let otherId: string;
 
-  async function surveyWith(emails: string[], { forgetEmail = false } = {}) {
+  async function surveyWith(emails: string[], { forgetEmail = false, ownerId = adminId } = {}) {
     const { data: s } = await service
       .from("surveys")
-      .insert({ owner_id: adminId, problem: "스터디 출석률이 왜 떨어질까", status: "published", slug: `t${crypto.randomUUID().replace(/-/g, "").slice(0, 11)}`, target_responses: 50 })
+      .insert({ owner_id: ownerId, problem: "스터디 출석률이 왜 떨어질까", status: "published", slug: `t${crypto.randomUUID().replace(/-/g, "").slice(0, 11)}`, target_responses: 50 })
       .select("id")
       .single()
       .throwOnError();
@@ -41,6 +42,7 @@ describe.skipIf(!hasDb)("응답 삭제 요청 (실제 DB)", () => {
     users = testUsers();
     service = users.service;
     ({ id: adminId } = await users.signIn("admin", { admin: true }));
+    ({ id: otherId } = await users.signIn("other-owner"));
   });
   afterAll(async () => {
     await service?.from("audit_logs").delete().eq("actor_email", "admin-test@example.com");
@@ -75,5 +77,41 @@ describe.skipIf(!hasDb)("응답 삭제 요청 (실제 DB)", () => {
     const { data: logs } = await service.from("audit_logs").select("action, reason, detail").eq("survey_id", id);
     expect(logs).toEqual([{ action: "delete_response", reason: "응답자 본인 요청(메일)", detail: { email_hash: emailHashOf(secret, "e@example.com") } }]);
     expect(JSON.stringify(logs)).not.toContain("e@example.com");
+  });
+
+  // multi-user#R-15 — 운영자는 어느 사용자의 설문이든 이메일로 찾아 지운다
+  it("운영자: 이메일로 모든 사용자의 설문에서 찾고(제목·건수만), 사유와 함께 지우면 설문마다 감사 기록", async () => {
+    const email = `g-${crypto.randomUUID().slice(0, 8)}@example.com`;
+    const mine = await surveyWith([email, "h@example.com"]);
+    const theirs = await surveyWith([email], { ownerId: otherId });
+    const unsent = await surveyWith([], { ownerId: otherId }); // 인증만 하고 내지 않은 설문은 지울 응답이 없다
+    await service.from("respondents").insert({ survey_id: unsent, email_hash: emailHashOf(secret, email), consented_at: new Date().toISOString(), verified_at: new Date().toISOString() }).throwOnError();
+    const found = await findResponsesByEmail(service, secret, ` ${email.toUpperCase()} `);
+    expect(found.map((f) => f.surveyId).sort()).toEqual([mine, theirs].sort());
+    expect(Object.keys(found[0]).sort()).toEqual(["problem", "respondentId", "surveyId"]);
+
+    await expect(deleteResponsesByEmail(service, secret, { email, expected: 2, reason: "", actorEmail: "admin-test@example.com" })).rejects.toThrow(/사유/);
+    await expect(deleteResponsesByEmail(service, secret, { email, expected: 1, reason: "본인 요청", actorEmail: "admin-test@example.com" })).rejects.toThrow(/다시 찾/);
+    expect(await count("responses", theirs)).toBe(1);
+
+    expect(await deleteResponsesByEmail(service, secret, { email, expected: 2, reason: "본인 요청", actorEmail: "admin-test@example.com" })).toBe(2);
+    expect(await count("responses", theirs)).toBe(0);
+    expect(await count("responses", mine)).toBe(1); // 다른 응답자는 그대로
+    const { data: logs } = await service.from("audit_logs").select("action, survey_id").in("survey_id", [mine, theirs]);
+    expect(logs!.map((l) => l.survey_id).sort()).toEqual([mine, theirs].sort());
+    expect(await findResponsesByEmail(service, secret, email)).toEqual([]);
+  });
+
+  // multi-user#R-16 — 설문 주인은 자기 설문에서만
+  it("주인: 남의 설문 응답은 지우지 못한다", async () => {
+    const theirs = await surveyWith(["i@example.com"], { ownerId: otherId });
+    const found = await findRespondent(service, secret, theirs, "i@example.com");
+    await expect(
+      deleteOwnRespondent(service, adminId, { surveyId: theirs, respondentId: found!.id, reason: "본인 요청", actorEmail: "admin-test@example.com" }),
+    ).rejects.toThrow(/찾을 수 없/);
+    expect(await count("responses", theirs)).toBe(1);
+    await deleteOwnRespondent(service, otherId, { surveyId: theirs, respondentId: found!.id, reason: "본인 요청", actorEmail: "other@example.com" });
+    expect(await count("responses", theirs)).toBe(0);
+    await service.from("audit_logs").delete().eq("actor_email", "other@example.com");
   });
 });
