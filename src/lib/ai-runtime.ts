@@ -21,7 +21,7 @@ export function getAi(purpose: string): AiClient {
   }
   const limits = readLimits();
   return createGuardedAi(
-    createGeminiAi({ apiKey, model: process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL }),
+    createGeminiAi({ apiKey, model: process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL, timeoutMs: Number(process.env.GEMINI_TIMEOUT_MS) || undefined }),
     createSupabaseUsageStore(createAdminClient()),
     { rpm: limits.geminiRpm, rpd: limits.geminiRpd },
     purpose,
