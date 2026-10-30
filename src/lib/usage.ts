@@ -3,6 +3,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 // 무료 한도 가드(ADR 0018) — 부르기 전에 usage_events로 세고, 넘으면 부르지 않는다.
 // 하루는 제공자의 초기화 시각을 모르므로 "최근 24시간"으로 센다.
 // 세기와 부르기 사이가 원자적이지 않아 동시에 부르면 1건 넘을 수 있다(관리자 1명이라 받아들임).
+// 부르기 전에 error로 먼저 남기고 성공하면 ok로 고친다 — 끝난 뒤 남기면 호출 중 프로세스가 죽을 때
+// (메모리 부족 종료, 함수 시간 초과) 제공자만 세고 우리는 세지 않는다(2026-10-30 실측: 우리 15건, Gemini 20건).
 
 export type UsageKind = "ai" | "mail";
 export type UsageStatus = "ok" | "error" | "blocked";
@@ -17,7 +19,8 @@ export interface UsageEvent {
 export interface UsageStore {
   // since 이후 실제로 부른(blocked 아닌) 건수와 그중 가장 오래된 시각
   window(kind: UsageKind, since: Date): Promise<{ count: number; oldest: Date | null }>;
-  record(event: UsageEvent): Promise<void>;
+  record(event: UsageEvent): Promise<string>; // 행 id
+  settle(id: string, status: UsageStatus): Promise<void>;
 }
 
 export interface Limit {
@@ -54,14 +57,10 @@ export async function withLimit<T>(
       throw new LimitExceededError(event.kind, Math.max(1, Math.ceil((freeAt - t) / 1000)));
     }
   }
-  try {
-    const result = await call();
-    await store.record({ ...event, status: "ok" });
-    return result;
-  } catch (error) {
-    await store.record({ ...event, status: "error" });
-    throw error;
-  }
+  const id = await store.record({ ...event, status: "error" });
+  const result = await call();
+  await store.settle(id, "ok");
+  return result;
 }
 
 export function readLimits(env: Record<string, string | undefined> = process.env) {
@@ -95,7 +94,16 @@ export function createSupabaseUsageStore(db: SupabaseClient): UsageStore {
       return { count: count ?? 0, oldest: data?.[0] ? new Date(data[0].created_at) : null };
     },
     async record({ kind, purpose, status, surveyId }) {
-      await db.from("usage_events").insert({ kind, purpose, status, survey_id: surveyId ?? null }).throwOnError();
+      const { data } = await db
+        .from("usage_events")
+        .insert({ kind, purpose, status, survey_id: surveyId ?? null })
+        .select("id")
+        .single()
+        .throwOnError();
+      return String(data.id);
+    },
+    async settle(id, status) {
+      await db.from("usage_events").update({ status }).eq("id", id).throwOnError();
     },
   };
 }

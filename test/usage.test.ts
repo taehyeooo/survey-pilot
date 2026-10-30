@@ -69,6 +69,36 @@ describe("AI 호출 한도", () => {
     await expect(ai.generateJson("b")).resolves.toBe(2);
   });
 
+  // survey-pilot#R-27 — 끝난 뒤 기록하면, 호출 중 프로세스가 죽을 때(메모리 부족·함수 시간 초과) 제공자만 센다
+  it("부르기 전에 기록한다 — 호출 중에는 error로 이미 한 건, 성공하면 ok로 바뀐다", async () => {
+    const store = createMemoryUsageStore();
+    let during: string[] = [];
+    const inner = {
+      async generateJson() {
+        during = store.events.map((e) => e.status);
+        return { a: 1 };
+      },
+    };
+    await createGuardedAi(inner, store, { rpm: 5, rpd: 20 }, "test").generateJson("x");
+    expect(during).toEqual(["error"]);
+    expect(store.events.map((e) => e.status)).toEqual(["ok"]);
+  });
+
+  // survey-pilot#R-27
+  it("하루 한도 1이면 첫 호출이 끝나기 전 두 번째 호출은 막힌다", async () => {
+    const store = createMemoryUsageStore();
+    let release!: () => void;
+    const inner = {
+      generateJson: () => new Promise<unknown>((resolve) => (release = () => resolve({ a: 1 }))),
+    };
+    const ai = createGuardedAi(inner, store, { rpm: 5, rpd: 1 }, "test");
+    const first = ai.generateJson("1");
+    await new Promise((r) => setTimeout(r, 0)); // 첫 호출이 기록까지 가게
+    await expect(ai.generateJson("2")).rejects.toBeInstanceOf(LimitExceededError);
+    release();
+    await expect(first).resolves.toEqual({ a: 1 });
+  });
+
   // survey-pilot#R-28
   it("Gemini 오류는 error로 남기고 그대로 던진다", async () => {
     const store = createMemoryUsageStore();

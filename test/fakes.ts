@@ -43,6 +43,10 @@ export function createMemoryUsageStore(now: () => number = Date.now): UsageStore
     },
     async record(event) {
       events.push({ ...event, createdAt: now() });
+      return String(events.length - 1);
+    },
+    async settle(id, status) {
+      events[Number(id)].status = status;
     },
   };
 }
