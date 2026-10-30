@@ -279,21 +279,26 @@ function Body({
   if (survey.status === "published" && survey.slug) {
     const link = `${origin}/s/${survey.slug}`;
     return (
-      <div className="flex flex-col gap-8">
-        <ShareBox link={link} shareText={buildShareText(survey.share_message ?? "", link, minutes)} />
-        {reportSection}
-        <ResultsSection surveyId={survey.id} stats={stats} responseCount={responses} target={survey.target_responses} closesAt={survey.closes_at} live />
-        <ResponseModeForm survey={survey} />
-        <SettingsForm survey={survey} />
-        {responses > 0 && <DeleteRequest surveyId={survey.id} />}
-        <form action={closeNow.bind(null, survey.id)} className="flex flex-col gap-2">
-          <p className="text-sm text-muted">목표 응답 수나 마감일에 닿으면 자동으로 마감돼요. 지금 끝내려면:</p>
-          <SubmitButton variant="secondary" pendingSteps={["마감하는 중…"]}>
-            지금 마감하기
-          </SubmitButton>
-        </form>
-        <DesignDetails survey={survey} />
-        <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={minutes} editable={canEdit} />
+      // 넓은 화면은 2단: 왼쪽은 보는 것(리포트·결과·문항), 오른쪽은 하는 것(공유·설정·마감)
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+        <div className="flex min-w-0 flex-col gap-8">
+          {reportSection}
+          <ResultsSection surveyId={survey.id} stats={stats} responseCount={responses} target={survey.target_responses} closesAt={survey.closes_at} live />
+          <DesignDetails survey={survey} />
+          <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={minutes} editable={canEdit} />
+        </div>
+        <aside className="flex flex-col gap-6 lg:sticky lg:top-20 lg:order-none order-first">
+          <ShareBox link={link} shareText={buildShareText(survey.share_message ?? "", link, minutes)} />
+          <ResponseModeForm survey={survey} />
+          <SettingsForm survey={survey} />
+          {responses > 0 && <DeleteRequest surveyId={survey.id} />}
+          <form action={closeNow.bind(null, survey.id)} className="flex flex-col gap-2">
+            <p className="text-sm text-muted">목표 응답 수나 마감일에 닿으면 자동으로 마감돼요. 지금 끝내려면:</p>
+            <SubmitButton variant="secondary" pendingSteps={["마감하는 중…"]}>
+              지금 마감하기
+            </SubmitButton>
+          </form>
+        </aside>
       </div>
     );
   }
@@ -391,7 +396,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
 
 export default function SurveyPage(props: PageProps<"/app/surveys/[id]">) {
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8">
+    <main className="mx-auto w-full max-w-6xl px-6 py-8">
       <Link href="/app" className="mb-4 inline-flex min-h-11 items-center text-sm text-muted hover:underline">
         ← 내 설문
       </Link>

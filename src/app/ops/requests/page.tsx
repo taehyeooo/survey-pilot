@@ -18,7 +18,7 @@ async function Requests() {
 
 export default function OpsRequestsPage() {
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8">
+    <main className="mx-auto w-full max-w-3xl px-6 py-10">
       <OpsNav current="requests" />
       <Suspense fallback={<p className="py-16 text-center text-muted">불러오는 중…</p>}>
         <Requests />

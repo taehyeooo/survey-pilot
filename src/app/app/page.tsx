@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { requireMember, requireSignedIn } from "@/lib/auth";
-import { isOperator } from "@/lib/operator";
+import { requireMember } from "@/lib/auth";
 import { closeOverdue } from "@/lib/submit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { groupByTab, listSurveys, type SurveyListItem, type Tab } from "@/lib/surveys";
-import { archive, logout, restore } from "./actions";
+import { archive, restore } from "./actions";
 import { ProblemForm } from "./new/problem-form";
 import { StageBar, stageOf } from "./stage-bar";
 
@@ -30,7 +29,7 @@ function ToggleArchive({ survey }: { survey: SurveyListItem }) {
 
 function CardGrid({ items }: { items: SurveyListItem[] }) {
   return (
-    <ul className="grid gap-3 sm:grid-cols-2">
+    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((s) => (
         <li key={s.id} className="flex flex-col rounded-box bg-surface p-4">
           <div className="flex items-start justify-between gap-2">
@@ -84,33 +83,10 @@ async function SurveyList() {
   );
 }
 
-// 운영자에게만 운영 페이지로 가는 길(multi-user R-6·R-10). 운영 페이지 자체는 /ops에서 다시 확인한다.
-async function OpsLink() {
-  const { user } = await requireSignedIn();
-  if (!(await isOperator(createAdminClient(), user.email, process.env.ADMIN_EMAIL))) return null;
-  return (
-    <Link href="/ops" className="inline-flex min-h-11 items-center rounded-box px-3 text-sm text-muted hover:bg-surface">
-      운영
-    </Link>
-  );
-}
-
 export default function AdminPage() {
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-8">
-      <header className="chrome-bar -mx-4 mb-6 flex items-center justify-between px-4 py-2">
-        <h1 className="text-xl font-semibold">내 설문</h1>
-        <div className="flex items-center gap-1">
-          <Suspense>
-            <OpsLink />
-          </Suspense>
-          <form action={logout}>
-            <button type="submit" className="min-h-11 rounded-box px-3 text-sm text-muted hover:bg-surface">
-              로그아웃
-            </button>
-          </form>
-        </div>
-      </header>
+    <main className="mx-auto w-full max-w-6xl px-6 py-10">
+      <h1 className="mb-8 text-3xl font-bold">내 설문</h1>
       <Suspense fallback={<p className="py-16 text-center text-muted">불러오는 중…</p>}>
         <SurveyList />
       </Suspense>

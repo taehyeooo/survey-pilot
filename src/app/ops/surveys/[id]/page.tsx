@@ -44,7 +44,7 @@ async function Detail({ params, searchParams }: PageProps<"/ops/surveys/[id]">) 
 
 export default function OpsSurveyPage(props: PageProps<"/ops/surveys/[id]">) {
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8">
+    <main className="mx-auto w-full max-w-3xl px-6 py-10">
       <OpsNav current="surveys" />
       <Link href="/ops/surveys" className="mb-4 inline-flex min-h-11 items-center text-sm text-muted hover:underline">
         ← 설문
