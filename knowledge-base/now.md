@@ -11,7 +11,7 @@
 ## 다음 할 일
 1. 사용자: Vercel 가입·`taehyeooo/survey-pilot` Import·환경변수(.env.local에서 SUPABASE_DB_URL 빼고, HASH_SECRET·CRON_SECRET은 로컬과 같은 값) → 배포 주소 알려 주기. 15단계까지 머지됨
 2. plan 16단계: 배포 뒤 Supabase Auth Site URL·Redirect URL에 배포 주소, 실제 로그인·응답·크론 확인
-3. plan 4단계(샘플 검증): Claude가 만든 30개(사용자 요청, 2026-10-30). `gemini-3.8-flash`는 무료 하루 20회를 다 썼고 호출 하나가 약 2분 — 하루 1000회인 모델을 찾아 바꾼 뒤 다시 실행
+3. plan 4단계(샘플 검증): 6개 끝([결과](../docs/samples/2026-10-30-run.md)) — 남은 24개, 사용자 판정, 리포트·주관식·주입 문장 검증. 남은 문제: 점검이 두 가지 묻기를 놓침
 4. 결정 필요: `CONTACT_EMAIL`. 디자인 작업 때 apple-design 스킬 설치 여부
 
 ## 정해 둔 것

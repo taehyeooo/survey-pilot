@@ -1,8 +1,8 @@
 ---
 title: 서베이 파일럿
-version: 4
+version: 5
 status: active
-updated: 2026-10-29
+updated: 2026-10-30
 owner: taehyeooo
 related: [docs/specs/2026-10-29-survey-pilot-prd.md, knowledge-base/decisions/0017-respondent-privacy.md, knowledge-base/decisions/0018-free-tier-limit-guard.md, knowledge-base/decisions/0019-respondents-via-server-only.md, "#1"]
 ---
@@ -113,7 +113,7 @@ related: [docs/specs/2026-10-29-survey-pilot-prd.md, knowledge-base/decisions/00
 
 ### 6. 무료 한도·안전
 
-- **R-27** 6.1 AI 호출 한도 — Gemini를 부르기 전에, 서비스는 최근 1분·24시간 호출 수를 세어 `GEMINI_RPM`·`GEMINI_RPD`(기본 5·20)를 넘으면 부르지 않는다.
+- **R-27** 6.1 AI 호출 한도 — Gemini를 부르기 전에, 서비스는 최근 1분·24시간 호출 수를 세어 `GEMINI_RPM`·`GEMINI_RPD`(기본 15·500, `gemini-3.5-flash-lite` 무료 한도)를 넘으면 부르지 않는다.
   - 데이터: `usage_events`(kind `ai`).
   - 확인: 한도 2로 두면 3번째 호출이 Gemini를 부르지 않고 `blocked`로 기록된다.
 - **R-28** 6.2 AI 실패 처리 — 한도 초과·오류·출력 스키마 실패가 나면, 서비스는 설문 상태와 입력을 그대로 두고 "AI 사용 한도에 도달했어요. 약 n분 뒤 다시 시도해 주세요" 또는 오류 안내와 다시 시도 버튼을 보여 준다. 스키마 실패는 1번만 자동 재시도한다.
@@ -135,7 +135,7 @@ related: [docs/specs/2026-10-29-survey-pilot-prd.md, knowledge-base/decisions/00
 |---|---|---|---|
 | 웹·배포 | Next.js + Vercel Hobby | 크론 하루 1회로 알려짐(미확인) | 마감은 접근 시 확인 + 크론 |
 | DB·관리자 인증 | Supabase Free | 기본 메일은 시간당 약 2통(출처마다 다름) → 관리자 매직링크에만 사용 | — |
-| AI | Gemini API 무료 티어 | 출처마다 하루 20~1,500회로 다름(미확인), 무료 입력은 제품 개선에 쓰일 수 있다고 알려짐(약관 원문 미확인) | `GEMINI_RPM`·`GEMINI_RPD` 기본 5·20 (R-27) |
+| AI | Gemini API 무료 티어 | 모델별로 다름 — AI Studio 확인(2026-10-30): gemini-3.8-flash 분당 5·하루 20, gemini-3.5-flash-lite 분당 15·하루 500, 무료 입력은 제품 개선에 쓰일 수 있다고 알려짐(약관 원문 미확인) | 기본 모델 `gemini-3.5-flash-lite`, `GEMINI_RPM`·`GEMINI_RPD` 기본 15·500 (R-27) |
 | 인증번호 메일 | Gmail SMTP(앱 비밀번호) | 하루 약 500통으로 알려짐(미확인) | `MAIL_DAILY_LIMIT` 기본 100 (R-29) |
 
 설문 하나의 AI 호출: 설계 1 + 생성 1 + 점검 1 + 리포트 1 = 약 4회(다시 만들기 제외).

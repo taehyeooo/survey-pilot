@@ -2,8 +2,8 @@
 title: 서베이 파일럿 구현 계획
 version: 1
 status: active
-updated: 2026-10-29
-based_on: docs/specs/2026-10-29-survey-pilot.md v4
+updated: 2026-10-30
+based_on: docs/specs/2026-10-29-survey-pilot.md v5
 issue: "#1"
 ---
 
@@ -51,7 +51,7 @@ issue: "#1"
 ## 사람 손 (시작 전에)
 - [ ] Supabase 프로젝트(무료) → URL·anon·service key를 `.env.local`에 (1단계부터 필요)
 - [ ] 샘플 문제 정의 10개 작성 + Claude 초안 20개 검토 (4단계 전)
-- [ ] Google AI Studio Gemini 키 + 실제 RPM·RPD 확인 (4단계 전)
+- [x] Google AI Studio Gemini 키 + 실제 RPM·RPD 확인 (4단계 전) — 2026-10-30, [샘플 결과](../samples/2026-10-30-run.md)
 - [ ] 발송용 Gmail 2단계 인증·앱 비밀번호 (10단계 전)
 - [ ] `ADMIN_EMAIL`·`CONTACT_EMAIL` 정하기 (5단계 전)
 - [ ] Vercel 가입·GitHub 연결·환경변수 (16단계 전)
