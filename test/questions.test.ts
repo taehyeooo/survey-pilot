@@ -58,6 +58,11 @@ describe("AI 출력 검사", () => {
     expect(() => parseQuestions({ questions: [q(1), q(1)] }, 2)).toThrow(/가설 2/);
   });
 
+  // survey-pilot#R-10 — 2026-10-30 gemini-3.5-flash-lite가 {"questions":[…]} 대신 배열만 두 번 연속 돌려줌
+  it("questions로 감싸지 않은 배열도 받는다", () => {
+    expect(parseQuestions(ok.questions, 2)).toEqual(parseQuestions(ok, 2));
+  });
+
   // survey-pilot#R-10
   it("객관식은 선택지 2개 이상, 척도·주관식은 선택지를 비운다, 없는 가설 번호는 거부", () => {
     expect(() => parseQuestions({ questions: [{ ...q(1), options: ["하나"] }] }, 1)).toThrow();
