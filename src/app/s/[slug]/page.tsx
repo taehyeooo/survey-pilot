@@ -17,7 +17,7 @@ async function PublicSurvey({ params }: PageProps<"/s/[slug]">) {
   if (!survey) notFound();
   return (
     <>
-      <h1 className="text-xl font-semibold">설문에 참여해 주세요</h1>
+      <h1 className="text-headline">설문에 참여해 주세요</h1>
       <p className="mt-3 mb-8 leading-7">{survey.intro}</p>
       {isClosed(survey) ? (
         <p role="status" className="card p-4">

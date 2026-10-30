@@ -5,6 +5,7 @@ import { closeOverdue } from "@/lib/submit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { groupByTab, listSurveys, type SurveyListItem, type Tab } from "@/lib/surveys";
 import { archive, restore } from "./actions";
+import { CardsSkeleton } from "./skeleton";
 import { StageBar, stageOf } from "./stage-bar";
 
 // 내 설문 목록: 제목 옆 "새 설문 만들기"(상단 메뉴의 새 설문과 같은 곳), 묶음별 카드에 단계 진행(결정 27·30).
@@ -17,7 +18,7 @@ const SECTIONS: { key: Tab; label: string }[] = [
 function ToggleArchive({ survey }: { survey: SurveyListItem }) {
   const archived = Boolean(survey.archived_at);
   return (
-    <form action={archived ? restore.bind(null, survey.id) : archive.bind(null, survey.id)}>
+    <form action={archived ? restore.bind(null, survey.id) : archive.bind(null, survey.id)} className="relative z-10">
       <button type="submit" className="min-h-11 shrink-0 rounded-box px-3 text-sm whitespace-nowrap text-muted hover:bg-line/50">
         {archived ? "복원" : "보관"}
       </button>
@@ -34,8 +35,8 @@ function CardGrid({ items }: { items: SurveyListItem[] }) {
   return (
     <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((s) => (
-        <li key={s.id} className="card flex flex-col overflow-hidden">
-          <Link href={`/app/surveys/${s.id}`} className={`flex min-h-28 flex-col gap-2 px-5 pt-5 pb-4 ${tintOf(s.id)}`}>
+        <li key={s.id} className="card relative flex flex-col overflow-hidden transition-shadow hover:shadow-md">
+          <Link href={`/app/surveys/${s.id}`} className={`flex min-h-28 flex-col gap-2 px-5 pt-5 pb-4 after:absolute after:inset-0 ${tintOf(s.id)}`}>
             <span className="text-xs font-medium text-muted">{STATUS[s.status] ?? s.status}</span>
             <span className="line-clamp-2 text-lg leading-snug font-semibold">{s.problem}</span>
           </Link>
@@ -66,7 +67,7 @@ async function SurveyList() {
         <div className="flex flex-col items-center gap-4 card px-6 py-16 text-center">
           <p className="text-lg font-semibold">아직 설문이 없어요</p>
           <p className="text-muted">풀고 싶은 문제 한 줄이면 AI가 조사 설계와 문항을 먼저 짜 드려요.</p>
-          <Link href="/app/new" className="inline-flex min-h-11 items-center rounded-box bg-accent px-5 font-medium text-on-accent">
+          <Link href="/app/new" className="btn btn-primary">
             첫 설문 만들기
           </Link>
         </div>
@@ -74,7 +75,7 @@ async function SurveyList() {
       {SECTIONS.map(({ key, label }) =>
         groups[key].length === 0 ? null : (
           <section key={key} aria-labelledby={`sec-${key}`}>
-            <h2 id={`sec-${key}`} className="mb-3 text-sm font-medium text-muted">
+            <h2 id={`sec-${key}`} className="mb-4 text-eyebrow">
               {label} {groups[key].length}
             </h2>
             <CardGrid items={groups[key]} />
@@ -97,12 +98,12 @@ export default function AdminPage() {
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-10">
       <div className="mb-8 flex items-center justify-between gap-4">
-        <h1 className="text-4xl font-bold">내 설문</h1>
-        <Link href="/app/new" className="inline-flex min-h-11 items-center rounded-box bg-accent px-5 font-medium text-on-accent">
+        <h1 className="text-headline">내 설문</h1>
+        <Link href="/app/new" className="btn btn-primary">
           새 설문 만들기
         </Link>
       </div>
-      <Suspense fallback={<p className="py-16 text-center text-muted">불러오는 중…</p>}>
+      <Suspense fallback={<CardsSkeleton />}>
         <SurveyList />
       </Suspense>
       <footer className="mt-16 border-t border-line pt-4">

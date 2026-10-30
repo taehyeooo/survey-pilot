@@ -14,7 +14,7 @@ export interface PublicQuestion {
   required: boolean;
 }
 
-const button = "min-h-11 w-full rounded-box bg-accent font-medium text-on-accent disabled:opacity-60";
+const button = "btn btn-primary w-full";
 
 function EmailStep({ slug, contact, state, action, pending }: { slug: string; contact: string | null; state: CodeState; action: (f: FormData) => void; pending: boolean }) {
   return (

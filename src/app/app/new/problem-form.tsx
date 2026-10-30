@@ -44,7 +44,7 @@ export function ProblemForm({ hero = false }: { hero?: boolean }) {
         type="submit"
         disabled={pending}
         aria-busy={pending}
-        className="min-h-11 rounded-box bg-accent font-medium text-on-accent disabled:opacity-60"
+        className="btn btn-primary"
       >
         <span aria-live="polite">{pending ? step : "설문 설계 시작"}</span>
       </button>

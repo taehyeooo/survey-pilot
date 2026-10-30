@@ -119,9 +119,9 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
   if (!report?.content.headline) {
     return (
       <div className="flex flex-col gap-4 card p-6">
-        <h1 className="text-2xl font-bold">{survey.problem}</h1>
+        <h1 className="text-headline">{survey.problem}</h1>
         <p className="text-muted">결과 보고서는 리포트를 만든 뒤에 볼 수 있어요. 전에 만든 리포트라면 설문 화면에서 리포트를 다시 만들어 주세요.</p>
-        <Link href={`/app/surveys/${id}`} className="inline-flex min-h-11 items-center self-start rounded-box bg-accent px-5 font-medium text-on-accent">
+        <Link href={`/app/surveys/${id}`} className="btn btn-primary self-start">
           설문 화면으로
         </Link>
       </div>
@@ -158,7 +158,7 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
           <p className="text-sm font-medium text-muted">
             {survey.problem} · {report.kind === "final" ? "최종" : "중간"} 결과{report.is_tentative ? " (목표 응답 수 전 — 잠정)" : ""}
           </p>
-          <h1 className="text-3xl leading-tight font-bold sm:text-4xl">{content.headline}</h1>
+          <h1 className="text-headline">{content.headline}</h1>
           <p className="leading-7 text-muted">{content.answer}</p>
         </div>
         <dl className="grid grid-cols-2 gap-3 lg:grid-cols-1">
@@ -187,7 +187,7 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
 
       {/* 2. 핵심 문제 — 큰 숫자 하나씩 */}
       <section aria-labelledby="problems" className="flex flex-col gap-3">
-        <h2 id="problems" className="text-sm font-semibold text-muted">
+        <h2 id="problems" className="text-eyebrow">
           드러난 핵심 문제
         </h2>
         <ol className={`grid gap-4 ${content.key_problems.length >= 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"}`}>
@@ -208,7 +208,7 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
       <div className="grid gap-4 lg:grid-cols-2">
         <section aria-labelledby="verdicts" className="flex flex-col gap-3 card p-5">
           <div className="flex items-baseline justify-between gap-3">
-            <h2 id="verdicts" className="font-semibold">
+            <h2 id="verdicts" className="text-lg font-semibold">
               가설 판정
             </h2>
             <span className="text-sm text-muted">
@@ -234,7 +234,7 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
           </ul>
         </section>
         <section aria-labelledby="highlights" className="flex flex-col gap-3 card p-5">
-          <h2 id="highlights" className="font-semibold">
+          <h2 id="highlights" className="text-lg font-semibold">
             문항별 대표 결과
           </h2>
           <ul className="flex flex-col gap-3">
@@ -261,7 +261,7 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
       <div className="grid gap-4 lg:grid-cols-2">
         {view.themes.length > 0 && (
           <section aria-labelledby="themes" className="flex flex-col gap-3 card p-5">
-            <h2 id="themes" className="font-semibold">
+            <h2 id="themes" className="text-lg font-semibold">
               주관식에서 나온 이야기
             </h2>
             <ul className="flex flex-col gap-4">
@@ -284,7 +284,7 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
           </section>
         )}
         <section aria-labelledby="next" className="flex flex-col gap-3 card p-5">
-          <h2 id="next" className="font-semibold">
+          <h2 id="next" className="text-lg font-semibold">
             다음 행동
           </h2>
           <ol className="flex flex-col gap-3">

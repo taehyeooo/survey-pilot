@@ -35,12 +35,12 @@ export function ReportSection({
   return (
     <section aria-labelledby="report-title" className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id="report-title" className="text-lg font-semibold">
+        <h2 id="report-title" className="text-title">
           문제에 대한 답
         </h2>
         {report?.content.headline && (
           // 한눈에 평가하는 결과 보고서(R-33) — 결론·핵심 문제·가설 판정·문항별 대표 결과
-          <Link href={`/app/surveys/${surveyId}/report`} className="inline-flex min-h-11 items-center rounded-box bg-accent px-4 text-sm font-medium text-on-accent">
+          <Link href={`/app/surveys/${surveyId}/report`} className="btn btn-primary text-sm">
             결과 보고서 보기
           </Link>
         )}

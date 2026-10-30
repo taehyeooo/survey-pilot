@@ -19,7 +19,7 @@ async function Overview() {
   return (
     <div className="flex flex-col gap-8">
       <section aria-labelledby="usage" className="flex flex-col gap-3">
-        <h2 id="usage" className="text-sm font-medium text-muted">
+        <h2 id="usage" className="text-eyebrow">
           최근 24시간 사용량
         </h2>
         <div className="grid grid-cols-2 gap-3">
@@ -28,7 +28,7 @@ async function Overview() {
         </div>
       </section>
       <section aria-labelledby="ranking" className="flex flex-col gap-3">
-        <h2 id="ranking" className="text-sm font-medium text-muted">
+        <h2 id="ranking" className="text-eyebrow">
           사용자별
         </h2>
         {unattributed > 0 && <p className="text-sm text-muted">사용자가 남지 않은 기록 {unattributed}건(사용자를 남기기 전 기록이나 탈퇴한 사용자)</p>}

@@ -13,7 +13,7 @@ export function OpsNav({ current }: { current: "overview" | "users" | "surveys" 
   );
   return (
     <header className="mb-8 flex flex-col gap-4">
-      <h1 className="text-3xl font-bold">운영</h1>
+      <h1 className="text-headline">운영</h1>
       <nav aria-label="운영 메뉴" className="flex flex-wrap items-center gap-1 border-b border-line pb-2">
         {item("overview", "/ops", "개요")}
         {item("users", "/ops/users", "사용자")}

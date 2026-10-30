@@ -138,7 +138,7 @@ export function QuestionsSection({
   return (
     <section id="questions" aria-labelledby="questions-title" className="flex flex-col gap-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="questions-title" className="text-lg font-semibold">
+        <h2 id="questions-title" className="text-title">
           문항 {questions.length}개
         </h2>
         <p className={`text-sm ${seconds > targetMinutes * 60 ? "text-danger" : "text-muted"}`}>

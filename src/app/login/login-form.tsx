@@ -52,7 +52,7 @@ export function LoginForm({ notice, info }: { notice?: string; info?: string }) 
   return (
     <form action={action} className="flex flex-col gap-3">
       <input type="hidden" name="intent" value={mode} />
-      <h2 className="text-lg font-semibold tracking-title">{TITLES[mode]}</h2>
+      <h2 className="text-title">{TITLES[mode]}</h2>
       {message && (
         <p role="status" className="card p-3 text-sm">
           {message}
@@ -119,7 +119,7 @@ export function LoginForm({ notice, info }: { notice?: string; info?: string }) 
           인증번호 시간이 지났어요. 아래 &ldquo;인증번호 다시 받기&rdquo;를 눌러 주세요.
         </p>
       )}
-      <button type="submit" disabled={pending || expired} className={`h-11 rounded-box bg-accent font-medium text-on-accent disabled:opacity-50`}>
+      <button type="submit" disabled={pending || expired} className="btn btn-primary">
         {pending ? SUBMITS[mode][1] : SUBMITS[mode][0]}
       </button>
       <div className="flex flex-wrap gap-x-4">

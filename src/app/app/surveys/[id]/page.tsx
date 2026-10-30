@@ -11,6 +11,7 @@ import { latestReport, type ReportRow } from "@/lib/report";
 import { loadResults, type QuestionStat } from "@/lib/results";
 import { closeOverdue } from "@/lib/submit";
 import { DemoNotice } from "../../demo-notice";
+import { PageSkeleton } from "../../skeleton";
 import { StageBar, stageOf } from "../../stage-bar";
 import { AI_STEPS } from "../../ai-steps";
 import { SubmitButton } from "../../submit-button";
@@ -79,7 +80,7 @@ function ClarifyForm({ survey }: { survey: Survey }) {
 function Card({ index, title, children }: { index: number; title: string; children: React.ReactNode }) {
   return (
     <section aria-labelledby={`group-${index}`} className="flex flex-col gap-4 card p-5">
-      <h2 id={`group-${index}`} className="text-sm font-medium text-muted">
+      <h2 id={`group-${index}`} className="text-eyebrow">
         {index}. {title}
       </h2>
       {children}
@@ -388,7 +389,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
         <span className={`self-start rounded-full px-2.5 py-0.5 text-sm font-medium ${STATUS_TONE[survey.status] ?? "bg-surface text-muted"}`}>
           {STATUS_LABEL[survey.status] ?? survey.status}
         </span>
-        <h1 className="text-3xl leading-tight font-bold">{survey.problem}</h1>
+        <h1 className="text-headline">{survey.problem}</h1>
         <StageBar current={stageOf(survey)} animate={moved === "1"} className="mt-2" />
       </header>
       {isDemoAi() && <DemoNotice />}
@@ -414,7 +415,7 @@ export default function SurveyPage(props: PageProps<"/app/surveys/[id]">) {
       <Link href="/app" className="mb-4 inline-flex min-h-11 items-center text-sm text-muted hover:underline">
         ← 내 설문
       </Link>
-      <Suspense fallback={<p className="text-muted">불러오는 중…</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <SurveyDesign {...props} />
       </Suspense>
     </main>

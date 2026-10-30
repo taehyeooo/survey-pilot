@@ -116,7 +116,7 @@ export function ResultsSection({
   return (
     <section aria-labelledby="results-title" className="flex flex-col gap-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="results-title" className="text-lg font-semibold">
+        <h2 id="results-title" className="text-title">
           결과
         </h2>
         {responseCount > 0 && (
