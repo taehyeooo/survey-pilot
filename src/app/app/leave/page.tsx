@@ -23,7 +23,7 @@ async function Leave({ searchParams }: PageProps<"/app/leave">) {
         <li>진행 중인 설문의 응답 링크도 바로 열리지 않아요.</li>
         <li>필요한 결과는 먼저 설문 화면에서 CSV로 받아 두세요.</li>
       </ul>
-      <form action={leave} className="flex flex-col gap-3 rounded-box border border-line p-4">
+      <form action={leave} className="flex flex-col gap-3 rounded-box bg-surface p-4">
         <label htmlFor="confirm" className="text-sm font-medium">
           확인을 위해 &ldquo;{LEAVE_WORD}&rdquo;를 적어 주세요
         </label>

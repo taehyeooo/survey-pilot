@@ -70,7 +70,7 @@ function ClarifyForm({ survey }: { survey: Survey }) {
 
 function Card({ index, title, children }: { index: number; title: string; children: React.ReactNode }) {
   return (
-    <section aria-labelledby={`group-${index}`} className="flex flex-col gap-4 rounded-box border border-line p-5">
+    <section aria-labelledby={`group-${index}`} className="flex flex-col gap-4 rounded-box bg-surface p-5">
       <h2 id={`group-${index}`} className="text-sm font-medium text-muted">
         {index}. {title}
       </h2>
@@ -185,7 +185,7 @@ function ConfirmedSummary({ survey }: { survey: Survey }) {
 // 게시 뒤에도 고칠 수 있는 칸(R-14, R-15)
 function SettingsForm({ survey }: { survey: Survey }) {
   return (
-    <details className="rounded-box border border-line p-4">
+    <details className="rounded-box bg-surface p-4">
       <summary className="flex min-h-11 cursor-pointer items-center font-medium">소개글·공유 메시지·마감·목표 바꾸기</summary>
       <form action={saveSettings.bind(null, survey.id)} className="mt-3 flex flex-col gap-4">
         <label className="flex flex-col gap-2">
@@ -222,7 +222,7 @@ function SettingsForm({ survey }: { survey: Survey }) {
 // 응답 방식(ADR 0017 v2): 기본은 이메일 없이 바로 응답, 켜면 한 사람 한 번만(이메일 인증).
 function ResponseModeForm({ survey }: { survey: Survey }) {
   return (
-    <form action={saveResponseMode.bind(null, survey.id)} className="flex flex-col gap-3 rounded-box border border-line p-4">
+    <form action={saveResponseMode.bind(null, survey.id)} className="flex flex-col gap-3 rounded-box bg-surface p-4">
       <label className="flex min-h-11 items-start gap-3">
         <input type="checkbox" name="require_email" defaultChecked={survey.require_email} className="mt-1 size-5" />
         <span className="flex flex-col gap-1">
@@ -241,7 +241,7 @@ function ResponseModeForm({ survey }: { survey: Survey }) {
 
 function DesignDetails({ survey }: { survey: Survey }) {
   return (
-    <details className="rounded-box border border-line p-4">
+    <details className="rounded-box bg-surface p-4">
       <summary className="flex min-h-11 cursor-pointer items-center font-medium">확인한 설계 보기</summary>
       <div className="mt-3">
         <ConfirmedSummary survey={survey} />
@@ -279,21 +279,26 @@ function Body({
   if (survey.status === "published" && survey.slug) {
     const link = `${origin}/s/${survey.slug}`;
     return (
-      <div className="flex flex-col gap-8">
-        <ShareBox link={link} shareText={buildShareText(survey.share_message ?? "", link, minutes)} />
-        {reportSection}
-        <ResultsSection surveyId={survey.id} stats={stats} responseCount={responses} target={survey.target_responses} closesAt={survey.closes_at} live />
-        <ResponseModeForm survey={survey} />
-        <SettingsForm survey={survey} />
-        {responses > 0 && <DeleteRequest surveyId={survey.id} />}
-        <form action={closeNow.bind(null, survey.id)} className="flex flex-col gap-2">
-          <p className="text-sm text-muted">목표 응답 수나 마감일에 닿으면 자동으로 마감돼요. 지금 끝내려면:</p>
-          <SubmitButton variant="secondary" pendingSteps={["마감하는 중…"]}>
-            지금 마감하기
-          </SubmitButton>
-        </form>
-        <DesignDetails survey={survey} />
-        <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={minutes} editable={canEdit} />
+      // 넓은 화면은 2단: 왼쪽은 보는 것(리포트·결과·문항), 오른쪽은 하는 것(공유·설정·마감)
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+        <div className="flex min-w-0 flex-col gap-8">
+          {reportSection}
+          <ResultsSection surveyId={survey.id} stats={stats} responseCount={responses} target={survey.target_responses} closesAt={survey.closes_at} live />
+          <DesignDetails survey={survey} />
+          <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={minutes} editable={canEdit} />
+        </div>
+        <aside className="flex flex-col gap-6 lg:sticky lg:top-20 lg:order-none order-first">
+          <ShareBox link={link} shareText={buildShareText(survey.share_message ?? "", link, minutes)} />
+          <ResponseModeForm survey={survey} />
+          <SettingsForm survey={survey} />
+          {responses > 0 && <DeleteRequest surveyId={survey.id} />}
+          <form action={closeNow.bind(null, survey.id)} className="flex flex-col gap-2">
+            <p className="text-sm text-muted">목표 응답 수나 마감일에 닿으면 자동으로 마감돼요. 지금 끝내려면:</p>
+            <SubmitButton variant="secondary" pendingSteps={["마감하는 중…"]}>
+              지금 마감하기
+            </SubmitButton>
+          </form>
+        </aside>
       </div>
     );
   }
@@ -372,7 +377,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
     <>
       <StageBar current={stageOf(survey)} animate={moved === "1"} className="mb-8" />
       {isDemoAi() && <DemoNotice />}
-      <p className="mb-6 rounded-box border border-line p-4 leading-7">{survey.problem}</p>
+      <p className="mb-6 rounded-box bg-surface p-4 leading-7">{survey.problem}</p>
       {survey.taken_down_at && (
         // 운영자가 내린 설문(multi-user R-14) — 주인은 되돌릴 수 없다. 사유는 보이지 않는다.
         <p role="status" className="mb-6 rounded-box bg-danger-bg p-3 text-sm text-danger">
@@ -391,7 +396,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
 
 export default function SurveyPage(props: PageProps<"/app/surveys/[id]">) {
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8">
+    <main className="mx-auto w-full max-w-6xl px-6 py-8">
       <Link href="/app" className="mb-4 inline-flex min-h-11 items-center text-sm text-muted hover:underline">
         ← 내 설문
       </Link>

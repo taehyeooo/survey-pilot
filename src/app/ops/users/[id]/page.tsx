@@ -43,7 +43,7 @@ async function Detail({ params, searchParams }: PageProps<"/ops/users/[id]">) {
 
 export default function OpsUserPage(props: PageProps<"/ops/users/[id]">) {
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8">
+    <main className="mx-auto w-full max-w-3xl px-6 py-10">
       <OpsNav current="users" />
       <Link href="/ops/users" className="mb-4 inline-flex min-h-11 items-center text-sm text-muted hover:underline">
         ← 사용자

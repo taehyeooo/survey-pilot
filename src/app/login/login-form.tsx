@@ -21,7 +21,6 @@ const SUBMITS: Record<AuthMode, [string, string]> = {
   forgot: ["인증번호 받기", "보내는 중…"],
   reset: ["비밀번호 바꾸기", "바꾸는 중…"],
 };
-const press = "transition-transform duration-100 active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100";
 const linkButton = "inline-flex min-h-11 items-center text-sm text-muted underline-offset-4 hover:underline";
 
 // 인증번호 남은 시간(1초마다). 0이 되면 확인 버튼을 막고 다시 받게 한다.
@@ -120,7 +119,7 @@ export function LoginForm({ notice, info }: { notice?: string; info?: string }) 
           인증번호 시간이 지났어요. 아래 &ldquo;인증번호 다시 받기&rdquo;를 눌러 주세요.
         </p>
       )}
-      <button type="submit" disabled={pending || expired} className={`h-11 rounded-box bg-accent font-medium text-on-accent disabled:opacity-50 ${press}`}>
+      <button type="submit" disabled={pending || expired} className={`h-11 rounded-box bg-accent font-medium text-on-accent disabled:opacity-50`}>
         {pending ? SUBMITS[mode][1] : SUBMITS[mode][0]}
       </button>
       <div className="flex flex-wrap gap-x-4">

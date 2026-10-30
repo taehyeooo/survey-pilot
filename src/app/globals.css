@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
-/* 디자인 토큰(세트 1 청록·차분, 2026-10-29 디자인 2단계에서 선택 — spec 결정 28).
+/* 디자인 토큰(2026-10-31 디자인 2단계 시안 B "애플 회색·파랑", 밝은 모드만 — spec 결정 29, ADR 0021 apple-design).
+   이전: 세트 1 청록·차분, 밝은·어두운 모드(결정 28).
    화면은 역할 이름(bg-bg·bg-surface·text-fg·text-muted·border-line·bg-accent·text-on-accent·text-danger·bg-danger-bg·bg-note-bg·text-note-fg·rounded-box)만 쓴다.
-   대비는 모드마다 4.5:1 이상(밝은 모드 최저 5.47, 어두운 모드 최저 7.53). */
+   대비 4.5:1 이상(최저 4.66 — 옅은 회색 면 위 muted). 카드는 테두리 대신 면(bg-surface)으로 묶는다. */
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -21,45 +22,34 @@
 }
 
 :root {
+  color-scheme: light; /* 밝은 모드만(2026-10-31 사용자 결정) — 입력 칸·스크롤바도 밝게 */
   --bg: #ffffff;
-  --surface: #f0fdfa;
-  --fg: #134e4a;
-  --muted: #475569;
-  --line: #cce7e3;
-  --accent: #0f766e;
+  --surface: #f5f5f7;
+  --fg: #1d1d1f;
+  --muted: #6e6e73;
+  --line: #d2d2d7; /* 회색 면 위에서도 보이는 구분선·막대 바탕 */
+  --accent: #0066cc;
   --on-accent: #ffffff;
-  --danger: #b91c1c;
-  --danger-bg: #fef2f2;
-  --note-bg: #fffbeb;
-  --note-fg: #92400e;
-  /* 차트 막대 — dataviz 검사기 통과(밝은 면 #fff, 2026-10-29). 강조색(#0f766e)은 채도가 낮아 회색으로 읽혀 따로 둔다 */
-  --chart: #0d9488;
-  --radius: 12px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0b1514;
-    --surface: #102321;
-    --fg: #e6f4f1;
-    --muted: #9db5b0;
-    --line: #1f3a37;
-    --accent: #2dd4bf;
-    --on-accent: #042f2e;
-    --danger: #fca5a5;
-    --danger-bg: #3b1212;
-    --note-bg: #3a2a0a;
-    --note-fg: #fcd34d;
-    /* 어두운 면 #0b1514 기준 검사 통과 — #2dd4bf는 너무 밝아 밝기 범위를 벗어난다 */
-    --chart: #22a99a;
-  }
+  --danger: #c41e3a;
+  --danger-bg: #fff1f2;
+  --note-bg: #fff8e6;
+  --note-fg: #8a5300;
+  /* 차트 막대 — 흰 면 기준 */
+  --chart: #0071e3;
+  --radius: 18px;
 }
 
 body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);
+  line-height: 1.6;
   word-break: keep-all;
+}
+
+/* 큰 제목은 자간을 좁힌다(apple-design §15 — 글자가 클수록 음수 자간) */
+h1 {
+  letter-spacing: -0.02em;
 }
 
 /* 입력 칸 — 누르는 높이 44px 이상, 키보드 포커스가 보이게 */
@@ -68,7 +58,7 @@ body {
   padding-inline: 0.75rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: transparent;
+  background: var(--bg); /* 회색 카드 안에서도 칸이 보이게 흰 바탕 */
   &:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 1px;
@@ -91,4 +81,57 @@ body {
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
+}
+
+/* apple-design §1 — 누르는 순간 반응한다(손을 뗄 때가 아니라). 모든 버튼·버튼 같은 링크에 한 곳에서. */
+button:not(:disabled),
+a[class*="rounded-box"] {
+  transition: transform 100ms ease-out;
+}
+button:not(:disabled):active,
+a[class*="rounded-box"]:active {
+  transform: scale(0.97);
+}
+
+/* apple-design §15 — 자간은 크기마다: 큰 제목은 좁게, 중간 제목은 조금, 작은 글자는 살짝 넓게 */
+h2 {
+  letter-spacing: -0.01em;
+}
+.text-xs,
+.text-sm {
+  letter-spacing: 0.005em;
+}
+
+/* apple-design §12 — 위쪽 머리줄은 반투명 재질: 내용이 아래로 지나가며 비친다(불투명 띠가 자리를 먹지 않게) */
+@utility chrome-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgb(255 255 255 / 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* apple-design §14 — 움직임·투명 줄이기 설정을 따른다 */
+@media (prefers-reduced-motion: reduce) {
+  button:not(:disabled),
+  a[class*="rounded-box"] {
+    transition: none;
+  }
+  button:not(:disabled):active,
+  a[class*="rounded-box"]:active {
+    transform: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .chrome-bar {
+    background: var(--bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* 한 가지 일만 하는 화면(이용 안내·정지 안내·탈퇴)은 상단 메뉴 바를 숨긴다 — src/app/app/shell-frame.tsx BareMarker */
+:root[data-bare] .shell-top {
+  display: none;
 }

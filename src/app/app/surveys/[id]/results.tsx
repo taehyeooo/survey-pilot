@@ -7,7 +7,7 @@ const percent = (ratio: number) => `${Math.round(ratio * 100)}%`;
 
 function Bar({ ratio, label }: { ratio: number; label: string }) {
   return (
-    <div className="h-3 flex-1 rounded-r bg-line/60" title={label}>
+    <div className="h-3 flex-1 rounded-r bg-line" title={label}>
       <div className="h-full rounded-r bg-chart" style={{ width: `${Math.max(ratio * 100, ratio > 0 ? 1 : 0)}%` }} />
     </div>
   );
@@ -38,7 +38,7 @@ function StatCard({ stat, index }: { stat: QuestionStat; index: number }) {
   );
   if (stat.kind === "choice") {
     return (
-      <li className="flex flex-col gap-3 rounded-box border border-line p-4">
+      <li className="flex flex-col gap-3 rounded-box bg-surface p-4">
         {title}
         {stat.question.type === "multi" && <p className="text-xs text-muted">여러 개 고르기 — 답한 사람 기준 비율이라 합이 100%를 넘을 수 있어요.</p>}
         <ul className="flex flex-col gap-2">
@@ -52,7 +52,7 @@ function StatCard({ stat, index }: { stat: QuestionStat; index: number }) {
   if (stat.kind === "scale") {
     const max = Math.max(1, stat.answered);
     return (
-      <li className="flex flex-col gap-3 rounded-box border border-line p-4">
+      <li className="flex flex-col gap-3 rounded-box bg-surface p-4">
         {title}
         <p className="text-2xl font-semibold tabular-nums">
           {stat.mean ?? "–"}
@@ -67,7 +67,7 @@ function StatCard({ stat, index }: { stat: QuestionStat; index: number }) {
     );
   }
   return (
-    <li className="flex flex-col gap-3 rounded-box border border-line p-4">
+    <li className="flex flex-col gap-3 rounded-box bg-surface p-4">
       {title}
       {stat.texts.length === 0 ? (
         <p className="text-sm text-muted">아직 답이 없어요.</p>
@@ -76,7 +76,7 @@ function StatCard({ stat, index }: { stat: QuestionStat; index: number }) {
           <summary className="flex min-h-11 cursor-pointer items-center text-sm text-muted">답 {stat.texts.length}개 보기</summary>
           <ul className="mt-2 flex flex-col gap-2 text-sm">
             {stat.texts.map((t, i) => (
-              <li key={i} className="rounded-box bg-surface px-3 py-2 whitespace-pre-wrap">
+              <li key={i} className="rounded-box bg-bg px-3 py-2 whitespace-pre-wrap">
                 {t}
               </li>
             ))}
@@ -125,14 +125,14 @@ export function ResultsSection({
           </a>
         )}
       </div>
-      <div className="flex flex-col gap-2 rounded-box border border-line p-4">
+      <div className="flex flex-col gap-2 rounded-box bg-surface p-4">
         <p className="text-sm text-muted">응답</p>
         <p className="text-3xl font-semibold tabular-nums">
           {responseCount}
           {target ? <span className="text-base font-normal text-muted"> / {target}명</span> : <span className="text-base font-normal text-muted">명</span>}
         </p>
         {target ? (
-          <div role="meter" aria-valuemin={0} aria-valuemax={target} aria-valuenow={responseCount} aria-label="목표 응답 수 대비" className="h-2 rounded-full bg-line/60">
+          <div role="meter" aria-valuemin={0} aria-valuemax={target} aria-valuenow={responseCount} aria-label="목표 응답 수 대비" className="h-2 rounded-full bg-line">
             <div className="h-full rounded-full bg-chart" style={{ width: `${ratio * 100}%` }} />
           </div>
         ) : null}
