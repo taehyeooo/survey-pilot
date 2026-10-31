@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { isAdminEmail } from "../src/lib/admin";
-import { groupByTab, summarize, tabOf } from "../src/lib/surveys";
+import { groupByTab, relativeDay, summarize, tabOf } from "../src/lib/surveys";
 
 describe("isAdminEmail", () => {
   // survey-pilot#R-1
@@ -53,5 +53,19 @@ describe("내 설문 요약", () => {
 
   it("설문이 없으면 모두 0", () => {
     expect(summarize([])).toEqual({ active: 0, responses: 0, closed: 0 });
+  });
+});
+
+describe("만든 날 표시(한국 시간 날짜 기준)", () => {
+  const now = new Date("2026-10-31T03:00:00Z"); // KST 10-31 12:00
+
+  it("같은 날은 오늘, 하루 전은 어제, 그 뒤 30일까지는 N일 전", () => {
+    expect(relativeDay("2026-10-30T16:00:00Z", now)).toBe("오늘"); // KST 10-31 01:00
+    expect(relativeDay("2026-10-30T14:00:00Z", now)).toBe("어제"); // KST 10-30 23:00
+    expect(relativeDay("2026-10-26T03:00:00Z", now)).toBe("5일 전");
+  });
+
+  it("30일이 넘으면 날짜로", () => {
+    expect(relativeDay("2026-09-01T03:00:00Z", now)).toBe("2026. 9. 1.");
   });
 });

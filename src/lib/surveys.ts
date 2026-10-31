@@ -33,6 +33,19 @@ export function summarize(rows: { status: string; archived_at: string | null; re
   };
 }
 
+// 내 설문 표의 "만든 날"(결정 37) — 한국 시간 날짜로 센다: 오늘 / 어제 / N일 전(30일까지) / 날짜.
+const KST_MS = 9 * 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
+export function relativeDay(iso: string, now: Date) {
+  const kstDay = (t: number) => Math.floor((t + KST_MS) / DAY_MS);
+  const at = new Date(iso).getTime();
+  const days = kstDay(now.getTime()) - kstDay(at);
+  if (days <= 0) return "오늘";
+  if (days === 1) return "어제";
+  if (days <= 30) return `${days}일 전`;
+  return new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", dateStyle: "medium" }).format(new Date(at));
+}
+
 export interface SurveyListItem {
   id: string;
   problem: string;
