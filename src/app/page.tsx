@@ -33,7 +33,7 @@ export default function Home() {
         <SignedInRedirect />
       </Suspense>
       <header className="sticky top-4 z-10 mt-4 flex w-full max-w-5xl items-center justify-between gap-4 rounded-full border border-line bg-bg/85 py-2 pr-2 pl-5 shadow-sm backdrop-blur">
-        <span className="inline-flex items-center gap-2.5 font-semibold tracking-title">
+        <span className="group inline-flex items-center gap-2.5 font-semibold tracking-title">
           <LogoMark />
           서베이 파일럿
         </span>

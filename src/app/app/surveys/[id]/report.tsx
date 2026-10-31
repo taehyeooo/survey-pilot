@@ -5,7 +5,7 @@ import { SubmitButton } from "../../submit-button";
 import { makeReport } from "../actions";
 import { IconBadge, IconTarget } from "../../../icons";
 
-// 문제 답변 리포트(R-24)·주관식 주제(R-23). 판정은 색만이 아니라 글자(지지·기각·판단 불가)로 보인다.
+// 문제 답변 리포트(R-24)·주관식 주제(R-23). 판정은 색만이 아니라 글자(그렇다·아니다·판단 보류, 결정 38)로 보인다.
 const VERDICT_STYLE = { supported: "border-accent", rejected: "border-danger", unclear: "border-line" } as const;
 const kstFormat = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", dateStyle: "medium", timeStyle: "short" });
 

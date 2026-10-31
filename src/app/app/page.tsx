@@ -95,9 +95,7 @@ function Greeting({ rows }: { rows: SurveyListItem[] }) {
   const ratio = top.target_responses ? Math.round((top.responseCount / top.target_responses) * 100) : null;
   return (
     <section className="flex items-center gap-4 rounded-box border border-brand/15 bg-accent-soft p-4">
-      <span className="flex size-12 shrink-0 items-center justify-center rounded-box bg-bg">
-        <PaperPilot size={38} expression={responses > 0 ? "celebrate" : "default"} />
-      </span>
+      <PaperPilot size={44} expression={responses > 0 ? "celebrate" : "default"} motion={responses > 0 ? "launch" : "float"} />
       <div className="min-w-0 flex-1">
         <p className="font-semibold">{responses > 0 ? `응답 ${responses.toLocaleString("ko-KR")}개가 모였어요.` : "첫 응답을 기다리고 있어요."}</p>
         <p className="truncate text-sm text-muted">
@@ -126,9 +124,7 @@ async function SurveyList() {
   if (rows.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-box border border-dashed border-line px-6 py-16 text-center">
-        <span className="flex size-16 items-center justify-center rounded-box bg-accent-soft">
-          <PaperPilot size={48} />
-        </span>
+        <PaperPilot size={64} motion="float" />
         <h1 className="text-lg font-semibold">아직 설문이 없어요</h1>
         <p className="text-muted">풀고 싶은 문제 한 줄이면 AI가 조사 설계와 문항을 먼저 짜 드려요.</p>
         <Link href="/app/new" className="btn btn-primary">
@@ -160,9 +156,7 @@ async function SurveyList() {
       {live.length > 0 && <SurveyTable items={live} now={now} />}
       {!live.some((r) => r.status === "closed") && (
         <div className="flex items-center justify-center gap-3 rounded-box border border-dashed border-line px-6 py-8">
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-box bg-accent-soft">
-            <PaperPilot size={30} />
-          </span>
+          <PaperPilot size={40} motion="float" />
           <div>
             <p className="text-sm font-semibold">마감한 설문이 아직 없어요</p>
             <p className="text-sm text-muted">설문을 마감하면 결과 보고서와 함께 이곳에 정리돼요.</p>

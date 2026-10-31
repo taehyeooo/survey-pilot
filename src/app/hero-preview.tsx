@@ -41,8 +41,8 @@ export function HeroPreview() {
           </div>
           <div className="rounded-box bg-surface p-4">
             <p className="text-xs text-muted">가설 판정</p>
-            <p className="text-3xl font-bold tracking-display tabular-nums">지지 2</p>
-            <p className="text-sm font-medium">기각 1 · 판단 불가 0</p>
+            <p className="text-3xl font-bold tracking-display tabular-nums">그렇다 2</p>
+            <p className="text-sm font-medium">아니다 1 · 판단 보류 0</p>
           </div>
         </div>
       </div>

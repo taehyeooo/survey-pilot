@@ -412,7 +412,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
           <>
             <Confetti />
             <p role="status" className="mb-6 flex items-center gap-3 rounded-box bg-accent-soft p-4 font-medium">
-              <PaperPilot size={36} expression="celebrate" />
+              <PaperPilot size={36} expression="celebrate" motion="launch" />
               게시했어요! 이제 링크를 공유하고 응답을 기다려요.
             </p>
           </>

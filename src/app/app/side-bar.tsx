@@ -42,7 +42,7 @@ async function SideContent() {
 export function SideBar() {
   return (
     <aside className="shell-side flex flex-col gap-5 border-b border-line bg-surface px-3 py-4 md:sticky md:top-0 md:h-screen md:border-r md:border-b-0">
-      <Link href="/app" aria-label="서베이 파일럿" className="inline-flex min-h-11 items-center gap-2.5 px-2 text-base font-semibold tracking-title">
+      <Link href="/app" aria-label="서베이 파일럿" className="group inline-flex min-h-11 items-center gap-2.5 px-2 text-base font-semibold tracking-title">
         <LogoMark />
         <span>서베이 파일럿</span>
       </Link>

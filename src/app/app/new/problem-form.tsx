@@ -28,7 +28,7 @@ export function ProblemForm() {
   return (
     <form action={action} className="flex flex-col gap-3">
       <div className="flex items-center gap-3 self-start rounded-box border border-line bg-accent-soft px-3 py-2.5">
-        <PaperPilot size={36} />
+        <PaperPilot size={36} motion="float" />
         <div>
           <label htmlFor="problem" className="block text-sm font-semibold">
             어떤 답을 찾고 있나요?

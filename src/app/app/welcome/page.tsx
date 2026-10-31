@@ -35,9 +35,7 @@ async function Welcome() {
 export default function WelcomePage() {
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 py-16">
-      <span className="flex size-16 items-center justify-center rounded-box bg-accent-soft">
-        <PaperPilot size={48} expression="celebrate" />
-      </span>
+      <PaperPilot size={64} expression="celebrate" motion="launch" />
       <h1 className="text-headline">시작하기 전에</h1>
       <Suspense fallback={<p className="text-muted">불러오는 중…</p>}>
         <Welcome />

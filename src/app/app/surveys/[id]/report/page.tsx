@@ -219,7 +219,7 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
             가설 판정
           </h2>
             <span className="text-sm text-muted">
-              지지 {summary.verdicts.supported} · 기각 {summary.verdicts.rejected} · 판단 불가 {summary.verdicts.unclear}
+              {VERDICT_LABEL.supported} {summary.verdicts.supported} · {VERDICT_LABEL.rejected} {summary.verdicts.rejected} · {VERDICT_LABEL.unclear} {summary.verdicts.unclear}
             </span>
           </div>
           <ul className="flex flex-col divide-y divide-line">
