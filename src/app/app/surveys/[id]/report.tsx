@@ -3,6 +3,7 @@ import { VERDICT_LABEL, type ReportRow } from "@/lib/report";
 import { AI_STEPS } from "../../ai-steps";
 import { SubmitButton } from "../../submit-button";
 import { makeReport } from "../actions";
+import { IconBadge, IconTarget } from "../../../icons";
 
 // 문제 답변 리포트(R-24)·주관식 주제(R-23). 판정은 색만이 아니라 글자(지지·기각·판단 불가)로 보인다.
 const VERDICT_STYLE = { supported: "border-accent", rejected: "border-danger", unclear: "border-line" } as const;
@@ -35,7 +36,10 @@ export function ReportSection({
   return (
     <section aria-labelledby="report-title" className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id="report-title" className="text-title">
+        <h2 id="report-title" className="flex items-center gap-3 text-title">
+          <IconBadge tint="bg-tint-1">
+            <IconTarget className="size-5" />
+          </IconBadge>
           문제에 대한 답
         </h2>
         {report?.content.headline && (

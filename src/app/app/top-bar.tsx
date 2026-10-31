@@ -36,9 +36,9 @@ export function TopBar() {
   return (
     <header className="shell-top chrome-bar border-b border-line">
       <div className="mx-auto flex min-h-[3.75rem] max-w-6xl items-center gap-6 px-6">
-        <Link href="/app" className="inline-flex min-h-11 items-center gap-2 text-base font-semibold tracking-title">
+        <Link href="/app" aria-label="서베이 파일럿" className="inline-flex min-h-11 items-center gap-2 text-base font-semibold tracking-title">
           <LogoMark className="size-7" />
-          서베이 파일럿
+          <span className="hidden sm:inline">서베이 파일럿</span>
         </Link>
         <Suspense>
           <Account />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { IconBadge, IconLink } from "../../../icons";
 
 // 공개 링크와 공유 메시지(링크·소요 시간 포함, R-15) 복사.
 export function ShareBox({ link, shareText }: { link: string; shareText: string }) {
@@ -16,8 +17,11 @@ export function ShareBox({ link, shareText }: { link: string; shareText: string 
   const base = "btn text-sm";
   return (
     <section aria-labelledby="share-title" className="card flex flex-col gap-3 p-6">
-      <h2 id="share-title" className="text-lg font-semibold">
-        응답 받는 중 — 링크를 공유하세요
+      <h2 id="share-title" className="flex items-center gap-3 text-lg font-semibold">
+        <IconBadge>
+          <IconLink className="size-5" />
+        </IconBadge>
+        링크를 공유하세요
       </h2>
       <p className="card px-3 py-2 text-sm break-all">{link}</p>
       <pre className="card px-3 py-2 font-sans text-sm whitespace-pre-wrap">{shareText}</pre>

@@ -12,7 +12,7 @@ import { loadResults, type QuestionStat } from "@/lib/results";
 import { closeOverdue } from "@/lib/submit";
 import { DemoNotice } from "../../demo-notice";
 import { Confetti } from "../../../confetti";
-import { IconSparkle } from "../../../icons";
+import { Mascot } from "../../../icons";
 import { PageSkeleton } from "../../skeleton";
 import { StageBar, stageOf } from "../../stage-bar";
 import { AI_STEPS } from "../../ai-steps";
@@ -50,7 +50,7 @@ const STATUS_LABEL: Record<string, string> = { designing: "설계 중", reviewin
 const STATUS_TONE: Record<string, string> = {
   designing: "bg-surface text-muted",
   reviewing: "bg-surface text-muted",
-  published: "bg-accent text-on-accent",
+  published: "bg-brand text-on-accent",
   closed: "bg-fg text-bg",
 };
 
@@ -397,8 +397,8 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
       {celebrate === "1" && survey.status === "published" && (
         <>
           <Confetti />
-          <p role="status" className="mb-6 flex items-center gap-2 rounded-box bg-tint-2 p-4 font-medium">
-            <IconSparkle className="size-5 text-brand" />
+          <p role="status" className="mb-6 flex items-center gap-3 rounded-box bg-tint-2 p-4 font-medium">
+            <Mascot mood="wink" className="size-9 shrink-0" />
             게시했어요! 이제 링크를 공유하고 응답을 기다려요.
           </p>
         </>

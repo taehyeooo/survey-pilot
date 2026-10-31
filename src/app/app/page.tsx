@@ -3,18 +3,43 @@ import { Suspense } from "react";
 import { requireMember } from "@/lib/auth";
 import { closeOverdue } from "@/lib/submit";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { groupByTab, listSurveys, type SurveyListItem, type Tab } from "@/lib/surveys";
+import { groupByTab, listSurveys, summarize, type SurveyListItem, type Tab } from "@/lib/surveys";
 import { archive, restore } from "./actions";
-import { IconInbox, IconPlus } from "../icons";
+import { IconChart, IconCheckCircle, IconPencil, IconPlus, IconUsers, Mascot } from "../icons";
 import { CardsSkeleton } from "./skeleton";
 import { StageBar, stageOf } from "./stage-bar";
 
 // 내 설문 목록: 제목 옆 "새 설문 만들기"(상단 메뉴의 새 설문과 같은 곳), 묶음별 카드에 단계 진행(결정 27·30).
-const SECTIONS: { key: Tab; label: string }[] = [
-  { key: "active", label: "진행 중" },
-  { key: "designing", label: "만드는 중" },
-  { key: "closed", label: "마감" },
+const SECTIONS: { key: Tab; label: string; Icon: typeof IconUsers }[] = [
+  { key: "active", label: "진행 중", Icon: IconUsers },
+  { key: "designing", label: "만드는 중", Icon: IconPencil },
+  { key: "closed", label: "마감", Icon: IconCheckCircle },
 ];
+
+// 맨 위 요약 숫자 셋(결정 36) — 파스텔 칸에 아이콘, 큰 숫자. 숫자는 글자로 읽히고 색은 꾸밈.
+function Summary({ rows }: { rows: SurveyListItem[] }) {
+  const { active, responses, closed } = summarize(rows);
+  const tiles = [
+    { label: "응답 받는 중", value: `${active}개`, Icon: IconUsers, tint: "bg-tint-4" },
+    { label: "모인 응답", value: `${responses.toLocaleString("ko-KR")}명`, Icon: IconChart, tint: "bg-tint-2" },
+    { label: "마감한 설문", value: `${closed}개`, Icon: IconCheckCircle, tint: "bg-tint-1" },
+  ];
+  return (
+    <dl className="grid gap-4 sm:grid-cols-3">
+      {tiles.map(({ label, value, Icon, tint }) => (
+        <div key={label} className={`flex items-center gap-4 rounded-box p-5 ${tint}`}>
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-bg text-brand">
+            <Icon className="size-5" />
+          </span>
+          <div>
+            <dt className="text-sm text-muted">{label}</dt>
+            <dd className="text-2xl font-bold tracking-display tabular-nums">{value}</dd>
+          </div>
+        </div>
+      ))}
+    </dl>
+  );
+}
 
 function ToggleArchive({ survey }: { survey: SurveyListItem }) {
   const archived = Boolean(survey.archived_at);
@@ -59,16 +84,15 @@ function CardGrid({ items }: { items: SurveyListItem[] }) {
 async function SurveyList() {
   const { db, user } = await requireMember();
   await closeOverdue(createAdminClient()); // 마감일 지난 설문은 들어올 때 마감(R-16)
-  const groups = groupByTab(await listSurveys(db, user.id));
+  const rows = await listSurveys(db, user.id);
+  const groups = groupByTab(rows);
   const empty = SECTIONS.every(({ key }) => groups[key].length === 0);
 
   return (
     <div className="flex flex-col gap-10">
       {empty && (
         <div className="flex flex-col items-center gap-4 card px-6 py-16 text-center">
-          <span className="flex size-14 items-center justify-center rounded-full bg-tint-4 text-brand">
-            <IconInbox className="size-7" />
-          </span>
+          <Mascot mood="wink" className="size-16" />
           <p className="text-lg font-semibold">아직 설문이 없어요</p>
           <p className="text-muted">풀고 싶은 문제 한 줄이면 AI가 조사 설계와 문항을 먼저 짜 드려요.</p>
           <Link href="/app/new" className="btn btn-primary">
@@ -76,10 +100,12 @@ async function SurveyList() {
           </Link>
         </div>
       )}
-      {SECTIONS.map(({ key, label }) =>
+      {!empty && <Summary rows={rows} />}
+      {SECTIONS.map(({ key, label, Icon }) =>
         groups[key].length === 0 ? null : (
           <section key={key} aria-labelledby={`sec-${key}`}>
-            <h2 id={`sec-${key}`} className="mb-4 text-eyebrow">
+            <h2 id={`sec-${key}`} className="mb-4 flex items-center gap-2 text-eyebrow">
+              <Icon className="size-4 text-brand" />
               {label} {groups[key].length}
             </h2>
             <CardGrid items={groups[key]} />
@@ -101,8 +127,15 @@ async function SurveyList() {
 export default function AdminPage() {
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-10">
-      <div className="mb-8 flex items-center justify-between gap-4">
-        <h1 className="text-headline">내 설문</h1>
+      {/* 머리: 캐릭터가 말을 거는 인사(결정 36) — 첫 화면과 같은 캐릭터라 로그인 앞뒤가 이어진다 */}
+      <div className="mb-10 flex flex-wrap items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <Mascot className="size-14 shrink-0 rounded-box shadow-lg shadow-brand/20" />
+          <div>
+            <h1 className="text-headline">내 설문</h1>
+            <p className="text-muted">오늘은 어떤 문제를 풀어 볼까요?</p>
+          </div>
+        </div>
         <Link href="/app/new" className="btn btn-primary">
           <IconPlus className="size-4" />
           새 설문 만들기
