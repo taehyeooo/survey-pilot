@@ -57,7 +57,7 @@ export interface OpenSurvey {
   require_email?: boolean; // 한 사람 한 번만(이메일 인증). false면 바로 응답(ADR 0017 v2). 모르면 인증으로 본다
 }
 
-const BROWSER_LIMIT = 20; // 바로 응답 시작, 같은 IP 1시간
+export const BROWSER_START_LIMIT = 60; // 바로 응답 시작, 같은 IP 1시간 — 한 와이파이에서 여럿이 답할 수 있게 20→60(결정 41)
 
 export const PAUSED = "지금은 응답을 받지 않아요.";
 
@@ -217,7 +217,7 @@ export async function startAnonymous(
     .eq("via", "browser")
     .gt("created_at", new Date(now - HOUR_MS).toISOString())
     .throwOnError();
-  if ((count ?? 0) >= BROWSER_LIMIT) throw new RespondError("요청이 많아요. 잠시 후 다시 시도해 주세요.", "ip");
+  if ((count ?? 0) >= BROWSER_START_LIMIT) throw new RespondError("요청이 많아요. 잠시 후 다시 시도해 주세요.", "ip");
 
   const at = new Date(now).toISOString();
   const { data } = await db

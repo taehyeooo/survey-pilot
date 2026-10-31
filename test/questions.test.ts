@@ -72,9 +72,10 @@ describe("AI 출력 검사", () => {
   });
 
   // survey-pilot#R-10
-  it("객관식은 선택지 2개 이상, 척도·주관식은 선택지를 비운다, 없는 가설 번호는 거부", () => {
+  it("객관식은 선택지 2개 이상, 주관식은 선택지를 비운다(척도는 양 끝 말 2개만 — 결정 41), 없는 가설 번호는 거부", () => {
     expect(() => parseQuestions({ questions: [{ ...q(1), options: ["하나"] }] }, 1)).toThrow();
-    expect(parseQuestions({ questions: [{ ...q(1, "scale"), options: ["1", "5"] }] }, 1)[0].options).toEqual([]);
+    expect(parseQuestions({ questions: [{ ...q(1, "scale"), options: ["1", "3", "5"] }] }, 1)[0].options).toEqual([]);
+    expect(parseQuestions({ questions: [{ ...q(1, "text"), options: ["a", "b"] }] }, 1)[0].options).toEqual([]);
     expect(() => parseQuestions({ questions: [q(3)] }, 2)).toThrow();
   });
 
@@ -106,5 +107,23 @@ describe("저장할 행", () => {
     ]);
     expect(isClosing(rows[2])).toBe(true);
     expect(isClosing(rows[0])).toBe(false);
+  });
+});
+
+describe("척도 양 끝 말(결정 41)", () => {
+  const scale = (options: string[]) => ({ questions: [{ hypothesis: 1, type: "scale", prompt: "얼마나 만족했나요?", options, required: true, review_note: null }] });
+
+  it("척도는 양 끝 말 2개(1점·5점)를 그대로 둔다", () => {
+    expect(parseQuestions(scale(["매우 불만", "매우 만족"]), 1)[0].options).toEqual(["매우 불만", "매우 만족"]);
+  });
+
+  it("2개가 아니면 비운다(화면은 기본 말을 쓴다)", () => {
+    expect(parseQuestions(scale(["하나"]), 1)[0].options).toEqual([]);
+  });
+
+  it("문항 프롬프트가 척도 양 끝 말과 맞춤법을 요구한다", () => {
+    const prompt = generatePrompt({ problem: "p", purpose: "p", audience: "a", target_minutes: 3 }, ["h"]);
+    expect(prompt).toContain("양 끝 말");
+    expect(prompt).toContain("맞춤법");
   });
 });

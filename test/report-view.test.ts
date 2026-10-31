@@ -15,6 +15,7 @@ const stats: QuestionStat[] = [
       { id: "o2", label: "현금", count: 1, ratio: 1 / 6 },
       { id: "o3", label: "간편결제", count: 2, ratio: 2 / 6 },
     ],
+    others: [],
   },
   { kind: "scale", question: q("q2", 2, "scale", "번거롭나요?"), answered: 6, mean: 3.8, distribution: [0, 1, 1, 2, 2] },
   { kind: "text", question: q("q3", 3, "text", "더 하고 싶은 말"), answered: 2, texts: ["a", "b"] },

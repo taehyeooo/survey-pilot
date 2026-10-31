@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { validateAnswers, type SubmitQuestion } from "../src/lib/submit";
+import { IP_SUBMIT_LIMIT, validateAnswers, type SubmitQuestion } from "../src/lib/submit";
 
 const questions: SubmitQuestion[] = [
   { id: "q1", type: "single", required: true, options: [{ id: "o1", label: "가" }, { id: "o2", label: "나" }] },
@@ -38,5 +38,27 @@ describe("답 검사", () => {
   it("주관식은 2,000자까지, 같은 선택지를 두 번 보내면 한 번으로", () => {
     expect(() => validateAnswers(questions, { ...ok, q4: ["가".repeat(2001)] })).toThrow(/2,000자/);
     expect(validateAnswers(questions, { ...ok, q2: ["o1", "o1"] })[1].value).toEqual(["o1"]);
+  });
+});
+
+describe("QA 고침(결정 41)", () => {
+  const withOther: SubmitQuestion[] = [
+    { id: "q1", type: "single", required: true, options: [{ id: "o1", label: "시설" }, { id: "o2", label: "기타" }] },
+  ];
+
+  it("같은 와이파이에서 여럿이 답할 수 있게 같은 IP 제출 제한은 시간당 60건", () => {
+    expect(IP_SUBMIT_LIMIT).toBe(60);
+  });
+
+  it("기타를 고르고 쓴 글은 text:로 함께 저장한다(앞뒤 공백은 지운다)", () => {
+    expect(validateAnswers(withOther, { q1: ["o2", "text:  샤워실이 좁아요 "] })).toEqual([{ question_id: "q1", value: ["o2", "text:샤워실이 좁아요"] }]);
+  });
+
+  it("기타를 고르지 않았으면 쓴 글은 버린다", () => {
+    expect(validateAnswers(withOther, { q1: ["o1", "text:무시"] })).toEqual([{ question_id: "q1", value: ["o1"] }]);
+  });
+
+  it("기타 글은 200자까지", () => {
+    expect(() => validateAnswers(withOther, { q1: ["o2", `text:${"가".repeat(201)}`] })).toThrow("200자");
   });
 });

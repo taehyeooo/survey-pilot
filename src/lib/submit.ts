@@ -1,3 +1,4 @@
+import { isOtherLabel, OTHER_PREFIX, OTHER_TEXT_MAX } from "@/lib/other";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { ConflictError } from "@/lib/design";
 import { ipHashOf, isClosed, PAUSED, readToken, type OpenSurvey } from "@/lib/respond";
@@ -5,7 +6,7 @@ import { ipHashOf, isClosed, PAUSED, readToken, type OpenSurvey } from "@/lib/re
 // 응답 제출(R-19)·마감(R-16)·제출 횟수 제한(R-4). 저장은 DB 함수 submit_response가 한 트랜잭션으로 한다.
 // db는 서버(service role) 클라이언트(ADR 0019).
 
-export const IP_SUBMIT_LIMIT = 10; // 같은 IP, 1시간
+export const IP_SUBMIT_LIMIT = 60; // 같은 IP, 1시간 — 동아리방·강의실처럼 한 와이파이에서 여럿이 답할 수 있게 10→60(결정 41)
 const HOUR_MS = 60 * 60_000;
 const TEXT_MAX = 2000;
 
@@ -45,10 +46,15 @@ export function validateAnswers(questions: SubmitQuestion[], raw: Record<string,
       if (!Number.isInteger(n) || n < 1 || n > 5) throw new SubmitError(`${i + 1}번 문항 값이 올바르지 않아요.`, "invalid");
       answers.push({ question_id: q.id, value: n });
     } else {
-      const ids = [...new Set(values)];
+      const other = values.find((v) => v.startsWith(OTHER_PREFIX))?.slice(OTHER_PREFIX.length).trim() ?? "";
+      const ids = [...new Set(values.filter((v) => !v.startsWith(OTHER_PREFIX)))];
+      if (ids.length === 0) return missing();
       if (q.type === "single" && ids.length > 1) throw new SubmitError(`${i + 1}번 문항은 하나만 고를 수 있어요.`, "invalid");
       if (!ids.every((id) => q.options.some((o) => o.id === id))) throw new SubmitError(`${i + 1}번 문항 값이 올바르지 않아요.`, "invalid");
-      answers.push({ question_id: q.id, value: ids });
+      // 기타를 골랐을 때만 쓴 글을 함께 둔다(결정 41)
+      const otherChosen = q.options.some((o) => ids.includes(o.id) && isOtherLabel(o.label));
+      if (other && otherChosen && other.length > OTHER_TEXT_MAX) throw new SubmitError(`${i + 1}번 문항 기타 글은 ${OTHER_TEXT_MAX}자까지 쓸 수 있어요.`, "invalid");
+      answers.push({ question_id: q.id, value: other && otherChosen ? [...ids, `${OTHER_PREFIX}${other}`] : ids });
     }
   });
   return answers;

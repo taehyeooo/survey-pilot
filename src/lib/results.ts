@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { isOtherLabel, OTHER_PREFIX, otherTextOf } from "@/lib/other";
 
 // 진행 현황(R-21)·문항별 집계(R-22)·CSV(R-25). AI 없이 저장된 답만으로 계산한다.
 // db는 관리자 세션(RLS) 클라이언트 — 자기 설문의 응답만 읽힌다(ADR 0019).
@@ -18,7 +19,7 @@ export interface ResultAnswer {
 }
 
 export type QuestionStat =
-  | { kind: "choice"; question: ResultQuestion; answered: number; options: { id: string; label: string; count: number; ratio: number }[] }
+  | { kind: "choice"; question: ResultQuestion; answered: number; options: { id: string; label: string; count: number; ratio: number }[]; others: string[] }
   | { kind: "scale"; question: ResultQuestion; answered: number; mean: number | null; distribution: number[] }
   | { kind: "text"; question: ResultQuestion; answered: number; texts: string[] };
 
@@ -41,7 +42,8 @@ export function aggregate(questions: ResultQuestion[], answers: ResultAnswer[]):
       const count = chosen.filter((ids) => ids.includes(o.id)).length;
       return { ...o, count, ratio: answered ? count / answered : 0 };
     });
-    return { kind: "choice", question, answered, options };
+    const others = values.map(otherTextOf).filter((t): t is string => Boolean(t)); // 기타 글(결정 41)
+    return { kind: "choice", question, answered, options, others };
   });
 }
 
@@ -57,8 +59,12 @@ function cell(value: string) {
 function display(question: ResultQuestion, value: unknown) {
   if (value === undefined || value === null) return "";
   if (question.type === "single" || question.type === "multi") {
-    const ids = Array.isArray(value) ? value.map(String) : [];
-    return ids.map((id) => question.options.find((o) => o.id === id)?.label ?? id).join(" / ");
+    const ids = Array.isArray(value) ? value.map(String).filter((v) => !v.startsWith(OTHER_PREFIX)) : [];
+    const other = otherTextOf(value);
+    return ids
+      .map((id) => question.options.find((o) => o.id === id)?.label ?? id)
+      .map((label) => (other && isOtherLabel(label) ? `${label}(${other})` : label))
+      .join(" / ");
   }
   return String(value);
 }
