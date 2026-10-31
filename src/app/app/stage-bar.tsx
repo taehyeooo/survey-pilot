@@ -14,7 +14,7 @@ export function StageBar({ current, animate = false, className = "" }: { current
       {STAGES.map((label, i) => (
         <li key={label} aria-current={i === current ? "step" : undefined} className="flex flex-col gap-1">
           <span aria-hidden className="h-1 overflow-hidden rounded-full bg-line">
-            {i <= current && <span className={`block h-full bg-accent ${animate && i === current ? "animate-stage-fill" : ""}`} />}
+            {i <= current && <span className={`block h-full bg-brand ${animate && i === current ? "animate-stage-fill" : ""}`} />}
           </span>
           <span className={`text-xs ${i === current ? "font-medium" : "text-muted"}`}>{label}</span>
         </li>

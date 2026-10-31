@@ -20,11 +20,11 @@ describe("공유 메시지", () => {
 
   // survey-pilot#R-15
   it("메시지에 소요 시간이 없으면 덧붙인다", () => {
-    expect(buildShareText("솔직한 의견 부탁해요!", link, 2)).toBe(`솔직한 의견 부탁해요! (약 2분)\n${link}`);
+    expect(buildShareText("솔직한 의견 부탁해요!", link, 2)).toBe(`솔직한 의견 부탁해요! 2분이면 끝나요.\n${link}`);
   });
 
   // survey-pilot#R-15
   it("관리자가 메시지를 비워도 링크와 시간은 들어간다", () => {
-    expect(buildShareText("   ", link, 5)).toBe(`설문에 참여해 주세요. (약 5분)\n${link}`);
+    expect(buildShareText("   ", link, 5)).toBe(`설문에 참여해 주세요. 5분이면 끝나요.\n${link}`);
   });
 });

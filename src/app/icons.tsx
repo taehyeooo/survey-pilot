@@ -1,3 +1,5 @@
+import { useId } from "react";
+
 // 화면 꾸밈 아이콘 — 이모지 대신 같은 굵기(1.75)·같은 색(currentColor)으로 그린 SVG(결정 35).
 // 이모지는 기기마다 모양·색이 달라 통일감이 깨지고 크기에 따라 흐리다(ui-ux-pro-max "SVG icons, no emoji").
 // 모두 꾸밈이라 화면 읽기 프로그램에는 숨긴다(aria-hidden) — 뜻은 옆 글자가 전한다.
@@ -90,12 +92,65 @@ export const IconPlus = (p: IconProps) => (
   </Svg>
 );
 
-// 로고 표식 — 파랑 둥근 사각형 안에 올라가는 막대 셋(설문 결과). 웹 아이콘(src/app/icon.svg)과 같은 그림.
-export function LogoMark({ className = "size-7" }: IconProps) {
+// 칸 제목 앞 동그란 아이콘 자리 — 연보라 바탕에 보라 아이콘(결정 36·37).
+export function IconBadge({ children }: { children: React.ReactNode }) {
+  return <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent-soft text-brand">{children}</span>;
+}
+
+// 캐릭터 "비행쪽지" — 질문을 적은 쪽지를 접어 만든 종이비행기(결정 37). 어디서나 로고와 같은 모습: 보라 사각형 안 흰 비행쪽지(결정 38).
+// 웹 아이콘(src/app/icon.svg)과 같은 그림. expression: default(비행) / celebrate(축하, 18도 더 들고 반달 눈 — 꼬리 같은 비행선은 사용자 요청으로 뺌).
+// motion: float(천천히 둥실) / launch(한 번 위로 슝 날아올랐다가 둥실). 움직임 줄이기면 멈춘다(globals.css).
+// 16px 이하는 메모 줄을 빼고 모양과 눈만(작은 크기에서 뭉개지지 않게).
+const PILOT_SILHOUETTE = "M3.8 13 28.2 4.1c.8-.2 1.3.6.8 1.2l-8 21.9c-.3.8-1.3.8-1.7.1l-4.8-7-7.2 1.5c-.8.2-1.3-.8-.7-1.4l5.1-5-7.5-.7c-.9-.1-1.1-1.2-.2-1.7Z";
+const PILOT_INK = "var(--brand)";
+const MOTION = { none: "", float: "pilot-float", launch: "pilot-launch" } as const;
+
+export function PaperPilot({
+  size = 32,
+  expression = "default",
+  motion = "none",
+  className = "",
+}: {
+  size?: number;
+  expression?: "default" | "celebrate";
+  motion?: keyof typeof MOTION;
+  className?: string;
+}) {
+  const clip = useId();
+  const compact = size <= 16;
+  // 사각형 안에서 조금 작게, 눈으로 보는 가운데로(오른쪽 위로 치우쳐 보이는 것을 보정)
+  const pose = `translate(-0.6 0.7) translate(16 16) scale(0.9) translate(-16 -16)${expression === "celebrate" ? " rotate(-18 16 16)" : ""}`;
   return (
-    <svg aria-hidden viewBox="0 0 32 32" className={className}>
-      <rect width="32" height="32" rx="8" fill="var(--brand)" />
-      <path d="M10 22v-5M16 22V11M22 22v-8" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
+    <svg aria-hidden viewBox="0 0 32 32" width={size} height={size} className={`shrink-0 ${className}`}>
+      <defs>
+        <clipPath id={clip}>
+          <path d={PILOT_SILHOUETTE} />
+        </clipPath>
+      </defs>
+      <rect width="32" height="32" rx="9" fill={PILOT_INK} />
+      <g className={MOTION[motion]}>
+        <g transform={pose}>
+          <path d={PILOT_SILHOUETTE} fill="#ffffff" stroke="#ffffff" strokeWidth="1.2" strokeLinejoin="round" />
+          <g clipPath={`url(#${clip})`}>
+            <path d="m14.4 20.2 14-16-7.5 23Z" fill="#e5e1ff" />
+            <path d="m14.5 20.1 13.4-15.3M15.3 20.8l3.8 4.3" fill="none" stroke={PILOT_INK} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+            {!compact && <path d="m7.8 13.1 6.8-2.5M8.8 15.5l5.1-1.9M10 17.6l3.2-1.2" fill="none" stroke={PILOT_INK} strokeWidth="1.05" strokeLinecap="round" />}
+            {expression === "celebrate" ? (
+              <path d="M18.2 12q1.7 1.8 3.4-.2M21.9 10.5q1.7 1.8 3.4-.2" fill="none" stroke={PILOT_INK} strokeWidth="2.25" strokeLinecap="round" />
+            ) : (
+              <g fill={PILOT_INK}>
+                <ellipse cx="19.4" cy="11.8" rx="1.65" ry="2.15" transform="rotate(-28 19.4 11.8)" />
+                <ellipse cx="22.6" cy="10.5" rx="1.65" ry="2.15" transform="rotate(-28 22.6 10.5)" />
+              </g>
+            )}
+          </g>
+        </g>
+      </g>
     </svg>
   );
+}
+
+// 로고 표식 — 마우스를 올리면 비행쪽지가 살짝 앞으로 날갯짓(부모 링크에 group)
+export function LogoMark({ size = 28 }: { size?: number }) {
+  return <PaperPilot size={size} className="pilot-nudge" />;
 }

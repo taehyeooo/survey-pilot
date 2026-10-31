@@ -3,8 +3,9 @@ import { VERDICT_LABEL, type ReportRow } from "@/lib/report";
 import { AI_STEPS } from "../../ai-steps";
 import { SubmitButton } from "../../submit-button";
 import { makeReport } from "../actions";
+import { IconBadge, IconTarget } from "../../../icons";
 
-// 문제 답변 리포트(R-24)·주관식 주제(R-23). 판정은 색만이 아니라 글자(지지·기각·판단 불가)로 보인다.
+// 문제 답변 리포트(R-24)·주관식 주제(R-23). 판정은 색만이 아니라 글자(그렇다·아니다·판단 보류, 결정 38)로 보인다.
 const VERDICT_STYLE = { supported: "border-accent", rejected: "border-danger", unclear: "border-line" } as const;
 const kstFormat = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", dateStyle: "medium", timeStyle: "short" });
 
@@ -35,7 +36,10 @@ export function ReportSection({
   return (
     <section aria-labelledby="report-title" className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id="report-title" className="text-title">
+        <h2 id="report-title" className="flex items-center gap-3 text-title">
+          <IconBadge>
+            <IconTarget className="size-5" />
+          </IconBadge>
           문제에 대한 답
         </h2>
         {report?.content.headline && (
@@ -71,7 +75,7 @@ export function ReportSection({
             </span>
           </div>
           <p className="text-xl leading-8 font-semibold">{report.content.headline ?? report.content.answer}</p>
-          {report.content.headline && <p className="leading-7 text-muted">{report.content.answer}</p>}
+          {report.content.headline && <p className="leading-8 text-fg/80">{report.content.answer}</p>}
           <ul className="flex flex-wrap gap-2 text-sm" aria-label="가설 판정">
             {report.content.hypotheses.map((h) => (
               <li key={h.index} className={`rounded-box border-l-4 bg-bg px-3 py-2 ${VERDICT_STYLE[h.verdict]}`}>

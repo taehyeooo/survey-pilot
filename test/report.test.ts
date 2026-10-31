@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseReport, reportPrompt, toReportInput, type ReportInput } from "../src/lib/report";
+import { parseReport, reportPrompt, toReportInput, VERDICT_LABEL, type ReportInput } from "../src/lib/report";
 import type { QuestionStat } from "../src/lib/results";
 
 const input: ReportInput = {
@@ -110,5 +110,11 @@ describe("리포트 입력 만들기", () => {
     expect(() => parseReport({ ...valid, headline: "가".repeat(61) }, input)).toThrow();
     expect(() => parseReport({ ...valid, key_problems: [{ title: "t", evidence: "e", metric: "가".repeat(17) }] }, input)).toThrow();
     expect(parseReport({ ...valid, key_problems: [{ title: "t", evidence: "e" }] }, input).key_problems[0].metric).toBeUndefined();
+  });
+});
+
+describe("판정 말(결정 38)", () => {
+  it("화면에는 그렇다·아니다·판단 보류로 보인다", () => {
+    expect(VERDICT_LABEL).toEqual({ supported: "그렇다", rejected: "아니다", unclear: "판단 보류" });
   });
 });

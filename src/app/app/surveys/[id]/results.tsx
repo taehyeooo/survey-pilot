@@ -1,4 +1,5 @@
 import type { QuestionStat } from "@/lib/results";
+import { IconBadge, IconChart } from "../../../icons";
 
 // 진행 현황(R-21)·문항별 집계(R-22). 차트 규칙(dataviz): 한 계열이라 한 색(--chart), 막대 12px·끝 4px 둥글게·
 // 기준선 쪽은 각지게, 값은 막대 끝 옆에 글자색으로, 막대마다 hover 설명(title). 표 대신 값이 모두 글자로 보인다.
@@ -116,7 +117,10 @@ export function ResultsSection({
   return (
     <section aria-labelledby="results-title" className="flex flex-col gap-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="results-title" className="text-title">
+        <h2 id="results-title" className="flex items-center gap-3 text-title">
+          <IconBadge>
+            <IconChart className="size-5" />
+          </IconBadge>
           결과
         </h2>
         {responseCount > 0 && (
