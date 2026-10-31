@@ -23,6 +23,16 @@ export function groupByTab<T extends { status: string; archived_at: string | nul
   return groups;
 }
 
+// 내 설문 맨 위 요약 숫자(결정 36) — 보관함은 빼고 센다.
+export function summarize(rows: { status: string; archived_at: string | null; responseCount: number }[]) {
+  const live = rows.filter((r) => !r.archived_at);
+  return {
+    active: live.filter((r) => r.status === "published").length,
+    responses: live.reduce((sum, r) => sum + r.responseCount, 0),
+    closed: live.filter((r) => r.status === "closed").length,
+  };
+}
+
 export interface SurveyListItem {
   id: string;
   problem: string;

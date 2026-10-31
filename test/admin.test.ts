@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { isAdminEmail } from "../src/lib/admin";
-import { groupByTab, tabOf } from "../src/lib/surveys";
+import { groupByTab, summarize, tabOf } from "../src/lib/surveys";
 
 describe("isAdminEmail", () => {
   // survey-pilot#R-1
@@ -40,5 +40,18 @@ describe("탭 나누기", () => {
       closed: 0,
       archived: 1,
     });
+  });
+});
+
+describe("내 설문 요약", () => {
+  const row = (status: string, responseCount: number, archived = false) => ({ status, responseCount, archived_at: archived ? "2026-10-31" : null });
+
+  it("응답 받는 중·모인 응답·마감을 보관함은 빼고 센다", () => {
+    const rows = [row("published", 5), row("published", 2), row("closed", 10), row("designing", 0), row("closed", 7, true)];
+    expect(summarize(rows)).toEqual({ active: 2, responses: 17, closed: 1 });
+  });
+
+  it("설문이 없으면 모두 0", () => {
+    expect(summarize([])).toEqual({ active: 0, responses: 0, closed: 0 });
   });
 });
