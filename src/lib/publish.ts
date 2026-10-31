@@ -21,7 +21,7 @@ export function makeSlug(length = 12) {
 // 공유 메시지 + 링크. 소요 시간이 문구에 없으면 덧붙인다(R-15).
 export function buildShareText(message: string, link: string, minutes: number) {
   let text = message.trim() || "설문에 참여해 주세요.";
-  if (!text.includes(`${minutes}분`)) text += ` (약 ${minutes}분)`;
+  if (!text.includes(`${minutes}분`)) text += ` ${minutes}분이면 끝나요.`; // "(약 2분)"을 느낌표 뒤에 붙이면 오타처럼 읽혀 문장으로(결정 39)
   return `${text}\n${link}`;
 }
 
