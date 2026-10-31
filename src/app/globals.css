@@ -318,3 +318,9 @@ details[open] > summary::after {
     transition: none;
   }
 }
+
+/* 체크박스·라디오도 포인트 보라로(결정 40) — 브라우저 기본 파랑이 섞이지 않게 */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--accent);
+}
