@@ -90,12 +90,30 @@ export const IconPlus = (p: IconProps) => (
   </Svg>
 );
 
-// 로고 표식 — 파랑 둥근 사각형 안에 올라가는 막대 셋(설문 결과). 웹 아이콘(src/app/icon.svg)과 같은 그림.
-export function LogoMark({ className = "size-7" }: IconProps) {
+// 칸 제목 앞 동그란 아이콘 자리 — 파스텔 바탕에 파랑 아이콘(결정 36).
+export function IconBadge({ tint = "bg-tint-4", children }: { tint?: string; children: React.ReactNode }) {
+  return <span className={`flex size-9 shrink-0 items-center justify-center rounded-full text-brand ${tint}`}>{children}</span>;
+}
+
+// 캐릭터 "파일럿" — 파랑 둥근 사각형 안 웃는 말풍선(설문 = 묻고 듣기)과 AI 반짝이(결정 36).
+// 웹 아이콘(src/app/icon.svg)·홈 화면 아이콘(apple-icon.tsx)과 같은 그림. mood: 기본 웃음 / 윙크(축하·빈 화면).
+export function Mascot({ className = "size-7", mood = "smile" }: IconProps & { mood?: "smile" | "wink" }) {
   return (
     <svg aria-hidden viewBox="0 0 32 32" className={className}>
       <rect width="32" height="32" rx="8" fill="var(--brand)" />
-      <path d="M10 22v-5M16 22V11M22 22v-8" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
+      <path d="M10 7h12a5 5 0 0 1 5 5v4.5a5 5 0 0 1-5 5h-7l-4.5 3.8v-3.9A5 5 0 0 1 5 16.5V12a5 5 0 0 1 5-5z" fill="#fff" />
+      <ellipse cx="12.5" cy="13" rx="1.5" ry="1.9" fill="var(--brand)" />
+      {mood === "wink" ? (
+        <path d="M18 13.4q1.5-1.5 3 0" fill="none" stroke="var(--brand)" strokeWidth="1.5" strokeLinecap="round" />
+      ) : (
+        <ellipse cx="19.5" cy="13" rx="1.5" ry="1.9" fill="var(--brand)" />
+      )}
+      <path d="M13.5 16.4q2.5 2.2 5 0" fill="none" stroke="var(--brand)" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="10.2" cy="16.2" r="1.3" fill="#f9a8d4" />
+      <circle cx="21.8" cy="16.2" r="1.3" fill="#f9a8d4" />
+      <path d="M26.5 2.8l.8 1.7 1.7.8-1.7.8-.8 1.7-.8-1.7-1.7-.8 1.7-.8z" fill="#fff" />
     </svg>
   );
 }
+
+export const LogoMark = Mascot;
