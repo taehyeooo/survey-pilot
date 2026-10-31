@@ -12,7 +12,8 @@ import { loadResults, type QuestionStat } from "@/lib/results";
 import { closeOverdue } from "@/lib/submit";
 import { DemoNotice } from "../../demo-notice";
 import { Confetti } from "../../../confetti";
-import { Mascot } from "../../../icons";
+import { PaperPilot } from "../../../icons";
+import { PageHead } from "../../page-head";
 import { PageSkeleton } from "../../skeleton";
 import { StageBar, stageOf } from "../../stage-bar";
 import { AI_STEPS } from "../../ai-steps";
@@ -47,12 +48,6 @@ interface Survey {
 }
 
 const STATUS_LABEL: Record<string, string> = { designing: "설계 중", reviewing: "문항 확인 중", published: "응답 받는 중", closed: "마감" };
-const STATUS_TONE: Record<string, string> = {
-  designing: "bg-surface text-muted",
-  reviewing: "bg-surface text-muted",
-  published: "bg-brand text-on-accent",
-  closed: "bg-fg text-bg",
-};
 
 const KST_MS = 9 * 60 * 60 * 1000;
 const toKstInput = (iso: string) => new Date(new Date(iso).getTime() + KST_MS).toISOString().slice(0, 16);
@@ -387,48 +382,69 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
   return (
     <>
       {/* 머리: 지금 상태와 설문 제목(문제), 단계 막대 — 어디에 있는지 먼저 보이게(apple-design 길 찾기) */}
-      <header className="mb-8 flex flex-col gap-3">
-        <span className={`self-start rounded-full px-2.5 py-0.5 text-sm font-medium ${STATUS_TONE[survey.status] ?? "bg-surface text-muted"}`}>
-          {STATUS_LABEL[survey.status] ?? survey.status}
-        </span>
-        <h1 className="text-headline">{survey.problem}</h1>
-        <StageBar current={stageOf(survey)} animate={moved === "1"} className="mt-2" />
-      </header>
-      {celebrate === "1" && survey.status === "published" && (
-        <>
-          <Confetti />
-          <p role="status" className="mb-6 flex items-center gap-3 rounded-box bg-tint-2 p-4 font-medium">
-            <Mascot mood="wink" className="size-9 shrink-0" />
-            게시했어요! 이제 링크를 공유하고 응답을 기다려요.
+      <PageHead crumbs={[{ label: "내 설문", href: "/app" }, { label: survey.problem }]}>
+        {report?.content.headline && (
+          <Link href={`/app/surveys/${survey.id}/report`} className="btn btn-primary">
+            결과 보고서
+          </Link>
+        )}
+      </PageHead>
+      <main className="mx-auto w-full max-w-6xl px-6 py-8 md:px-8">
+        <header className="mb-8 flex flex-col gap-4">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div className="flex min-w-0 flex-col gap-2">
+              <span className="inline-flex items-center gap-1.5 text-sm text-muted">
+                <span aria-hidden className={`size-2 rounded-full ${survey.status === "published" ? "bg-brand" : "bg-muted/50"}`} />
+                {STATUS_LABEL[survey.status] ?? survey.status}
+              </span>
+              <h1 className="text-headline">{survey.problem}</h1>
+            </div>
+            {results && (
+              <p className="flex items-baseline gap-1.5">
+                <span className="text-5xl font-bold tracking-display tabular-nums">{responses}</span>
+                <span className="text-sm text-muted">{survey.target_responses ? `/ ${survey.target_responses}명 응답` : "명 응답"}</span>
+              </p>
+            )}
+          </div>
+          <StageBar current={stageOf(survey)} animate={moved === "1"} />
+        </header>
+        {celebrate === "1" && survey.status === "published" && (
+          <>
+            <Confetti />
+            <p role="status" className="mb-6 flex items-center gap-3 rounded-box bg-accent-soft p-4 font-medium">
+              <PaperPilot size={36} expression="celebrate" />
+              게시했어요! 이제 링크를 공유하고 응답을 기다려요.
+            </p>
+          </>
+        )}
+        {isDemoAi() && <DemoNotice />}
+        {survey.taken_down_at && (
+          // 운영자가 내린 설문(multi-user R-14) — 주인은 되돌릴 수 없다. 사유는 보이지 않는다.
+          <p role="status" className="mb-6 rounded-box bg-danger-bg p-3 text-sm text-danger">
+            운영자가 내린 설문이에요. 응답 링크가 응답을 받지 않아요.
           </p>
-        </>
-      )}
-      {isDemoAi() && <DemoNotice />}
-      {survey.taken_down_at && (
-        // 운영자가 내린 설문(multi-user R-14) — 주인은 되돌릴 수 없다. 사유는 보이지 않는다.
-        <p role="status" className="mb-6 rounded-box bg-danger-bg p-3 text-sm text-danger">
-          운영자가 내린 설문이에요. 응답 링크가 응답을 받지 않아요.
-        </p>
-      )}
-      {typeof error === "string" && (
-        <p role="alert" className="mb-6 rounded-box bg-danger-bg p-3 text-sm text-danger">
-          {error}
-        </p>
-      )}
-      <Body survey={survey} origin={origin} canEdit={canEdit} responses={responses} stats={results?.stats ?? []} report={report} />
+        )}
+        {typeof error === "string" && (
+          <p role="alert" className="mb-6 rounded-box bg-danger-bg p-3 text-sm text-danger">
+            {error}
+          </p>
+        )}
+        <Body survey={survey} origin={origin} canEdit={canEdit} responses={responses} stats={results?.stats ?? []} report={report} />
+      </main>
     </>
   );
 }
 
 export default function SurveyPage(props: PageProps<"/app/surveys/[id]">) {
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-8">
-      <Link href="/app" className="mb-4 inline-flex min-h-11 items-center text-sm text-muted hover:underline">
-        ← 내 설문
-      </Link>
-      <Suspense fallback={<PageSkeleton />}>
-        <SurveyDesign {...props} />
-      </Suspense>
-    </main>
+    <Suspense
+      fallback={
+        <main className="mx-auto w-full max-w-6xl px-6 py-8 md:px-8">
+          <PageSkeleton />
+        </main>
+      }
+    >
+      <SurveyDesign {...props} />
+    </Suspense>
   );
 }

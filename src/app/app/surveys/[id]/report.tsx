@@ -37,7 +37,7 @@ export function ReportSection({
     <section aria-labelledby="report-title" className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 id="report-title" className="flex items-center gap-3 text-title">
-          <IconBadge tint="bg-tint-1">
+          <IconBadge>
             <IconTarget className="size-5" />
           </IconBadge>
           문제에 대한 답

@@ -34,12 +34,12 @@ export function HeroPreview() {
           </ul>
         </div>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
-          <div className="rounded-box bg-tint-1 p-4">
+          <div className="rounded-box bg-accent-soft p-4">
             <p className="text-xs text-muted">핵심 문제 1</p>
             <p className="text-3xl font-bold tracking-display text-brand tabular-nums">75%</p>
             <p className="text-sm font-medium">계좌 찾기가 번거롭다</p>
           </div>
-          <div className="rounded-box bg-tint-2 p-4">
+          <div className="rounded-box bg-surface p-4">
             <p className="text-xs text-muted">가설 판정</p>
             <p className="text-3xl font-bold tracking-display tabular-nums">지지 2</p>
             <p className="text-sm font-medium">기각 1 · 판단 불가 0</p>

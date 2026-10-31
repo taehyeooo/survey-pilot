@@ -140,7 +140,7 @@ export function QuestionsSection({
     <section id="questions" aria-labelledby="questions-title" className="flex flex-col gap-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 id="questions-title" className="flex items-center gap-3 text-title">
-          <IconBadge tint="bg-tint-5">
+          <IconBadge>
             <IconList className="size-5" />
           </IconBadge>
           문항 {questions.length}개

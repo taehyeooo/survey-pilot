@@ -17,8 +17,6 @@ import { PrintButton } from "./print-button";
 
 const kstShort = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", month: "numeric", day: "numeric" });
 const percent = (ratio: number) => `${Math.round(ratio * 100)}%`;
-// 핵심 문제 카드마다 파스텔 포인트(꾸밈 — 순서는 번호로 읽는다)
-const PROBLEM_TINTS = ["bg-tint-1", "bg-tint-3", "bg-tint-2"];
 const VERDICT_TONE = { supported: "bg-accent text-on-accent", rejected: "bg-danger text-white", unclear: "bg-line text-fg" } as const;
 
 function BarRow({ label, count, ratio, top }: { label: string; count: number; ratio: number; top?: boolean }) {
@@ -200,7 +198,7 @@ async function Report({ params }: PageProps<"/app/surveys/[id]/report">) {
         </h2>
         <ol className={`grid gap-4 ${content.key_problems.length >= 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"}`}>
           {content.key_problems.map((p, i) => (
-            <li key={i} className={`flex flex-col gap-2 rounded-box p-5 break-inside-avoid ${PROBLEM_TINTS[i % PROBLEM_TINTS.length]}`}>
+            <li key={i} className="flex flex-col gap-2 rounded-box bg-accent-soft p-5 break-inside-avoid">
               <div className="flex items-baseline justify-between gap-3">
                 <span className="text-sm font-semibold text-accent tabular-nums">{i + 1}</span>
                 {p.metric && <span className="text-3xl font-bold tracking-display text-brand tabular-nums">{p.metric}</span>}
