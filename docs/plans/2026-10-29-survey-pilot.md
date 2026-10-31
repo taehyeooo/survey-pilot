@@ -3,7 +3,7 @@ title: 서베이 파일럿 구현 계획
 version: 1
 status: active
 updated: 2026-10-30
-based_on: docs/specs/2026-10-29-survey-pilot.md v18
+based_on: docs/specs/2026-10-29-survey-pilot.md v19
 issue: "#1"
 ---
 
