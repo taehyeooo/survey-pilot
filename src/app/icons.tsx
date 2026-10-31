@@ -98,9 +98,9 @@ export function IconBadge({ children }: { children: React.ReactNode }) {
 }
 
 // 캐릭터 "비행쪽지" — 질문을 적은 쪽지를 접어 만든 종이비행기(결정 37). 어디서나 로고와 같은 모습: 보라 사각형 안 흰 비행쪽지(결정 38).
-// 웹 아이콘(src/app/icon.svg)과 같은 그림. expression: default(비행) / celebrate(축하, 18도 더 들고 반달 눈·비행선).
+// 웹 아이콘(src/app/icon.svg)과 같은 그림. expression: default(비행) / celebrate(축하, 18도 더 들고 반달 눈 — 꼬리 같은 비행선은 사용자 요청으로 뺌).
 // motion: float(천천히 둥실) / launch(한 번 위로 슝 날아올랐다가 둥실). 움직임 줄이기면 멈춘다(globals.css).
-// 16px 이하는 메모 줄·비행선을 빼고 모양과 눈만(작은 크기에서 뭉개지지 않게).
+// 16px 이하는 메모 줄을 빼고 모양과 눈만(작은 크기에서 뭉개지지 않게).
 const PILOT_SILHOUETTE = "M3.8 13 28.2 4.1c.8-.2 1.3.6.8 1.2l-8 21.9c-.3.8-1.3.8-1.7.1l-4.8-7-7.2 1.5c-.8.2-1.3-.8-.7-1.4l5.1-5-7.5-.7c-.9-.1-1.1-1.2-.2-1.7Z";
 const PILOT_INK = "var(--brand)";
 const MOTION = { none: "", float: "pilot-float", launch: "pilot-launch" } as const;
@@ -129,7 +129,6 @@ export function PaperPilot({
       </defs>
       <rect width="32" height="32" rx="9" fill={PILOT_INK} />
       <g className={MOTION[motion]}>
-        {expression === "celebrate" && !compact && <path d="M3.5 24.5q4.2 2.3 7.4-.5" fill="none" stroke="#ffffff" strokeWidth="1.35" strokeLinecap="round" />}
         <g transform={pose}>
           <path d={PILOT_SILHOUETTE} fill="#ffffff" stroke="#ffffff" strokeWidth="1.2" strokeLinejoin="round" />
           <g clipPath={`url(#${clip})`}>
