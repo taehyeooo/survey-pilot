@@ -13,6 +13,7 @@ import {
   ConflictError,
   confirmDesign,
   createSurvey,
+  joinPicked,
   runClarify,
   runDesign,
   updateDesign,
@@ -84,11 +85,15 @@ export async function startSurvey(_prev: StartState, formData: FormData): Promis
 
 export async function answerAndDesign(id: string, formData: FormData) {
   const survey = await loadOwned(id);
-  const answers = survey.clarifications.map((_, i) => {
-    const picked = String(formData.get(`answer-${i}`) ?? "");
-    return picked === "__other" ? String(formData.get(`other-${i}`) ?? "") : picked;
-  });
+  // 질문마다 여러 개를 고를 수 있다(결정 40) — 고른 것을 한 답으로 잇는다. 하나도 없으면 되돌려 보낸다(화면도 막지만 한 번 더).
+  const answers = survey.clarifications.map((_, i) =>
+    joinPicked(
+      formData.getAll(`answer-${i}`).map(String),
+      String(formData.get(`other-${i}`) ?? ""),
+    ),
+  );
   let error: string | undefined;
+  if (answers.some((a) => !a)) back(id, "질문마다 하나 이상 골라 주세요.");
   try {
     const db = createAdminClient();
     await answerClarifications(db, survey, answers);

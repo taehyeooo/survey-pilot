@@ -9,6 +9,7 @@ import {
   defaultClosesAt,
   DesignSchema,
   designPrompt,
+  joinPicked,
   validateProblem,
 } from "../src/lib/design";
 import { LimitExceededError } from "../src/lib/usage";
@@ -118,5 +119,20 @@ describe("Gemini 클라이언트", () => {
   it("HTTP 오류는 던진다", async () => {
     const { fetchFn } = fakeFetch({ ok: false, status: 429, body: {} });
     await expect(createGeminiAi({ apiKey: "k", model: "m", fetchFn }).generateJson("p")).rejects.toThrow(/429/);
+  });
+});
+
+describe("되묻기 답 합치기(여러 개 고르기, 결정 40)", () => {
+  it("고른 선택지를 고른 순서대로 쉼표로 잇는다", () => {
+    expect(joinPicked(["동아리 회원", "임원"], "")).toBe("동아리 회원, 임원");
+  });
+
+  it("직접 입력을 고르면 쓴 글로 바꾸고, 비어 있으면 뺀다", () => {
+    expect(joinPicked(["동아리 회원", "__other"], "  졸업생 ")).toBe("동아리 회원, 졸업생");
+    expect(joinPicked(["동아리 회원", "__other"], "   ")).toBe("동아리 회원");
+  });
+
+  it("아무것도 고르지 않으면 빈 글", () => {
+    expect(joinPicked([], "쓴 글")).toBe("");
   });
 });

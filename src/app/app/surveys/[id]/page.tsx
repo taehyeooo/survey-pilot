@@ -19,7 +19,7 @@ import { StageBar, stageOf } from "../../stage-bar";
 import { AI_STEPS } from "../../ai-steps";
 import { SubmitButton } from "../../submit-button";
 import { answerAndDesign, closeNow, publish, regenerateDesign, saveAndConfirm, saveResponseMode, saveSettings } from "../actions";
-import { OtherOption } from "./other-option";
+import { ClarifyChoices } from "./clarify-choices";
 import { QuestionsSection, type Question } from "./questions";
 import { DeleteRequest } from "./delete-request";
 import { ReportSection } from "./report";
@@ -56,17 +56,13 @@ const kstFormat = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", dat
 function ClarifyForm({ survey }: { survey: Survey }) {
   return (
     <form action={answerAndDesign.bind(null, survey.id)} className="flex flex-col gap-6">
-      <p className="text-muted">설계 전에 몇 가지만 알려 주세요.</p>
+      <p className="text-muted">설계 전에 몇 가지만 알려 주세요. 해당하는 것을 모두 골라도 돼요.</p>
       {survey.clarifications.map((c, i) => (
         <fieldset key={i} className="flex flex-col gap-2">
-          <legend className="mb-2 font-medium">{c.question}</legend>
-          {c.options.map((option) => (
-            <label key={option} className="flex min-h-11 items-center gap-3 rounded-box border border-line px-3">
-              <input type="radio" name={`answer-${i}`} value={option} required />
-              {option}
-            </label>
-          ))}
-          <OtherOption index={i} question={c.question} />
+          <legend className="mb-2 font-medium">
+            {c.question} <span className="text-sm font-normal text-muted">(여러 개 선택 가능)</span>
+          </legend>
+          <ClarifyChoices index={i} question={c.question} options={c.options} />
         </fieldset>
       ))}
       <SubmitButton pendingSteps={AI_STEPS.design}>설계 만들기</SubmitButton>
