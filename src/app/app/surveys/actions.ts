@@ -53,7 +53,11 @@ function messageOf(error: unknown) {
 }
 
 // 성공하면 ?moved=1 — 화면이 방금 끝난 단계 칸을 채우는 움직임을 보인다. 실패하면 ?error=.
+// 왼쪽 메뉴(설문 수·최근 항목)는 화면을 옮겨도 다시 그리지 않는 레이아웃에 있다 — 설문을 바꾸면 /app 레이아웃째 새로 그리게(결정 41)
+const refreshApp = () => revalidatePath("/app", "layout");
+
 function back(id: string, error?: string): never {
+  refreshApp();
   redirect(`/app/surveys/${id}?${error ? `error=${encodeURIComponent(error)}` : "moved=1"}`);
 }
 
@@ -161,7 +165,7 @@ async function questionStep(id: string, step: (survey: QuestionSurvey) => Promis
   }
   // 성공하면 같은 화면을 새로 그린다. 같은 주소에 #만 바꿔 이동하면 라우터가 데이터를 다시 가져오지 않는다.
   if (error) redirect(`/app/surveys/${id}?error=${encodeURIComponent(error)}`);
-  revalidatePath(`/app/surveys/${id}`);
+  refreshApp();
 }
 
 export async function makeQuestions(id: string) {
@@ -208,6 +212,7 @@ export async function publish(id: string) {
   } catch (e) {
     error = messageOf(e);
   }
+  refreshApp();
   if (!error) redirect(`/app/surveys/${id}?moved=1&celebrate=1`); // 게시 축하 폭죽(결정 35)
   back(id, error);
 }
@@ -226,7 +231,7 @@ export async function saveSettings(id: string, formData: FormData) {
     error = messageOf(e);
   }
   if (error) redirect(`/app/surveys/${id}?error=${encodeURIComponent(error)}`);
-  revalidatePath(`/app/surveys/${id}`);
+  refreshApp();
 }
 
 // 응답 방식(ADR 0017 v2) — 한 사람 한 번만(이메일 인증) 켜기·끄기
@@ -238,7 +243,7 @@ export async function saveResponseMode(id: string, formData: FormData) {
     error = messageOf(e);
   }
   if (error) redirect(`/app/surveys/${id}?error=${encodeURIComponent(error)}`);
-  revalidatePath(`/app/surveys/${id}`);
+  refreshApp();
 }
 
 // 수동 마감(R-16)
@@ -265,7 +270,7 @@ export async function makeReport(id: string) {
     error = messageOf(e);
   }
   if (error) redirect(`/app/surveys/${id}?error=${encodeURIComponent(error)}`);
-  revalidatePath(`/app/surveys/${id}`);
+  refreshApp();
 }
 
 // ── 응답 삭제 요청(R-26, ADR 0012): 미리보기 → 사유 → 재확인 → 삭제 + 감사 기록 ──────────────
@@ -294,6 +299,6 @@ export async function deleteForRequest(id: string, respondentId: string, _prev: 
   } catch (e) {
     return { step: "confirm", error: messageOf(e) };
   }
-  revalidatePath(`/app/surveys/${id}`);
+  refreshApp();
   return { step: "done" };
 }

@@ -110,10 +110,12 @@ function DesignForm({ survey }: { survey: Survey }) {
           <span className="font-medium">응답 대상</span>
           <input name="audience" required defaultValue={survey.audience ?? ""} className="field" />
         </label>
+        {/* 목표 응답 수가 진행 현황·보고서의 기준이라 잘 보이게(결정 41) */}
+        <p id="target-hint" className="-mb-1 text-sm text-muted">목표 응답 수는 실제로 모을 수 있는 만큼 적어 주세요. 예: 동아리 회원이 30명이면 20~25명. 진행 현황과 보고서가 이 수를 기준으로 보여요.</p>
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-2">
             <span className="font-medium">목표 응답 수</span>
-            <input name="target_responses" type="number" min={1} required defaultValue={survey.target_responses ?? ""} className="field" />
+            <input name="target_responses" type="number" min={1} required defaultValue={survey.target_responses ?? ""} aria-describedby="target-hint" className="field" />
           </label>
           <label className="flex flex-col gap-2">
             <span className="font-medium">소요 시간(분)</span>
@@ -387,8 +389,8 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
       </PageHead>
       <main className="mx-auto w-full max-w-6xl px-6 py-8 md:px-8">
         <header className="mb-8 flex flex-col gap-4">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div className="flex min-w-0 flex-col gap-2">
+          <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-4">
+            <div className="flex min-w-0 flex-1 basis-96 flex-col gap-2">
               <span className="inline-flex items-center gap-1.5 text-sm text-muted">
                 <span aria-hidden className={`size-2 rounded-full ${survey.status === "published" ? "bg-brand" : "bg-muted/50"}`} />
                 {STATUS_LABEL[survey.status] ?? survey.status}
@@ -396,7 +398,7 @@ async function SurveyDesign({ params, searchParams }: PageProps<"/app/surveys/[i
               <h1 className="text-headline">{survey.problem}</h1>
             </div>
             {results && (
-              <p className="flex items-baseline gap-1.5">
+              <p className="flex shrink-0 items-baseline gap-1.5">
                 <span className="text-5xl font-bold tracking-display tabular-nums">{responses}</span>
                 <span className="text-sm text-muted">{survey.target_responses ? `/ ${survey.target_responses}명 응답` : "명 응답"}</span>
               </p>

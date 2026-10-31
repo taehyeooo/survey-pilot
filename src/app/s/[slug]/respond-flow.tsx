@@ -1,7 +1,8 @@
 "use client";
 
-import { startTransition, useActionState, useState } from "react";
+import { startTransition, useActionState, useRef, useState } from "react";
 import { consentNotes } from "@/lib/consent-copy";
+import { isOtherLabel, OTHER_PREFIX, OTHER_TEXT_MAX } from "@/lib/other";
 import { Confetti } from "../../confetti";
 import { checkCode, sendCode, startAnswering, submitAnswers, type CodeState, type SubmitState, type VerifyState } from "./actions";
 
@@ -127,6 +128,29 @@ function CodeStep({ email, state, action, pending, resend }: { email: string; st
   );
 }
 
+const choiceBox = "flex min-h-11 cursor-pointer items-center gap-3 rounded-box border border-line px-3 has-[:checked]:border-accent has-[:checked]:bg-accent-soft";
+
+// "기타"를 고르면 무엇인지 적을 칸(결정 41) — 글을 쓰면 저절로 골라진다. 보낼 때 "text:글"로 같은 문항 값에 붙인다.
+function OtherChoice({ q, option }: { q: PublicQuestion; option: { id: string; label: string } }) {
+  const box = useRef<HTMLInputElement>(null);
+  return (
+    <label className={`${choiceBox} focus-within:outline-2 focus-within:outline-accent`}>
+      <input ref={box} type={q.type === "single" ? "radio" : "checkbox"} name={q.id} value={option.id} required={q.type === "single" && q.required} className="size-4" />
+      <span className="shrink-0">{option.label}</span>
+      <input
+        name={`${q.id}__other`}
+        maxLength={OTHER_TEXT_MAX}
+        aria-label={`${q.prompt} — ${option.label} 내용`}
+        placeholder="직접 적어 주세요"
+        onInput={(e) => {
+          if (box.current && e.currentTarget.value.trim()) box.current.checked = true;
+        }}
+        className="min-w-0 flex-1 bg-transparent py-2 outline-none"
+      />
+    </label>
+  );
+}
+
 function QuestionField({ q, index }: { q: PublicQuestion; index: number }) {
   const legend = (
     <legend className="mb-3 font-medium">
@@ -154,9 +178,10 @@ function QuestionField({ q, index }: { q: PublicQuestion; index: number }) {
             </label>
           ))}
         </div>
-        <p className="mt-1 flex justify-between text-xs text-muted">
-          <span>전혀 아니다</span>
-          <span>매우 그렇다</span>
+        {/* 양 끝 말은 문항마다 AI가 정한다(예: 매우 불만 ↔ 매우 만족, 결정 41). 없으면 기본 말 */}
+        <p className="mt-1 flex justify-between gap-4 text-xs text-muted">
+          <span>1 · {q.options[0]?.label ?? "전혀 아니다"}</span>
+          <span className="text-right">5 · {q.options[1]?.label ?? "매우 그렇다"}</span>
         </p>
       </fieldset>
     );
@@ -164,19 +189,30 @@ function QuestionField({ q, index }: { q: PublicQuestion; index: number }) {
   return (
     <fieldset className="flex flex-col gap-2">
       {legend}
-      {q.options.map((o) => (
-        <label key={o.id} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-box border border-line px-3 has-[:checked]:border-accent has-[:checked]:bg-surface">
-          <input type={q.type === "single" ? "radio" : "checkbox"} name={q.id} value={o.id} required={q.type === "single" && q.required} className="size-4" />
-          {o.label}
-        </label>
-      ))}
+      {q.options.map((o) =>
+        isOtherLabel(o.label) ? (
+          <OtherChoice key={o.id} q={q} option={o} />
+        ) : (
+          <label key={o.id} className={choiceBox}>
+            <input type={q.type === "single" ? "radio" : "checkbox"} name={q.id} value={o.id} required={q.type === "single" && q.required} className="size-4" />
+            {o.label}
+          </label>
+        ),
+      )}
     </fieldset>
   );
+}
+
+// 답한 문항 수 — 글 칸은 비어 있지 않을 때, 고르기는 하나라도 골랐을 때
+function countAnswered(form: HTMLFormElement, questions: PublicQuestion[]) {
+  const data = new FormData(form);
+  return questions.filter((q) => data.getAll(q.id).some((v) => String(v).trim() !== "")).length;
 }
 
 function QuestionsStep({ slug, token, questions, verified = false }: { slug: string; token: string; questions: PublicQuestion[]; verified?: boolean }) {
   const [state, action, pending] = useActionState<SubmitState, FormData>(submitAnswers.bind(null, slug, token), {});
   const [localError, setLocalError] = useState<string | null>(null);
+  const [answered, setAnswered] = useState(0);
 
   if (state.done) {
     return (
@@ -195,16 +231,30 @@ function QuestionsStep({ slug, token, questions, verified = false }: { slug: str
     const data = new FormData(e.currentTarget);
     const missing = questions.findIndex((q) => q.type === "multi" && q.required && data.getAll(q.id).length === 0);
     if (missing >= 0) return setLocalError(`${missing + 1}번 문항에서 하나 이상 골라 주세요.`);
+    for (const q of questions) {
+      const other = String(data.get(`${q.id}__other`) ?? "").trim();
+      data.delete(`${q.id}__other`);
+      if (other) data.append(q.id, `${OTHER_PREFIX}${other}`); // 서버가 기타를 골랐을 때만 남긴다
+    }
     setLocalError(null);
     startTransition(() => action(data));
   }
 
   const error = localError ?? state.error;
   return (
-    <form className="flex flex-col gap-8" onSubmit={onSubmit}>
-      <p role="status" className="card p-3 text-sm">
-        {verified ? "이메일을 확인했어요. 이제 답해 주세요." : "이제 답해 주세요."}
-      </p>
+    <form className="flex flex-col gap-8" onSubmit={onSubmit} onChange={(e) => setAnswered(countAnswered(e.currentTarget, questions))}>
+      {/* 몇 문항 남았는지(결정 41) — 휴대폰에서 길게 내려가도 위에 붙어 있다 */}
+      <div className="sticky top-0 z-10 -mx-4 flex flex-col gap-1.5 bg-bg/95 px-4 py-3 backdrop-blur">
+        <p className="flex justify-between text-sm">
+          <span>{verified ? "이메일을 확인했어요. 이제 답해 주세요." : "이제 답해 주세요."}</span>
+          <span className="font-medium tabular-nums" aria-live="polite">
+            {answered} / {questions.length} 답함
+          </span>
+        </p>
+        <span aria-hidden className="h-1.5 overflow-hidden rounded-full bg-line">
+          <span className="block h-full rounded-full bg-accent transition-[width] duration-300" style={{ width: `${(answered / Math.max(1, questions.length)) * 100}%` }} />
+        </span>
+      </div>
       {questions.map((q, i) => (
         <QuestionField key={q.id} q={q} index={i} />
       ))}
