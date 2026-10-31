@@ -31,7 +31,8 @@ const ReportSchema = z.object({
 });
 export type Report = z.infer<typeof ReportSchema>;
 
-export const VERDICT_LABEL: Record<Report["hypotheses"][number]["verdict"], string> = { supported: "지지", rejected: "기각", unclear: "판단 불가" };
+// 화면에 보이는 판정 말(결정 38, 사용자 선택) — AI에게는 supported·rejected·unclear로 받는다
+export const VERDICT_LABEL: Record<Report["hypotheses"][number]["verdict"], string> = { supported: "그렇다", rejected: "아니다", unclear: "판단 보류" };
 
 // 가설마다 판정 하나(R-24). 인용문은 실제 응답 원문에 있는 것만 남기고, 인용이 없어진 주제는 뺀다(R-23).
 export function parseReport(data: unknown, input: ReportInput): Report {
