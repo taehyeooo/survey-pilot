@@ -75,3 +75,22 @@ describe("CSV", () => {
     expect(csv).toContain(`"'=HYPERLINK(""x""), ""a""\n줄"`);
   });
 });
+
+describe("기타 글(결정 41)", () => {
+  const q: ResultQuestion[] = [{ id: "q1", position: 1, type: "single", prompt: "그만둔 이유", options: [{ id: "o1", label: "시설" }, { id: "o2", label: "기타" }] }];
+  const answers: ResultAnswer[] = [
+    { response_id: "r1", question_id: "q1", value: ["o2", "text:샤워실이 좁아요"] },
+    { response_id: "r2", question_id: "q1", value: ["o1"] },
+  ];
+
+  it("집계는 선택지 수만 세고, 기타 글은 따로 모은다", () => {
+    const [stat] = aggregate(q, answers);
+    expect(stat.kind === "choice" && stat.options.map((o) => o.count)).toEqual([1, 1]);
+    expect(stat.kind === "choice" && stat.others).toEqual(["샤워실이 좁아요"]);
+  });
+
+  it("CSV에는 기타(쓴 글)로 보인다", () => {
+    const csv = toCsv(q, [{ id: "r1", submitted_at: "2026-10-31T00:00:00Z" }], answers);
+    expect(csv).toContain("기타(샤워실이 좁아요)");
+  });
+});

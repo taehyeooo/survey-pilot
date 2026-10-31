@@ -103,7 +103,7 @@ export function toReportInput(
     target: survey.target_responses,
     results: stats.map((s) => ({ prompt: s.question.prompt, hypothesis: hypothesisNumber(s.question.id), type: s.question.type, summary: summarize(s) })),
     texts: stats
-      .flatMap((s) => (s.kind === "text" ? s.texts : []))
+      .flatMap((s) => (s.kind === "text" ? s.texts : s.kind === "choice" ? s.others : [])) // 기타 글도 주관식 재료(결정 41)
       .slice(0, MAX_TEXTS)
       .map((t) => t.slice(0, MAX_TEXT_LENGTH)),
   };

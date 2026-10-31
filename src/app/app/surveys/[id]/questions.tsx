@@ -23,12 +23,19 @@ function Preview({ question }: { question: Question }) {
   if (question.type === "text") return <div aria-hidden className="field h-20" />;
   if (question.type === "scale") {
     return (
-      <div aria-hidden className="grid grid-cols-5 gap-2">
-        {[1, 2, 3, 4, 5].map((n) => (
-          <span key={n} className="flex min-h-11 items-center justify-center rounded-box border border-line text-sm">
-            {n}
-          </span>
-        ))}
+      <div aria-hidden className="flex flex-col gap-1">
+        <div className="grid grid-cols-5 gap-2">
+          {[1, 2, 3, 4, 5].map((n) => (
+            <span key={n} className="flex min-h-11 items-center justify-center rounded-box border border-line text-sm">
+              {n}
+            </span>
+          ))}
+        </div>
+        {/* 응답자가 보는 양 끝 말과 같게(결정 41) */}
+        <p className="flex justify-between gap-4 text-xs text-muted">
+          <span>1 · {question.options[0]?.label ?? "전혀 아니다"}</span>
+          <span className="text-right">5 · {question.options[1]?.label ?? "매우 그렇다"}</span>
+        </p>
       </div>
     );
   }

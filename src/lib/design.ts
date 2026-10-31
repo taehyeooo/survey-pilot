@@ -73,6 +73,7 @@ export function clarifyPrompt(problem: string) {
 설문을 설계하려면 대상(누구에게 묻나), 상황(언제·어디서 생긴 문제인가), 알고 싶은 것(무엇을 결정하려 하나)이 필요하다.
 문제에서 빠진 것만 객관식 질문으로 만든다. 빠진 게 없으면 빈 배열을 돌려준다.
 - 질문은 최대 3개, 선택지는 2~5개, 짧은 해요체.
+- 맞춤법·띄어쓰기를 지킨다(예: "동기 부여" O / "동기 부처" X).
 JSON만 출력한다: {"questions":[{"question":"...","options":["...","..."]}]}
 
 <problem>
@@ -89,10 +90,11 @@ export function designPrompt(problem: string, clarifications: Clarification[]) {
 - purpose: 조사 목적 한 줄("확인·증명"이 아니라 "알아본다")
 - hypotheses: 설문으로 확인할 가설 2~4개(서로 겹치지 않게, 응답으로 지지·기각을 판단할 수 있게). 문제에 가정이 있으면 그 가정과 다른 설명(다른 원인·반대 결과)도 1개 이상 넣는다
 - audience: 응답 대상
-- target_responses: 결론을 내기에 충분하면서 현실적으로 모을 수 있는 응답 수(정수)
+- target_responses: 결론을 내기에 충분하면서 현실적으로 모을 수 있는 응답 수(정수). 응답 대상의 실제 규모를 넘지 않게(동아리·가게처럼 작은 집단이면 대상 수의 70~80%), 규모를 모르면 30. 100 이상은 문제·답에 큰 집단(전교생·전 직원 등)이 분명히 나올 때만
 - target_minutes: 응답 소요 시간(분, 정수). 짧을수록 좋다
 - intro: 응답자 화면 맨 위 소개글(2~3문장, 해요체, 왜 묻는지와 소요 시간)
 - share_message: 카톡에 붙일 짧은 공유 메시지(소요 시간 포함, 링크는 넣지 않음)
+- 맞춤법·띄어쓰기를 지킨다(예: "동기 부여" O / "동기 부처" X).
 JSON만 출력한다: {"purpose":"","hypotheses":[""],"audience":"","target_responses":0,"target_minutes":0,"intro":"","share_message":""}
 
 <problem>

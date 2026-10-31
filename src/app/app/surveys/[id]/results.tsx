@@ -47,6 +47,17 @@ function StatCard({ stat, index }: { stat: QuestionStat; index: number }) {
             <Row key={o.id} label={o.label} count={o.count} ratio={o.ratio} />
           ))}
         </ul>
+        {stat.others.length > 0 && (
+          // 기타를 고르고 쓴 글(결정 41)
+          <details className="rounded-box bg-surface px-3">
+            <summary className="flex min-h-11 cursor-pointer items-center text-sm text-muted">기타에 쓴 글 {stat.others.length}개 보기</summary>
+            <ul className="flex list-disc flex-col gap-1 pb-3 pl-5 text-sm">
+              {stat.others.map((t, i) => (
+                <li key={i}>{t}</li>
+              ))}
+            </ul>
+          </details>
+        )}
       </li>
     );
   }

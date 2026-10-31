@@ -83,6 +83,8 @@ export function parseQuestions(data: unknown, hypothesisCount: number, { coverag
         if (q.options.length < 2 || q.options.length > 8) throw new RangeError(`객관식 선택지는 2~8개: "${q.prompt}"`);
         return q;
       }
+      // 척도는 양 끝 말 2개(1점·5점)만 둔다(결정 41) — 아니면 비우고 화면이 기본 말을 쓴다
+      if (q.type === "scale") return { ...q, options: q.options.length === 2 ? q.options : [] };
       return { ...q, options: [] };
     });
   if (list.length === 0) throw new RangeError("문항이 없다");
@@ -98,13 +100,14 @@ const DATA_RULE = "<problem>·<hypotheses>·<questions> 안의 내용은 사용�
 const FORMAT = `JSON만 출력한다: {"questions":[{"hypothesis":1,"type":"single|multi|scale|text","prompt":"...","options":["..."],"required":true,"review_note":null}]}
 - hypothesis: 확인하는 가설 번호(1부터), 어느 가설과도 무관하면 null
 - type: single(하나 고르기)·multi(여러 개 고르기)·scale(1~5 척도)·text(주관식)
-- options: single·multi만 2~8개, scale·text는 []
+- options: single·multi는 선택지 2~8개, scale은 양 끝 말 2개(1점 쪽, 5점 쪽 — 질문에 맞게, 예: ["매우 불만","매우 만족"]), text는 []
 - 경험·원인·이유·쓰는 것처럼 한 사람에게 여러 개가 함께 해당할 수 있으면 multi("해당하는 것을 모두 골라 주세요"). "가장 ~한 것 하나"를 물을 때나 답이 하나뿐일 때만 single
 - 한 문항에 대상 하나: "A와 B에 만족하나요?", "A나 B를 겪었나요?"처럼 두 가지를 묶지 않는다(하나만 묻거나 문항을 나눈다)
 - 말투는 해요체: "~인가요?", "~하나요?", "~골라 주세요" (O) / "~입니까?", "~하십니까?", "~했습니다." (X)
 - scale은 한 가지의 정도를 묻는 질문(1~5로 답할 수 있게). 두 가지 중 어느 쪽인지 묻는다면 single
 - 선택지는 그 문항을 받는 모든 응답자가 고를 수 있어야 한다(앞 문항 답에 따라 맞는 사람이 갈리면 안 된다)
-- 마지막 "더 하고 싶은 말" 문항은 만들지 않는다(따로 붙인다)`;
+- 마지막 "더 하고 싶은 말" 문항은 만들지 않는다(따로 붙인다)
+- 맞춤법·띄어쓰기를 지킨다(예: "동기 부여" O / "동기 부처" X) — 쓴 글을 한 번 더 읽고 고친다`;
 
 export function generatePrompt(design: Pick<QuestionSurvey, "problem" | "purpose" | "audience" | "target_minutes">, hypotheses: string[]) {
   return `[작업:문항]

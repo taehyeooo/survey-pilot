@@ -136,3 +136,11 @@ describe("되묻기 답 합치기(여러 개 고르기, 결정 40)", () => {
     expect(joinPicked([], "쓴 글")).toBe("");
   });
 });
+
+describe("목표 응답 수 기준(결정 41)", () => {
+  it("설계 프롬프트가 대상 규모를 넘지 않게, 모르면 30으로 정하라고 한다", () => {
+    const prompt = designPrompt("동네 헬스장 신규 회원이 그만두는 이유", []);
+    expect(prompt).toContain("규모를 모르면 30");
+    expect(prompt).toContain("맞춤법");
+  });
+});

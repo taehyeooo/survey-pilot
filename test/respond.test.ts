@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { emailHashOf, makeCode, makeToken, readToken, TOKEN_TTL_MS } from "../src/lib/respond";
+import { emailHashOf, makeCode, makeToken, readToken, TOKEN_TTL_MS, BROWSER_START_LIMIT } from "../src/lib/respond";
 
 const secret = "test-secret";
 
@@ -26,5 +26,11 @@ describe("해시·인증번호·토큰", () => {
     expect(readToken("other", token, now)).toBeNull();
     expect(readToken(secret, token.replace("respondent-1", "respondent-2"), now)).toBeNull();
     expect(readToken(secret, "엉터리", now)).toBeNull();
+  });
+});
+
+describe("바로 응답 시작 제한(결정 41)", () => {
+  it("한 와이파이에서 여럿이 시작할 수 있게 같은 IP 시간당 60번", () => {
+    expect(BROWSER_START_LIMIT).toBe(60);
   });
 });

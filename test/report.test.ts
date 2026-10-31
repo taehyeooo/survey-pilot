@@ -67,7 +67,7 @@ describe("리포트 출력 검사", () => {
 describe("리포트 입력 만들기", () => {
   const question = (id: string, type: "single" | "scale" | "text") => ({ id, position: 1, type, prompt: `문항 ${id}`, options: [] });
   const stats: QuestionStat[] = [
-    { kind: "choice", question: question("a", "single"), answered: 4, options: [{ id: "o1", label: "예", count: 3, ratio: 0.75 }, { id: "o2", label: "아니요", count: 1, ratio: 0.25 }] },
+    { kind: "choice", question: question("a", "single"), answered: 4, options: [{ id: "o1", label: "예", count: 3, ratio: 0.75 }, { id: "o2", label: "아니요", count: 1, ratio: 0.25 }], others: [] },
     { kind: "scale", question: question("b", "scale"), answered: 2, mean: 4.5, distribution: [0, 0, 0, 1, 1] },
     { kind: "text", question: question("c", "text"), answered: 2, texts: ["가".repeat(600), "짧은 답"] },
   ];
@@ -116,5 +116,19 @@ describe("리포트 입력 만들기", () => {
 describe("판정 말(결정 38)", () => {
   it("화면에는 그렇다·아니다·판단 보류로 보인다", () => {
     expect(VERDICT_LABEL).toEqual({ supported: "그렇다", rejected: "아니다", unclear: "판단 보류" });
+  });
+});
+
+describe("기타 글도 리포트 주관식 재료로(결정 41)", () => {
+  it("선택 문항의 기타 글을 texts에 넣는다", () => {
+    const stat = {
+      kind: "choice",
+      question: { id: "q1", position: 1, type: "single", prompt: "이유", options: [{ id: "o1", label: "기타" }] },
+      answered: 1,
+      options: [{ id: "o1", label: "기타", count: 1, ratio: 1 }],
+      others: ["샤워실이 좁아요"],
+    } as QuestionStat;
+    const input = toReportInput({ problem: "p", purpose: null, target_responses: 10 }, ["h"], 1, [stat], () => 1);
+    expect(input.texts).toContain("샤워실이 좁아요");
   });
 });

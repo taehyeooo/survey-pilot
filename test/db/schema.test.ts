@@ -153,6 +153,17 @@ describe.skipIf(!hasDb)("DB 스키마와 접근 권한", () => {
     expect(edit.error).toBeNull();
   });
 
+  it("척도는 양 끝 말 2개를 둘 수 있고, 1개·주관식 선택지·객관식 1개는 거부한다(결정 41)", async () => {
+    const { data: survey } = await service.from("surveys").insert({ owner_id: adminId, problem: "척도 양 끝 말 설문" }).select().single().throwOnError();
+    const row = (position: number, type: string, options: unknown[]) => ({ survey_id: survey.id, position, type, prompt: "문항", options });
+    const ends = [{ id: "o1", label: "매우 불만" }, { id: "o2", label: "매우 만족" }];
+    expect((await service.from("questions").insert(row(1, "scale", ends))).error).toBeNull();
+    expect((await service.from("questions").insert(row(2, "scale", []))).error).toBeNull();
+    expect((await service.from("questions").insert(row(3, "scale", ends.slice(0, 1)))).error).not.toBeNull();
+    expect((await service.from("questions").insert(row(4, "text", ends))).error).not.toBeNull();
+    expect((await service.from("questions").insert(row(5, "single", ends.slice(0, 1)))).error).not.toBeNull();
+  });
+
   it("상태는 앞으로만 간다", async () => {
     const { survey } = await publishedSurveyWithResponse();
     const back = await service.from("surveys").update({ status: "designing", slug: null }).eq("id", survey.id);
