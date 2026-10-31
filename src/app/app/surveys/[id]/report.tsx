@@ -75,7 +75,7 @@ export function ReportSection({
             </span>
           </div>
           <p className="text-xl leading-8 font-semibold">{report.content.headline ?? report.content.answer}</p>
-          {report.content.headline && <p className="leading-7 text-muted">{report.content.answer}</p>}
+          {report.content.headline && <p className="leading-8 text-fg/80">{report.content.answer}</p>}
           <ul className="flex flex-wrap gap-2 text-sm" aria-label="가설 판정">
             {report.content.hypotheses.map((h) => (
               <li key={h.index} className={`rounded-box border-l-4 bg-bg px-3 py-2 ${VERDICT_STYLE[h.verdict]}`}>

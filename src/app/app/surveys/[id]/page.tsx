@@ -293,7 +293,7 @@ function Body({
           <DesignDetails survey={survey} />
           <QuestionsSection surveyId={survey.id} questions={survey.questions} targetMinutes={minutes} editable={canEdit} />
         </div>
-        <aside className="flex flex-col gap-6 lg:sticky lg:top-20 lg:order-none order-first">
+        <aside className="flex flex-col gap-6 lg:sticky lg:top-6 lg:order-none order-first">
           <ShareBox link={link} shareText={buildShareText(survey.share_message ?? "", link, minutes)} />
           <ResponseModeForm survey={survey} />
           <SettingsForm survey={survey} />

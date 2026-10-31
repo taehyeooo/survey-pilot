@@ -31,6 +31,9 @@
   --tracking-title: -0.01em;
   --tracking-code: 0.3em;
   --font-sans: var(--font-body), system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  /* 가장 작은 글자 12px → 13px(결정 39) — 한글은 작은 크기에서 획이 뭉개진다 */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.5;
 }
 
 :root {
@@ -39,7 +42,7 @@
   --surface: #f7f7f8; /* 왼쪽 메뉴·옅은 면 */
   --accent-soft: #f4f2ff; /* 인사 띠·선택된 줄 */
   --fg: #202124;
-  --muted: #696c73;
+  --muted: #5c5f66; /* 보조 글자 — 흰 바탕 6.4, 연보라 위 5.8(결정 39, 읽기 쉽게 한 단계 진하게) */
   --line: #e1e2e5;
   /* 주 버튼·선택 표시 — 포인트 보라(흰 글자 5.5) */
   --accent: #6254d9;
@@ -70,7 +73,7 @@ body {
   color: var(--fg);
   font-family: var(--font-sans);
   font-size: 1.0625rem; /* 17px — 애플 본문 크기 */
-  line-height: 1.47;
+  line-height: 1.6; /* 한글 본문은 1.6 안팎이 읽기 쉽다(결정 39) */
   word-break: keep-all;
 }
 
